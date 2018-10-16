@@ -1,5 +1,9 @@
 # 智能产线管理系统UI
 
+## 概述
+
+智能产线管理系统(Smart Production Line Management System) 
+
 ## 技术栈(列出使用的框架)
 
 * Vue 2
