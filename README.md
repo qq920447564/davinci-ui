@@ -4,6 +4,10 @@
 
 智能产线管理系统(Smart Production Line Management System) 
 
+## 内部项目代号
+
+DaVinci/达芬奇
+
 ## 技术栈(列出使用的框架)
 
 * Vue 2
