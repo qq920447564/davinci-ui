@@ -3,12 +3,12 @@
     <el-header>
       <el-row>
         <el-col :span="24">
-          <h1 style="text-align:center;">装配自动化小时管理看板</h1>
+          <h1 style="text-align:center;">南阳飞龙康明斯产线综合管理看板</h1>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="6" :offset="18">
-          日期:  <span>{{ now | dateformat('YYYY-MM-DD ') }}</span>
+          日期:  <span>{{ now | dateformat('YYYY-MM-DD HH:mm ') }}</span>
         </el-col>
       </el-row>
 

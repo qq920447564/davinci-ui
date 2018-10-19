@@ -22,122 +22,120 @@ import Layout from '../views/layout/Layout'
   }
 **/
 export const constantRouterMap = [
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
-  },
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+
   {
-    path: '',
+    path: '/',
     component: Layout,
-    redirect: 'dashboard',
-    meta: { title: '首页', icon: 'dashboard' },
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', noCache: true }
-      }
-    ]
+    redirect: '/dashboard',
+    name: 'Dashboard',
+    meta: { title: '首页' },
+    hidden: true,
+    children: [{
+      path: 'dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '首页' }
+    }]
+  },{
+    path: '/historicalLine',
+    component: Layout,
+    name: 'historicalLine',
+    hidden: true,
+    meta: { title: '历史曲线' },
+    children: [{
+      path: 'historicalLine',
+      component: () => import('@/views/equipMonitor/historicalLine'),
+      name: 'historicalLine',
+      meta: { title: ' 历史曲线 ' }
+    }]
   },
+
   {
-    path: '/example',
+    path: '/lookBoard',
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
-    meta: { title: '示例', icon: 'example' },
+    meta: { title: '实时看板', icon: 'example' },
     children: [
       {
         path: 'table',
         name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '选项一', icon: 'yuan' }
+        component: () => import('@/views/dashboard/listBoard'),
+        meta: { title: '产线列表看板', icon: 'table' }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: '选项二', icon: 'yuan' }
+        meta: {title: '产线实景看板', icon: 'tree'}
       }
     ]
   },
-
   {
-    path: '/form',
+    path: 'equipEfficiency',
     component: Layout,
+    alwaysShow: true,
+    meta: { title: '综合报表', icon: 'equip' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        path: '',
+        meta: { title: '设备状态报表', icon: 'equip' }
+      },
+      {
+        path: '',
+        meta: { title: '产线OEE报表', icon: 'link' }
       }
     ]
   },
-
   {
-    path: '/nested',
+    path: '/equipMonitor',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/equipMonitor/operationmonitor',
+    name: 'operationmonitor',
     meta: {
-      title: 'Nested',
+      title: '设备监控',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'operationMonitor',
+        component: () => import('@/views/equipMonitor/operationMonitor'), // Parent router-view
+        name: 'operationMonitor',
+        meta: { title: '设备运行监控',icon:'runMonitor' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'runNote',
+        component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
+        name: 'runNote',
+        meta: { title: '设备运行记录',icon:'runNote' }
+      },
+      {
+        path: 'outputNote',
+        component: () => import('@/views/equipMonitor/outputNote'),
+        name:'outputNote',
+        meta: { title: '设备产量记录',icon:'chan' }
+      }
+    ]
+  },
+  {
+    path: '/person',
+    component: Layout,
+    redirect: '/person/person',
+    name: 'person',
+    alwaysShow: true,
+    meta: {
+      title: '人员管理',
+      icon: 'person',
+      name:'person'
+    },
+    children: [
+      {
+        path: 'person',
+        name: 'person',
+        component: () => import('@/views/person/person'),
+        meta: { title: '上班时间填报',icon:'time' }
       }
     ]
   },
@@ -145,10 +143,43 @@ export const constantRouterMap = [
   {
     path: 'external-link',
     component: Layout,
+    meta: { title: '生产计划', icon: 'plan' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: '',
+        meta: { title: '生产计划填报', icon: 'pen' }
+      },
+      {
+        path: '',
+        meta: { title: '计划达成报表', icon: 'get' }
+      }
+    ]
+  },
+  {
+    path: 'qualityManage',
+    component: Layout,
+    alwaysShow: true,
+    meta: { title: '质量管理', icon: 'quality' },
+    children: [
+      {
+        path: '',
+        meta: { title: '质量问题填报', icon: 'link' }
+      }
+    ]
+  },
+  {
+    path: 'systemManage',
+    component: Layout,
+    alwaysShow: true,
+    meta: { title: '系统管理', icon: 'link' },
+    children: [
+      {
+        path: '',
+        meta: { title: '数据字典', icon: 'link' }
+      },
+      {
+        path: '',
+        meta: { title: '用户管理', icon: 'link' }
       }
     ]
   },
