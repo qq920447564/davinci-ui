@@ -5,17 +5,13 @@
         <el-form ref="form" :model="form" label-width="80px">
 
           <el-row :gutter="10">
-            <el-col :span="6">
+
+            <el-col :span="8">
               <el-form-item label="产线:">
                 <el-input v-model="form.name"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
-              <el-form-item label="是否异常:">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="上班日期:">
                 <el-date-picker
                   v-model="value6"
@@ -26,7 +22,15 @@
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :span="6" :push="4"> <el-button  type="primary" @click="addFormVisible = true">新增</el-button></el-col>
+
+            <el-col :span="8" :push="3" >
+              <el-button  type="primary" @click="addFormVisible = true">新增</el-button>
+              <el-button  type="primary" @click="addFormVisible = true">搜索</el-button>
+              <el-button  type="primary" @click="addFormVisible = true">导出</el-button>
+
+
+
+            </el-col>
 
           </el-row>
         </el-form>
@@ -41,46 +45,47 @@
         <el-table-column
           fixed
           prop="date"
-          label="产线"
+          label="生产日期"
         >
         </el-table-column>
         <el-table-column
           prop="name"
-          label="日期"
+          label="产线"
         >
         </el-table-column>
         <el-table-column
           prop="province"
-          label="上班时间"
+          label="不良数量"
         >
         </el-table-column>
         <el-table-column
           prop="city"
-          label="下班时间"
+          label="备注"
         >
         </el-table-column>
         <el-table-column
           prop="state"
-          label="姓名"
+          label="创建人"
         >
         </el-table-column>
         <el-table-column
           prop="begin_time"
-          label="产品"
+          label="创建时间"
         >
         </el-table-column>
+        <!--<el-table-column-->
+          <!--prop="reason"-->
+          <!--label="备注"-->
+        <!--&gt;-->
+        <!--</el-table-column>-->
         <el-table-column
-          prop="reason"
-          label="备注"
-        >
-        </el-table-column><el-table-column
         fixed="right"
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="dialogVisible = true" type="text" size="small" >下班</el-button>
-          <el-dialog title="下班提醒" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :append-to-body="true">
-            <span>员工确认下班?</span><span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = true" type="text" size="small" >删除</el-button>
+          <el-dialog title="删除提醒" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :append-to-body="true">
+            <span>确认删除?</span><span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
              <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
           </span>
@@ -160,10 +165,10 @@
   export default {
     components: {ElHeader},
 
-      // handleClick:function(){
-      //   this.$router.push('/historicalLine/historicalLine');
-      //
-      // }
+    // handleClick:function(){
+    //   this.$router.push('/historicalLine/historicalLine');
+    //
+    // }
     data() {
       return {
         filters: {

@@ -141,29 +141,39 @@ export const constantRouterMap = [
   },
 
   {
-    path: 'external-link',
+    path: '/makePlan',
     component: Layout,
+    redirect: '/makePlan/makePlanPen',
+    name:'makePlan',
     meta: { title: '生产计划', icon: 'plan' },
     children: [
       {
-        path: '',
-        meta: { title: '生产计划填报', icon: 'pen' }
+        path: 'makePlanPen',
+        meta: { title: '生产计划填报', icon: 'pen' },
+        name:'makePlanPen',
+        component: () => import('@/views/makePlan/makePlanPen'),
       },
       {
         path: '',
-        meta: { title: '计划达成报表', icon: 'get' }
+        meta: { title: '计划达成报表', icon: 'get' },
+        name:'planList',
+        component: () => import('@/views/makePlan/planList' ),
       }
     ]
   },
   {
     path: 'qualityManage',
     component: Layout,
+    redirect: '/qualityManage/qualityPen',
     alwaysShow: true,
+    name:'qualityManage',
     meta: { title: '质量管理', icon: 'quality' },
     children: [
       {
-        path: '',
-        meta: { title: '质量问题填报', icon: 'link' }
+        path: '/qualityPen',
+        meta: { title: '质量问题填报', icon: 'link' },
+        name:'qualityPen',
+        component:() =>import('@/views/qualityManage/qualityPen')
       }
     ]
   },
