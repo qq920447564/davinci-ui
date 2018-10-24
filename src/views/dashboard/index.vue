@@ -6,11 +6,6 @@
           <h1 style="text-align:center;">装配自动化小时管理看板</h1>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="6" :offset="18">
-          日期:  <span>{{ now | dateformat('YYYY-MM-DD ') }}</span>
-        </el-col>
-      </el-row>
 
       <!--<p class="data" >日期:<span>{{ now | dateformat('YYYY-MM-DD ') }}</span></p>-->
     </el-header>
@@ -396,7 +391,6 @@
         console.log(this.$refs.c1) //返回的是一个vue对象，所以可以直接调用其方法
         this.$refs.c1.childMethod();
       },
-
     },
     mounted() {
       setInterval(() => {

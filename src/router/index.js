@@ -27,18 +27,18 @@ export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
 
   {
-    path: '/',
+    path: '',
     component: Layout,
-    redirect: '/dashboard',
-    meta: { title: '首页' },
-    hidden: true,
+    redirect: 'dashboard',
+    meta: { title: '首页', icon: 'dashboard' },
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
       name: 'Dashboard',
-      meta: { title: '首页' }
+      meta: { title: '首页', icon: 'dashboard', noCache: true }
     }]
-  },{
+  },
+  {
     path: '/historicalLine',
     component: Layout,
     hidden: true,
