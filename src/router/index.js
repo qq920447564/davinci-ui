@@ -30,18 +30,17 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
     meta: { title: '首页' },
     hidden: true,
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index'),
+      name: 'Dashboard',
       meta: { title: '首页' }
     }]
   },{
     path: '/historicalLine',
     component: Layout,
-    name: 'historicalLine',
     hidden: true,
     meta: { title: '历史曲线' },
     children: [{
@@ -123,7 +122,6 @@ export const constantRouterMap = [
     path: '/person',
     component: Layout,
     redirect: '/person/person',
-    name: 'person',
     alwaysShow: true,
     meta: {
       title: '人员管理',
