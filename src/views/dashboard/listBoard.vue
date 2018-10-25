@@ -8,7 +8,6 @@
       </el-row>
       <el-row>
         <el-col :span="6" :offset="18">
-          日期:  <span>{{ now | dateformat('YYYY-MM-DD HH:mm ') }}</span>
         </el-col>
       </el-row>
 
