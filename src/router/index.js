@@ -73,12 +73,16 @@ export const constantRouterMap = [
     meta: { title: '综合报表', icon: 'equip' },
     children: [
       {
-        path: '',
-        meta: { title: '设备状态报表', icon: 'yuan' }
+        path: 'OEE',
+        name: 'OEE',
+        component: () => import('@/views/equipEfficiency/OEE'),
+        meta: { title: '产线OEE报表', icon: 'yuan' }
       },
       {
-        path: '',
-        meta: { title: '产线OEE报表', icon: 'yuan' }
+        path: 'Plan',
+        name: 'Plan',
+        component: () => import('@/views/equipEfficiency/Plan'),
+        meta: { title: '计划达成报表', icon: 'yuan' }
       }
     ]
   },
@@ -94,15 +98,15 @@ export const constantRouterMap = [
     children: [
       {
         path: 'operationMonitor',
-        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
+        component: () => import('@/views/equipMonitor/operationMonitor'), // Parent router-view
         name: 'operationMonitor',
-        meta: { title: '设备信息管理',icon:'yuan' }
+        meta: { title: '设备运行监控',icon:'runMonitor' }
       },
       {
         path: 'runNote',
         component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
         name: 'runNote',
-        meta: { title: '设备运行记录',icon:'yuan' }
+        meta: { title: '设备运行记录',icon:'runNote' }
       },
       {
         path: 'outputNote',
@@ -133,7 +137,7 @@ export const constantRouterMap = [
         path: 'person',
         name: 'person',
         component: () => import('@/views/person/person'),
-        meta: { title: '上班时间填报',icon:'yuan' }
+        meta: { title: '上班时间填报',icon:'time' }
       }
     ]
   },
@@ -153,7 +157,7 @@ export const constantRouterMap = [
       },
       {
         path: '',
-        meta: { title: '计划达成报表', icon: 'yuan' },
+        meta: { title: '计划达成报表', icon: 'get' },
         name:'planList',
         component: () => import('@/views/makePlan/planList' ),
       }
@@ -169,7 +173,7 @@ export const constantRouterMap = [
     children: [
       {
         path: '/qualityPen',
-        meta: { title: '质量问题填报', icon: 'yuan' },
+        meta: { title: '质量问题填报', icon: 'link' },
         name:'qualityPen',
         component:() =>import('@/views/qualityManage/qualityPen')
       }
@@ -183,11 +187,11 @@ export const constantRouterMap = [
     children: [
       {
         path: '',
-        meta: { title: '数据字典', icon: 'yuan' }
+        meta: { title: '数据字典', icon: 'link' }
       },
       {
         path: '',
-        meta: { title: '用户管理', icon: 'yuan' }
+        meta: { title: '用户管理', icon: 'link' }
       }
     ]
   },
