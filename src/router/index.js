@@ -33,7 +33,7 @@ export const constantRouterMap = [
     meta: { title: '首页', icon: 'dashboard' },
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
+      component: () => import('@/views/dashboard/listBoard'),
       name: 'Dashboard',
       meta: { title: '首页', icon: 'dashboard', noCache: true }
     }]
@@ -181,18 +181,34 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: 'systemManage',
+    path: '/systemManage',
     component: Layout,
     alwaysShow: true,
     meta: { title: '系统管理', icon: 'link' },
     children: [
       {
-        path: '',
-        meta: { title: '数据字典', icon: 'yuan' }
+        path: '/dataDictionary',
+        meta: { title: '数据字典', icon: 'yuan' },
+        name:'dataDictionary',
+        component:() =>import('@/views/systemManage/dataDictionary')
       },
       {
-        path: '',
-        meta: { title: '用户管理', icon: 'yuan' }
+        path: '/userManange',
+        meta: { title: '用户管理', icon: 'yuan' },
+        name:'userManage',
+        component:()=>import('@/views/systemManage/userManage')
+      },
+      {
+        path: '/gatewayPage',
+        meta: { title: '网关配置', icon: 'yuan' },
+        name:'gatewayPage',
+        component:()=>import('@/views/systemManage/gatewayPage')
+      },
+      {
+        path: '/deployPage',
+        meta: { title: '部署配置', icon: 'yuan' },
+        name:'deployPage',
+        component:()=>import('@/views/systemManage/deployPage')
       }
     ]
   },
