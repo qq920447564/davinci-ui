@@ -11,9 +11,9 @@
               </el-form-item>
             </el-col>
             <!--<el-col :span="6">-->
-              <!--<el-form-item label="是否异常:">-->
-                <!--<el-input v-model="form.name"></el-input>-->
-              <!--</el-form-item>-->
+            <!--<el-form-item label="是否异常:">-->
+            <!--<el-input v-model="form.name"></el-input>-->
+            <!--</el-form-item>-->
             <!--</el-col>-->
             <el-col :span="8">
               <el-form-item label="日期区间:">
@@ -30,7 +30,7 @@
               <el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>
               <el-button  type="primary" @click="addFormVisible = true">新增</el-button>
               <el-button  type="primary" @click="search">搜索</el-button>
-              <el-button  type="primary" @click="addFormVisible = true">导出</el-button>
+              <el-button  type="primary" @click="handle">导出</el-button>
             </el-col>
 
             <!--<el-col :span="4"> <el-button  type="primary" @click="addFormVisible = true">导出</el-button></el-col>-->
@@ -62,8 +62,8 @@
         >
         </el-table-column>
         <!--<el-table-column-->
-          <!--prop="city"-->
-          <!--label="下班时间"-->
+        <!--prop="city"-->
+        <!--label="下班时间"-->
         <!--&gt;-->
         <!--</el-table-column>-->
         <el-table-column
@@ -87,80 +87,127 @@
         >
         </el-table-column>
         <el-table-column
-        fixed="right"
-        label="操作"
-        width="100">
-        <template slot-scope="scope">
-          <!--<el-button @click="dialogVisible = true" type="text" size="small" >下班</el-button>-->
-          <!--<el-dialog title="下班提醒" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :append-to-body="true">-->
+          fixed="right"
+          label="操作"
+          width="100">
+          <template slot-scope="scope">
+            <!--<el-button @click="dialogVisible = true" type="text" size="small" >下班</el-button>-->
+            <!--<el-dialog title="下班提醒" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :append-to-body="true">-->
             <!--<span>员工确认下班?</span><span slot="footer" class="dialog-footer">-->
             <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
-             <!--<el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
-          <!--</span>-->
-          <!--</el-dialog>-->
-          <el-button type="text" size="small"  @click="editFormVisible = true">修改</el-button>
-          <!--编辑界面-->
-          <el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
-            <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-              <el-form-item label="产线" prop="name">
-                <el-input v-model="editForm.name" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="日期">
-                <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
-              </el-form-item>
-              <el-form-item label="上班时间">
-                <el-date-picker type="date" placeholder="选择日期" v-model="editForm.shang"></el-date-picker>
-              </el-form-item>
-              <el-form-item label="下班时间">
-                <el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>
-              </el-form-item>
-              <el-form-item label="姓名" prop="name">
-                <el-input v-model="editForm.name" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="产品" prop="name">
-                <el-input v-model="editForm.name" auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="备注">
-                <el-input type="textarea" v-model="editForm.addr"></el-input>
-              </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click.native="editFormVisible = false">取消</el-button>
-              <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
-            </div>
-          </el-dialog>
-          <el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
-          <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-            <el-form-item label="产线" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="日期">
-              <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="上班时间">
-              <el-date-picker type="date" placeholder="选择日期" v-model="editForm.shang"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="下班时间">
-              <el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="产品" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="备注">
-              <el-input type="textarea" v-model="editForm.addr"></el-input>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click.native="editFormVisible = false">取消</el-button>
-            <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
-          </div>
-        </el-dialog>
-
-        </template>
-      </el-table-column>
+            <!--<el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+            <!--</span>-->
+            <!--</el-dialog>-->
+            <el-button type="text" size="small"  @click="editFormVisible = true">修改</el-button>
+            <!--编辑界面-->
+            <el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
+              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="产线" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="日期">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="时间段:">
+                  <el-time-picker
+                    is-range
+                    arrow-control
+                    v-model="value5"
+                    range-separator="至"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    placeholder="选择时间范围">
+                  </el-time-picker>
+                </el-form-item>
+                <el-form-item label="产品名称" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="计划产量" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                  <el-input type="textarea" v-model="editForm.addr"></el-input>
+                </el-form-item>
+                <el-form-item label="计划人员" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+              </div>
+            </el-dialog>
+            <el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
+              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="产线:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="日期:">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="时间段:">
+                  <el-time-picker
+                    is-range
+                    arrow-control
+                    v-model="value5"
+                    range-separator="至"
+                    start-placeholder="开始时间"
+                    end-placeholder="结束时间"
+                    placeholder="选择时间范围">
+                  </el-time-picker>
+                </el-form-item>
+                <!--<el-form-item label="下班时间">-->
+                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>-->
+                <!--</el-form-item>-->
+                <el-form-item label="产品名称:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="计划产量:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="计划人员:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="备注:">
+                  <el-input type="textarea" v-model="editForm.addr"></el-input>
+                </el-form-item>
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+              </div>
+            </el-dialog>
+            <el-dialog title="快速创建" v-model="quickaddFormVisible" :visible.sync="quickaddFormVisible" :close-on-click-modal="false" :append-to-body="true">
+              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="产线:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="日期:">
+                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                </el-form-item>
+                <!--<el-form-item label="上班时间">-->
+                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.shang"></el-date-picker>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="下班时间">-->
+                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>-->
+                <!--</el-form-item>-->
+                <el-form-item label="小时计划产量:" prop="name" >
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="计划人员:" prop="name">
+                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                </el-form-item>
+                <!--<el-form-item label="备注">-->
+                <!--<el-input type="textarea" v-model="editForm.addr"></el-input>-->
+                <!--</el-form-item>-->
+              </el-form>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click.native="editFormVisible = false">取消</el-button>
+                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">快速创建计划</el-button>
+              </div>
+            </el-dialog>
+          </template>
+        </el-table-column>
       </el-table>
     </el-main>
   </div>
@@ -183,6 +230,7 @@
         filters: {
           name: ''
         },
+        value5:'',
         users: [],
         total: 0,
         page: 1,
@@ -190,12 +238,13 @@
         sels: [],//列表选中列
         editFormVisible: false,//编辑界面是否显示
         addFormVisible: false,
+        quickaddFormVisible:false,
         editLoading: false,
-        editFormRules: {
-          name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
-          ]
-        },
+        // editFormRules: {
+        //   name: [
+        //     { required: true, message: '请输入姓名', trigger: 'blur' }
+        //   ]
+        // },
         editFormVisible:false,
         editForm: {
           id: 0,

@@ -1,34 +1,10 @@
 <template>
   <div>
-    <el-header :height="300">
-      <div>
-
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-row :gutter="20">
-        <el-col :span="8">
-        <el-form-item label="产线:">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        </el-col>
-        <el-col :span="8">
-        <el-form-item label="设备编号:">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="日期:">
-            <el-date-picker
-              v-model="value6"
-              type="datetimerange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['12:00:00']">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
-        </el-row>
-        </el-form>
-      </div>
+    <el-header >
+      <el-row>
+      <!--<p>设备管理列表</p>-->
+      <el-button  type="primary" @click="search" >新增</el-button>
+      </el-row>
     </el-header>
     <el-main>
       <el-table
@@ -38,39 +14,52 @@
         <el-table-column
           fixed
           prop="date"
-          label="产线"
+          label="ID"
         >
         </el-table-column>
         <el-table-column
           prop="name"
-          label="工序"
+          label="设备类型编码"
         >
         </el-table-column>
         <el-table-column
           prop="province"
-          label="设备名称"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="city"
           label="设备编号"
         >
         </el-table-column>
         <el-table-column
+          prop="city"
+          label="设备名称"
+        >
+        </el-table-column>
+        <el-table-column
           prop="state"
-          label="程序名称"
+          label="工序"
         >
         </el-table-column>
         <el-table-column
           prop="begin_time"
-          label="产量计数"
+          label="产线"
         >
         </el-table-column>
         <el-table-column
-          prop="end_time"
-          label="达成时间"
+          prop="begin_time"
+          label="启用"
         >
         </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="300">
+          <template slot-scope="scope">
+            <el-button @click="handleClick" type="text" size="small">禁用</el-button>
+            <el-button @click="handleClick" type="text" size="small">修改</el-button>
+            <el-button @click="handleClick" type="text" size="small">数据项配置</el-button>
+            <el-button @click="handleClick" type="text" size="small">图片配置</el-button>
+          </template>
+        </el-table-column>
+
+
       </el-table>
     </el-main>
   </div>

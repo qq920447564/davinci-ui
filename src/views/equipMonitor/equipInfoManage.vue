@@ -1,6 +1,31 @@
 <template>
   <div>
-  <el-header style="display: none"></el-header>
+    <equipManage></equipManage>
+  <el-header>
+    <div>
+      <el-form ref="form" :model="form" label-width="80px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="产线:">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="设备编号:">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
+            <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
+            <el-button  type="primary" @click="search">搜索</el-button>
+            <el-button  type="primary" @click="handle">导出</el-button>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+  </el-header>
   <el-main>
   <el-table
     :data="tableData"
@@ -43,10 +68,11 @@
 <script>
   import ElHeader from "element-ui/packages/header/src/main";
   import lineChart from '../../views/equipMonitor/component/lineChart'
+  import equipManage from '@/views/equipMonitor/component/equipManage'
 
 
   export default {
-    components: {ElHeader,lineChart},
+    components: {lineChart,equipManage},
     methods: {
       handleClick:function(){
         this.$router.push('/historicalLine/historicalLine');
@@ -56,6 +82,9 @@
 
     data() {
       return {
+        form:{
+          name:''
+        },
         tableData: [{
           date: 'spindle_rate\n',
           name: '主轴倍率\n',
@@ -108,3 +137,10 @@
 
   }
 </script>
+<style>
+
+
+  header.el-header{
+    padding-top: 20px;
+  }
+</style>

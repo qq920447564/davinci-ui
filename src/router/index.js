@@ -62,13 +62,7 @@ export const constantRouterMap = [
         path: 'table',
         name: 'Table',
         component: () => import('@/views/dashboard/listBoard'),
-        meta: { title: '产线列表看板', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: {title: '产线实景看板', icon: 'tree'}
+        meta: { title: '产线列表看板', icon: 'yuan' }
       }
     ]
   },
@@ -80,11 +74,11 @@ export const constantRouterMap = [
     children: [
       {
         path: '',
-        meta: { title: '设备状态报表', icon: 'equip' }
+        meta: { title: '设备状态报表', icon: 'yuan' }
       },
       {
         path: '',
-        meta: { title: '产线OEE报表', icon: 'link' }
+        meta: { title: '产线OEE报表', icon: 'yuan' }
       }
     ]
   },
@@ -100,22 +94,28 @@ export const constantRouterMap = [
     children: [
       {
         path: 'operationMonitor',
-        component: () => import('@/views/equipMonitor/operationMonitor'), // Parent router-view
+        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
         name: 'operationMonitor',
-        meta: { title: '设备运行监控',icon:'runMonitor' }
+        meta: { title: '设备信息管理',icon:'yuan' }
       },
       {
         path: 'runNote',
         component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
         name: 'runNote',
-        meta: { title: '设备运行记录',icon:'runNote' }
+        meta: { title: '设备运行记录',icon:'yuan' }
       },
       {
         path: 'outputNote',
         component: () => import('@/views/equipMonitor/outputNote'),
         name:'outputNote',
-        meta: { title: '设备产量记录',icon:'chan' }
-      }
+        meta: { title: '设备产量记录',icon:'yuan' }
+      },
+      {
+        path: 'alarmNote',
+        component: () => import('@/views/equipMonitor/alarmNote'), // Parent router-view
+        name: 'operationMonitor',
+        meta: { title: '设备报警记录',icon:'yuan' }
+      },
     ]
   },
   {
@@ -133,7 +133,7 @@ export const constantRouterMap = [
         path: 'person',
         name: 'person',
         component: () => import('@/views/person/person'),
-        meta: { title: '上班时间填报',icon:'time' }
+        meta: { title: '上班时间填报',icon:'yuan' }
       }
     ]
   },
@@ -147,13 +147,13 @@ export const constantRouterMap = [
     children: [
       {
         path: 'makePlanPen',
-        meta: { title: '生产计划填报', icon: 'pen' },
+        meta: { title: '生产计划填报', icon: 'yuan' },
         name:'makePlanPen',
         component: () => import('@/views/makePlan/makePlanPen'),
       },
       {
         path: '',
-        meta: { title: '计划达成报表', icon: 'get' },
+        meta: { title: '计划达成报表', icon: 'yuan' },
         name:'planList',
         component: () => import('@/views/makePlan/planList' ),
       }
@@ -169,7 +169,7 @@ export const constantRouterMap = [
     children: [
       {
         path: '/qualityPen',
-        meta: { title: '质量问题填报', icon: 'link' },
+        meta: { title: '质量问题填报', icon: 'yuan' },
         name:'qualityPen',
         component:() =>import('@/views/qualityManage/qualityPen')
       }
@@ -183,11 +183,11 @@ export const constantRouterMap = [
     children: [
       {
         path: '',
-        meta: { title: '数据字典', icon: 'link' }
+        meta: { title: '数据字典', icon: 'yuan' }
       },
       {
         path: '',
-        meta: { title: '用户管理', icon: 'link' }
+        meta: { title: '用户管理', icon: 'yuan' }
       }
     ]
   },
