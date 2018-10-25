@@ -194,5 +194,7 @@ export default {
   header.el-header{
     padding-top: 20px;
   }
-
+  .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{
+    width:220px;
+  }
 </style>
