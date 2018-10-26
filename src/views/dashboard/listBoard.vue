@@ -1,21 +1,40 @@
 <template>
   <div>
-    <el-header>
+    <el-header :height='100'>
       <el-row :gutter="20">
         <el-col :span="24">
-          <h1 style="text-align:center;">南阳飞龙康明斯产线综合管理看板</h1>
+          <h1>产线设备状态看板</h1>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="6" :offset="18">
-          <p class="data" >日期:<span>{{ now | dateformat('YYYY-MM-DD HH:mm:ss') }}</span></p>
+          <!--<p class="data" >日期:<span>{{ now |date | formatDate }}</span></p>-->
+         <h2>{{ date| formatDate}}</h2>
         </el-col>
       </el-row>
+      <el-row>
+        <el-form ref="form" :model="form" label-width="80px" style="padding-top: 20px">
+        <el-col :span="6" :offset="15">
+          <el-form-item label="产线:">
+            <el-select v-model="value" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-button  type="primary" @click="search">搜索</el-button>
+        </el-form>
+      </el-row>
+      <div>
 
-
+      </div>
     </el-header>
     <el-main>
-     <el-row :gutter="40">
+     <el-row :gutter="20">
        <el-col :span="6"  >
        <div style="border: 1px solid">
          <el-row style=" text-align: center;background-color: green">
@@ -113,7 +132,7 @@
 
      </el-row>
 
-      <el-row :gutter="40" style="padding-top: 20px">
+      <el-row :gutter="20" style="padding-top: 20px">
         <el-col :span="6"  >
           <div style="border: 1px solid">
             <el-row style=" text-align: center;background-color: green">
@@ -211,7 +230,7 @@
 
       </el-row>
 
-      <el-row :gutter="40" style="padding-top: 20px">
+      <el-row :gutter="20" style="padding-top: 20px">
         <el-col :span="6"  >
           <div style="border: 1px solid">
             <el-row style=" text-align: center;background-color: green">
@@ -318,16 +337,34 @@
   import ElHeader from "element-ui/packages/header/src/main";
   import moment from 'moment'
   import mainTable from  '@/views/dashboard/component/table'
-
+  var myData = {
+    date:new Date()
+  };
+  //在月份、日期、小时等小于10前面补0
+  var padDate = function (value) {
+    return value <10 ? '0' + value:value;
+  };
   export default {
     components: {mainTable},
     filters: {
-      dateformat(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
-        return moment(dataStr).format(pattern)
+      formatDate:function (value) {
+        var date = new Date(value);
+        var year = date.getFullYear();
+        var month = padDate(date.getMonth()+1);
+        var day = padDate(date.getDate());
+        var hours = padDate(date.getHours());
+        var minutes = padDate(date.getMinutes());
+        var seconds = padDate(date.getSeconds());
+        return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds;
       }
     },
     data() {
+
       return{
+        from:{
+
+        },
+        date: new Date(),
         imgUrl:"../../../static/1.jpg",
         imgUrl1:'../../../static/2.jpg',
         tableData: [{
@@ -372,18 +409,19 @@
         ]
       }
     },
-    methods:{
-      parentMethod() {
-        console.log(this.$refs.c1) //返回的是一个vue对象，所以可以直接调用其方法
-        this.$refs.c1.childMethod();
-      },
+    mounted:function () {
+      var _this = this; //声明一个变量指向Vue实例this，保证作用域一致
+      this.timer = setInterval(function(){
+        _this.date = new Date(); //修改数据date
+      },1000)
+    },
+    //实例销毁之前调用。主要解绑一些使用addEventListener监听的事件等
+    beforeDestroy:function(){
+      if(this.timer){
+        clearInterval(this.timer); //在Vue实例销毁前，清除我们的定时器
+      }
+    }
 
-    },
-    mounted() {
-      setInterval(() => {
-        this.now = moment()
-      }, 1000)
-    },
 
   }
 </script>
