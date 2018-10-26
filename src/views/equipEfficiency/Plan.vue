@@ -1,11 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="4">
+      <el-row>
+        <el-col :span="3">
           <div class="grid-content bg-purple">
             <span class="mytitle">产线</span>
-            <el-select v-model="Line" filterable placeholder="请选择">
+            <el-select v-model="Line" filterable placeholder="请选择" style="width: 100px">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -14,10 +14,10 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <div class="grid-content bg-purple">
             <span class="mytitle">产品</span>
-            <el-select v-model="production" filterable placeholder="请选择">
+            <el-select v-model="production" filterable placeholder="请选择" style="width: 100px">
               <el-option
                 v-for="item in options2"
                 :key="item.value"
@@ -26,10 +26,10 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="5">
+        <el-col :span="4">
           <div class="grid-content bg-purple">
             <span class="mytitle">统计区间</span>
-            <el-select v-model="statistical" filterable placeholder="请选择">
+            <el-select v-model="statistical" filterable placeholder="请选择" style="width: 100px">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -38,7 +38,7 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="10" style="padding-right: 0px">
           <div class="grid-content bg-purple">
             <span class="mytitle">日期</span>
             <el-date-picker
@@ -46,7 +46,7 @@
               :picker-options="pickerOptions2"
               style="width: 390px"
               type="daterange"
-              align="right"
+              align="center"
               unlink-panels
               range-separator="至"
               start-placeholder="开始日期"
