@@ -1,11 +1,11 @@
 <template>
   <el-container>
     <el-header>
-      <el-row :gutter="20">
-        <el-col :span="4">
+      <el-row>
+        <el-col :span="3">
           <div class="grid-content bg-purple">
             <span class="mytitle">产线</span>
-            <el-select v-model="Line" filterable placeholder="请选择">
+            <el-select v-model="Line" filterable placeholder="请选择" style="width: 100px">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -14,19 +14,19 @@
             </el-select>
           </div>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <div class="grid-content bg-purple">
             <span class="mytitle">产品</span>
-            <el-select v-model="production" filterable placeholder="请选择">
+            <el-select v-model="production" filterable placeholder="请选择" style="width: 100px">
               <el-option
                 v-for="item in options2"
                 :key="item.value"
                 :label="item.label"
-                :value="item.value"/>
+                :value="item.value" />
             </el-select>
           </div>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="10">
           <div class="grid-content bg-purple">
             <span class="mytitle">日期</span>
             <el-date-picker
@@ -41,7 +41,7 @@
               end-placeholder="结束日期" />
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="4">
           <div class="grid-content bg-purple">
             <el-button>搜索</el-button>
             <el-button>导出</el-button>
