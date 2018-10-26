@@ -50,7 +50,18 @@ export const constantRouterMap = [
       meta: { title: ' 历史曲线 ' }
     }]
   },
-
+  {
+    path: '/dataPage',
+    component: Layout,
+    hidden: true,
+    meta: { title: '数据配置' },
+    children: [{
+      path: 'dataPage',
+      component: () => import('@/views/equipMonitor/dataPage'),
+      name: 'dataPage',
+      meta: { title: ' 数据配置 ' }
+    }]
+  },
   {
     path: '/lookBoard',
     component: Layout,
@@ -101,7 +112,7 @@ export const constantRouterMap = [
         path: 'operationMonitor',
         component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
         name: 'operationMonitor',
-        meta: { title: '设备运行监控',icon:'yuan' }
+        meta: { title: '设备信息管理',icon:'yuan' }
       },
       {
         path: 'runNote',
