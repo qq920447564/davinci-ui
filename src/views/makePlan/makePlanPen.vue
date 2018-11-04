@@ -268,78 +268,21 @@
           desc: ''
         },
         value6:'',
-        tableData: [{
-          date: '康明斯\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '加工\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'是',
-          reason:''
-
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '空闲\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'否',
-          reason:''
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '报警\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'是',
-          reason:''
-        },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '关机\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'否',
-            reason:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '加工\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'是',
-            reason:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '空闲',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'否',
-            reason:''
-          }]
+        tableData: []
       }
+    },
+    created(){
+      var fd = new FormData()
+      fd.append('addon','' )
+      let config = {
+
+      }
+      axios.post('http://35.220.189.208:8080/plans', fd,config).then( res => {
+        console.log(res)
+      }).catch( res => {
+        console.log(1)
+      })
+
     },
     methods:{
       //显示编辑页面

@@ -12,6 +12,7 @@
          <h2>{{ date| formatDate}}</h2>
         </el-col>
       </el-row>
+      <table></table>
       <el-row>
         <el-form ref="form" :model="form" label-width="80px" style="padding-top: 20px">
         <el-col :span="6" :offset="15">
@@ -44,7 +45,7 @@
            :data="tableData" :show-header="false"
            style="width: 100%">
            <el-table-column
-             prop="date"
+             prop="id"
              label="日期"
            >
            </el-table-column>
@@ -156,6 +157,9 @@
           </div>
         </el-col>
 
+
+        <table></table>
+        <table></table>
         <el-col :span="6"  >
           <div style="border: 1px solid">
             <el-row style=" text-align: center;background-color: red">
@@ -328,7 +332,9 @@
 
       </el-row>
      </el-main>
-    <el-footer></el-footer>
+    <el-footer>
+      <table></table>
+    </el-footer>
   </div>
 </template>
 
@@ -337,6 +343,8 @@
   import ElHeader from "element-ui/packages/header/src/main";
   import moment from 'moment'
   import mainTable from  '@/views/dashboard/component/table'
+  import  axios from 'axios'
+  import table from '@/views/dashboard/component/table'
   var myData = {
     date:new Date()
   };
@@ -345,7 +353,7 @@
     return value <10 ? '0' + value:value;
   };
   export default {
-    components: {mainTable},
+    components: {table},
     filters: {
       formatDate:function (value) {
         var date = new Date(value);
@@ -367,48 +375,30 @@
         date: new Date(),
         imgUrl:"../../../static/1.jpg",
         imgUrl1:'../../../static/2.jpg',
-        tableData: [{
-          date: '设备名称',
-          name: 'ABC\n',
-
-        }, {
-          date: '设备编号\n',
-          name: 'op10-1\n',
-
-        },
-          {
-            date: '生产数量\n',
-            name: '123\n',
-
-          },
-          {
-            date: '正常运行\n',
-            name: '12:00:34\n',
-
-          },
-          {
-            date: '空闲时长\n',
-            name: '12:00:34\n',
-
-          },
-          {
-            date: '报警时长\n',
-            name: '12:00:34\n',
-
-          },
-          {
-            date: '关机时长',
-            name: '12:00:34\n',
-
-          },
-          {
-            date: '报警次数',
-            name: '2',
-
-          },
-        ]
+        tableData: []
       }
     },
+    created:function(){
+
+      axios({
+        method:'get',
+        baseURL:'/api',
+        url:'dashboard/line/device_stat?date=2018-10-30'
+      }).then(
+        response=>{
+          console.log(response);
+          this.tableData=response.data.data;
+        }
+      ).catch(
+        error=>{
+          console.log(error);
+          alert('网络错误，不能访问');
+        }
+      )
+
+
+    },
+
     mounted:function () {
       var _this = this; //声明一个变量指向Vue实例this，保证作用域一致
       this.timer = setInterval(function(){

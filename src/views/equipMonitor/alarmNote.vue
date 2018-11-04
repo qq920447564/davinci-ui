@@ -56,52 +56,52 @@
         style="width: 100%">
         <el-table-column
           fixed
-          prop="date"
+          prop="line_id"
           label="产线"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="process"
           label="工序"
         >
         </el-table-column>
         <el-table-column
-          prop="province"
+          prop="name"
           label="设备名称"
         >
         </el-table-column>
         <el-table-column
-          prop="city"
+          prop="device_no"
           label="设备编号"
         >
         </el-table-column>
         <el-table-column
-          prop="city"
+          prop="alarm_type"
           label="报警类型"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="alarm_no"
           label="报警编号"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="alarm_msg"
           label="报警信息"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="started_time"
           label="开始时间"
         >
         </el-table-column>
         <el-table-column
-          prop="end_time"
+          prop="stopped_time"
           label="结束时间"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="duration"
           label="持续时间"
         >
         </el-table-column>
@@ -112,6 +112,7 @@
 
 <script>
   import ElHeader from "element-ui/packages/header/src/main";
+  import axios from 'axios'
 
 
 
@@ -122,6 +123,25 @@
       //   this.$router.push('/historicalLine/historicalLine');
       //
       // }
+    },
+    created(){
+      axios({
+        method:'get',
+        baseURL:'/api',
+        url:'devices/alarm_stat',
+      }).then(
+        response=>{
+          console.log(response);
+          this.tableData=response.data.data.rows;
+
+        }
+      ).catch(
+        error=>{
+          console.log(error);
+          alert('网络错误，不能访问');
+        }
+      )
+
     },
 
     data() {
@@ -145,71 +165,7 @@
           resource: '',
           desc: ''
         },
-        tableData: [{
-          date: '康明斯\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '加工\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'is'
-
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '空闲\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'is'
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '报警\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:''
-        },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '关机\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '加工\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '空闲',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          }]
+        tableData: []
       }
     },
 

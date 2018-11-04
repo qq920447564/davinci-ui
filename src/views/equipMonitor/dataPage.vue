@@ -179,7 +179,7 @@
 
 <script>
   import ElHeader from "element-ui/packages/header/src/main";
-
+   import axios from 'axios'
 
 
   export default {
@@ -229,78 +229,27 @@
           desc: ''
         },
         value6:'',
-        tableData: [{
-          date: '康明斯\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '加工\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'是',
-          reason:''
-
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '空闲\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'否',
-          reason:''
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '报警\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'是',
-          reason:''
-        },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '关机\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'否',
-            reason:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '加工\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'是',
-            reason:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '空闲',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:'否',
-            reason:''
-          }]
+        tableData: []
       }
+    },
+    created:function(){
+      axios({
+        method:'get',
+        baseURL:'/api',
+        url:'data_points?device_no='+this.id,
+
+      }).then(
+        response=>{
+          console.log(response);
+          this.tableData=response.data.data;
+
+        }
+      ).catch(
+        error=>{
+          console.log(error);
+          alert('网络错误，不能访问');
+        }
+      )
     },
     methods:{
       //显示编辑页面

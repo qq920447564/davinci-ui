@@ -69,6 +69,7 @@
   import ElHeader from "element-ui/packages/header/src/main";
   import lineChart from '../../views/equipMonitor/component/lineChart'
   import equipManage from '@/views/equipMonitor/component/equipManage'
+  import axios from 'axios'
 
 
   export default {
@@ -77,6 +78,13 @@
       handleClick:function(){
         this.$router.push('/historicalLine/historicalLine');
 
+      },
+      search:function(){
+        axios({
+          method:'get',
+          baseURI:'/api',
+
+        })
       }
     },
 

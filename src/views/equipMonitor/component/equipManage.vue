@@ -5,43 +5,37 @@
       <!--<p>设备管理列表</p>-->
         <el-button  type="primary" @click="addFormVisible = true">新增</el-button>
         <el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
-          <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-            <el-form-item label="产线:" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
+          <el-form :model="addForm" label-width="80px" :rules="editFormRules" ref="addFrom">
+            <el-form-item label="设备标识:" prop="did">
+              <el-input v-model="addForm.did" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="日期:">
-              <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+            <el-form-item label="网关ID:" prop="gwid">
+              <el-input v-model="addForm.gwid" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="时间段:">
-              <el-time-picker
-                is-range
-                arrow-control
-                v-model="value5"
-                range-separator="至"
-                start-placeholder="开始时间"
-                end-placeholder="结束时间"
-                placeholder="选择时间范围">
-              </el-time-picker>
+            <el-form-item label="图片URL:" prop="image">
+              <el-input v-model="addForm.image" auto-complete="off"></el-input>
             </el-form-item>
-            <!--<el-form-item label="下班时间">-->
-            <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>-->
-            <!--</el-form-item>-->
-            <el-form-item label="产品名称:" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-form-item label="设备类型编码:" prop="type">
+              <el-input v-model="addForm.type" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="计划产量:" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-form-item label="设备编号:" prop="device_no">
+              <el-input v-model="addForm.device_no" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="计划人员:" prop="name">
-              <el-input v-model="editForm.name" auto-complete="off"></el-input>
+            <el-form-item label="设备名称:" prop="name">
+              <el-input v-model="addForm.name" auto-complete="off"></el-input>
             </el-form-item>
-            <el-form-item label="备注:">
-              <el-input type="textarea" v-model="editForm.addr"></el-input>
+
+            <el-form-item label="工序:" prop="process">
+              <el-input v-model="addForm.process" auto-complete="off"></el-input>
             </el-form-item>
+            <el-form-item label="启用:" prop="enabled">
+              <el-input v-model="addForm.enabled" auto-complete="off"></el-input>
+            </el-form-item>
+
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click.native="editFormVisible = false">取消</el-button>
-            <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+            <el-button @click.native="addFormVisible = false">取消</el-button>
+            <el-button type="primary" @click.native="addSubmit" :loading="editLoading">提交</el-button>
           </div>
         </el-dialog>
       </el-row>
@@ -53,37 +47,37 @@
         style="width: 100%">
         <el-table-column
           fixed
-          prop="date"
+          prop="id"
           label="ID"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="type"
           label="设备类型编码"
         >
         </el-table-column>
         <el-table-column
-          prop="province"
+          prop="device_no"
           label="设备编号"
         >
         </el-table-column>
         <el-table-column
-          prop="city"
+          prop="name"
           label="设备名称"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="process"
           label="工序"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="line_id"
           label="产线"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="enabled"
           label="启用"
         >
         </el-table-column>
@@ -94,41 +88,38 @@
           <template slot-scope="scope">
             <el-button @click="handleClick" type="text" size="small">禁用</el-button>
             <el-button @click="editFormVisible=true" type="text" size="small">修改</el-button>
-            <el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
+            <el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" :before-close="handleClose">
               <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
-                <el-form-item label="产线" prop="name">
+                <el-form-item label="设备标识:" prop="did">
+                  <el-input v-model="editForm.did" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="网关ID:" prop="gwid">
+                  <el-input v-model="editForm.gwid" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="图片URL:" prop="image">
+                  <el-input v-model="editForm.image" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="设备类型编码:" prop="type">
+                  <el-input v-model="editForm.type" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="设备编号:" prop="device_no">
+                  <el-input v-model="editForm.device_no" auto-complete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="设备名称:" prop="name">
                   <el-input v-model="editForm.name" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="日期">
-                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+
+                <el-form-item label="工序:" prop="process">
+                  <el-input v-model="editForm.process" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="时间段:">
-                  <el-time-picker
-                    is-range
-                    arrow-control
-                    v-model="value5"
-                    range-separator="至"
-                    start-placeholder="开始时间"
-                    end-placeholder="结束时间"
-                    placeholder="选择时间范围">
-                  </el-time-picker>
+                <el-form-item label="启用:" prop="enabled">
+                  <el-input v-model="editForm.enabled" auto-complete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="产品名称" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="计划产量" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="备注">
-                  <el-input type="textarea" v-model="editForm.addr"></el-input>
-                </el-form-item>
-                <el-form-item label="计划人员" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
-                </el-form-item>
+
               </el-form>
               <div slot="footer" class="dialog-footer">
-                <el-button @click.native="editFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+                <el-button @click.native="handleCancel('editForm')">取消</el-button>
+                <el-button type="primary" @click.native="handleUpdate('editForm')">更新</el-button>
               </div>
             </el-dialog>
             <el-button @click="dataHandleClick" type="text" size="small">数据项配置</el-button>
@@ -141,35 +132,162 @@
 
       </el-table>
     </el-main>
+    <el-footer>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage4"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400">
+      </el-pagination>
+    </el-footer>
   </div>
 </template>
 
 <script>
   import ElHeader from "element-ui/packages/header/src/main";
+  import axios from 'axios'
+  import index from "../../../router";
 
-
-
+  var id;
   export default {
-    components: {ElHeader},
+    components: {},
+    created(index){
+      axios({
+        method:'get',
+        baseURL:'/api',
+        url:'devices',
+      }).then(
+        response=>{
+          console.log(response);
+          this.tableData=response.data.data;
+          id=response.data.data.id
+          console.log(id)
+        }
+      ).catch(
+        error=>{
+          console.log(error);
+          alert('网络错误，不能访问');
+        }
+      )
+
+    },
+    update:function(index){
+      axios({
+        method:'get',
+        baseURL:'/api',
+        url:'devices'
+      }).then(
+        response=>{
+          console.log(response)
+          this.editForm=response.data.data[index];
+        }
+      )
+    },
     methods: {
+      //跳转数据配置
       dataHandleClick:function(){
         this.$router.push('/dataPage/dataPage');
+      },
+      //点击取消
+      handleCancel(formName) {
+        this.editFormVisible = false;
+      },
+      //分页
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      //当前页
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      },
+      //点击编辑
+      handleEdit(index, row) {
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row); //这句是关键！！！
+      },
+      //点击更新
+      handleUpdate(forName) {
+        //更新的时候就把弹出来的表单中的数据写到要修改的表格中
+        var postData = {
+          device_no : this.editForm.device_no
+      }
 
+        //这里再向后台发个post请求重新渲染表格数据
+        this.editFormVisible = false;
+      },
+
+      //提交post功能
+      addSubmit(){
+        axios({
+          method:'post',
+          baseURL:'/api',
+          url:'devices',
+          data:{
+            did:this.addForm.did,
+            gwid:this.addForm.gwid,
+            image:this.addForm.image,
+            type:this.addForm.type,
+            device_no:this.addForm.device_no,
+            name:this.addForm.name,
+            process:this.addForm.process,
+            line_id:this.addForm.line_id,
+            enabled:this.addForm.enabled,
+          }
+        }).then(function(response){
+          console.log(response);
+          try {
+            that.$refs['dialogContent'].resetFields();
+          } catch (e) {
+
+          }
+        })
+          .catch(function(error){
+            console.log(error);
+          })
       }
     },
 
     data() {
       return {
+        currentPage4: 4,
         addFormVisible: false,
         editFormVisible:false,
         value6: '',
+        addForm:{
+          created_by: '',
+          created_time: "",
+          device_no: "",
+          did: "",
+          enabled:'' ,
+          gwid: "",
+          id: '',
+          image: "",
+          line_id: '',
+          name: "",
+          process: "",
+          type: "",
+          updated_by: '',
+          updated_time: ""
+
+        },
         editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
+          created_by: '',
+          created_time: "",
+          device_no: "",
+          did: "",
+          enabled:'' ,
+          gwid: "",
+          id: '',
+          image: "",
+          line_id: '',
+          name: "",
+          process: "",
+          type: "",
+          updated_by: '',
+          updated_time: ""
         },
         form: {
           name: '',
@@ -181,71 +299,7 @@
           resource: '',
           desc: ''
         },
-        tableData: [{
-          date: '康明斯\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '加工\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'is'
-
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '空闲\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:'is'
-        }, {
-          date: '康明斯\n\n',
-          name: 'OP10\n\n',
-          province: '机床1\n',
-          city: 'OP10-1\n',
-          state: '报警\n',
-          begin_time: 200333,
-          end_time:200333,
-          during_time:10,
-          if_wrong:''
-        },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '关机\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '加工\n',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          },
-          {
-            date: '康明斯\n\n',
-            name: 'OP10\n\n',
-            province: '机床1\n',
-            city: 'OP10-1\n',
-            state: '空闲',
-            begin_time: 200333,
-            end_time:200333,
-            during_time:10,
-            if_wrong:''
-          }]
+        tableData: []
       }
     },
 
