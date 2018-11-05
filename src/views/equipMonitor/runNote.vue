@@ -6,33 +6,35 @@
           <el-row :gutter="10">
             <el-col :span="4">
               <el-form-item label="产线:">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.line_id"/>
               </el-form-item>
             </el-col>
             <el-col :span="4">
               <el-form-item label="设备编号:">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.device_no"/>
               </el-form-item>
             </el-col>
             <el-col :span="4">
               <el-form-item label="状态:">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.status"/>
               </el-form-item>
             </el-col>
             <el-col :span="4">
               <el-form-item label="是否异常:">
-                <el-input v-model="form.name"/>
+                <el-input v-model="form.isAbnormal"/>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="日期:">
-                <el-date-picker
-                  v-model="value6"
-                  :default-time="['12:00:00']"
-                  type="datetimerange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"/>
-              </el-form-item>
+            <el-col :span="6">
+
+            </el-col>
+            <el-col :span="6">
+              <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
+              <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
+              <el-button  type="primary" @click="search">搜索</el-button>
+              <el-button  type="primary" @click="handle">导出</el-button>
+            </el-col>
+            <el-col :span="6">
+
             </el-col>
           </el-row>
         </el-form>
@@ -94,6 +96,18 @@ import ElHeader from 'element-ui/packages/header/src/main'
 import axios from 'axios'
 
 export default {
+  filters: {
+    formatDate:function (value) {
+      var date = new Date(value);
+      var year = date.getFullYear();
+      var month = padDate(date.getMonth()+1);
+      var day = padDate(date.getDate());
+      var hours = padDate(date.getHours());
+      var minutes = padDate(date.getMinutes());
+      var seconds = padDate(date.getSeconds());
+      return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+  },
   components: { ElHeader },
   created(){
     axios({
@@ -104,7 +118,6 @@ export default {
       response=>{
         console.log(response);
         this.tableData=response.data.data.rows;
-
       }
     ).catch(
       error=>{
@@ -131,11 +144,35 @@ export default {
     }
   },
   methods: {
-    // handleClick:function(){
-    //   this.$router.push('/historicalLine/historicalLine');
-    //
-    // }
-  }
+   search:function(){
+     axios({
+       method:'get',
+       baseURL:'/api',
+       url:'devices/status_stat',
+       params:{
+         lineId:this.form.line_id,
+         deviceNo:this.form.device_no,
+         status:this.form.status,
+         isAbnormal:this.form.isAbnormal
+
+
+       }
+     }).then(
+       response=>{
+         console.log(response);
+         this.tableData=response.data.data.rows;
+       }
+     ).catch(
+       error=>{
+         console.log(error);
+         alert('网络错误，不能访问');
+       }
+     )
+
+   },
+
+   }
+
 
 }
 </script>
