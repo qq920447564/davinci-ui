@@ -233,10 +233,11 @@
       }
     },
     created:function(){
+      console.log(num)
       axios({
         method:'get',
         baseURL:'/api',
-        url:'data_points?device_no='+this.id,
+        url:'data_points?device_no='+num,
 
       }).then(
         response=>{

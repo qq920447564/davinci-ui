@@ -151,7 +151,9 @@
   import axios from 'axios'
   import index from "../../../router";
 
-  var id;
+  var id,num
+
+
   export default {
     components: {},
     created(index){
@@ -159,12 +161,15 @@
         method:'get',
         baseURL:'/api',
         url:'devices',
+        async:false
       }).then(
         response=>{
           console.log(response);
           this.tableData=response.data.data;
-          id=response.data.data.id
-          console.log(id)
+          id=response.data.data
+          for(let i in id){
+            num=id[i].id
+          }
         }
       ).catch(
         error=>{
@@ -174,6 +179,7 @@
       )
 
     },
+
     update:function(index){
       axios({
         method:'get',
@@ -189,7 +195,17 @@
     methods: {
       //跳转数据配置
       dataHandleClick:function(){
-        this.$router.push('/dataPage/dataPage');
+        console.log(id)
+        this.$router.push({
+          path: '/dataPage/dataPage',
+          params: {
+           id:this.tableData.id
+          }
+          /*query: {
+              key: 'key',
+              msgKey: this.msg
+          }*/
+        })
       },
       //点击取消
       handleCancel(formName) {

@@ -7,16 +7,16 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="产线:">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.line_id"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="设备编号:">
-              <el-input v-model="form.name"></el-input>
+              <el-input v-model="form.device_no"></el-input>
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="8" >
             <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
             <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
             <el-button  type="primary" @click="search">搜索</el-button>
@@ -83,6 +83,12 @@
         axios({
           method:'get',
           baseURI:'/api',
+          url:'devices/status_stat',
+          params:{
+            line_id:this.form.line_id
+
+          }
+
 
         })
       }
