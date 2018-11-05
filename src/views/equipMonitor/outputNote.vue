@@ -37,37 +37,37 @@
         style="width: 100%">
         <el-table-column
           fixed
-          prop="date"
+          prop="line_id"
           label="产线"
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="process"
           label="工序"
         >
         </el-table-column>
         <el-table-column
-          prop="province"
+          prop="name"
           label="设备名称"
         >
         </el-table-column>
         <el-table-column
-          prop="city"
+          prop="device_no"
           label="设备编号"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="name"
           label="程序名称"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="cnt"
           label="产量计数"
         >
         </el-table-column>
         <el-table-column
-          prop="end_time"
+          prop="stop_cnt_time"
           label="达成时间"
         >
         </el-table-column>
@@ -95,11 +95,11 @@
       axios({
         method:'get',
         baseURL:'/api',
-        url:'products',
+        url:'devices/output_stat',
       }).then(
         response=>{
           console.log(response);
-          this.tableData=response.data.data;
+          this.tableData=response.data.data.rows;
         }
       ).catch(
         error=>{
