@@ -199,7 +199,7 @@
         this.$router.push({
           path: '/dataPage/dataPage',
           params: {
-           id:this.tableData.id
+           id:this.tableData.num
           }
           /*query: {
               key: 'key',
