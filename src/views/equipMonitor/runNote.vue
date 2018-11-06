@@ -3,7 +3,7 @@
     <el-header :height="300">
       <div>
         <el-form ref="form" :model="form" label-width="80px">
-          <el-row :gutter="10">
+          <el-row >
             <el-col :span="4">
               <el-form-item label="产线:">
                 <el-input v-model="form.line_id"/>
@@ -24,10 +24,32 @@
                 <el-input v-model="form.isAbnormal"/>
               </el-form-item>
             </el-col>
+            <el-col :span="4">
+              <el-form-item label="开始时间:">
+                <el-date-picker
+                  v-model="form.begin_time"  @change="chooseTimeRange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="结束时间:">
+                <el-date-picker
+                  v-model="form.end_time" @change="chooseTimeRange"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
             <el-col :span="6">
 
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" :push="2">
               <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
               <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
               <el-button  type="primary" @click="search">搜索</el-button>
@@ -67,7 +89,7 @@
           label="状态"
         />
         <el-table-column
-          prop="started_time"
+          prop="started_time" :formatter="dateFormat"
           label="开始时间"
         />
         <el-table-column
@@ -96,18 +118,7 @@ import ElHeader from 'element-ui/packages/header/src/main'
 import axios from 'axios'
 
 export default {
-  filters: {
-    formatDate:function (value) {
-      var date = new Date(value);
-      var year = date.getFullYear();
-      var month = padDate(date.getMonth()+1);
-      var day = padDate(date.getDate());
-      var hours = padDate(date.getHours());
-      var minutes = padDate(date.getMinutes());
-      var seconds = padDate(date.getSeconds());
-      return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds;
-    }
-  },
+
   components: { ElHeader },
   created(){
     axios({
@@ -130,49 +141,68 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+       begin_time:'',
+        end_time:'',
+        line_id:'',
+        device_no:'',
+        status:'',
+        isAbnormal:''
       },
       value6: '',
       tableData: []
     }
   },
   methods: {
-   search:function(){
-     axios({
-       method:'get',
-       baseURL:'/api',
-       url:'devices/status_stat',
-       params:{
-         lineId:this.form.line_id,
-         deviceNo:this.form.device_no,
-         status:this.form.status,
-         isAbnormal:this.form.isAbnormal
+    chooseTimeRange(t) {
+      console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
+    dateFormat(row, column, cellValue, index){
+      const daterc = row[column.property]
+      if(daterc!=null){
+        const dateMat= new Date(parseInt(daterc.replace("/Date(", "").replace(")/", ""), 10));
+        const year = dateMat.getFullYear();
+        const month = dateMat.getMonth() + 1;
+        const day = dateMat.getDate();
+        const hh = dateMat.getHours();
+        const mm = dateMat.getMinutes();
+        const ss = dateMat.getSeconds();
+        const timeFormat= year + "/" + month + "/" + day + " " + hh + ":" + mm + ":" + ss;
+        return timeFormat;
+      }
+
+    },
+
+    search: function () {
+      axios({
+        method: 'get',
+        baseURL: '/api',
+        url: 'devices/status_stat',
+        params: {
+          lineId: this.form.line_id,
+          deviceNo: this.form.device_no,
+          status: this.form.status,
+          isAbnormal: this.form.isAbnormal,
+          beginDate: this.form.begin_time,
+          endDate: this.form.end_time
 
 
-       }
-     }).then(
-       response=>{
-         console.log(response);
-         this.tableData=response.data.data.rows;
-       }
-     ).catch(
-       error=>{
-         console.log(error);
-         alert('网络错误，不能访问');
-       }
-     )
+        }
+      }).then(
+        response => {
+          console.log(response);
+          this.tableData = response.data.data.rows;
+        }
+      ).catch(
+        error => {
+          console.log(error);
+          alert('网络错误，不能访问');
+        }
+      )
 
-   },
+    },
 
-   }
 
+  }
 
 }
 </script>
@@ -180,7 +210,7 @@ export default {
   header.el-header{
     padding-top: 20px;
   }
-  .el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{
-    width:220px;
-  }
+  /*.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{*/
+    /*width:220px;*/
+  /*}*/
 </style>
