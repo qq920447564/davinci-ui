@@ -25,16 +25,16 @@
               </el-form-item>
             </el-col>
             <el-col :span="4">
-              <el-form-item label="开始时间:">
-                <el-date-picker
-                  v-model="form.begin_time"  @change="chooseTimeRange"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
+            <el-form-item label="开始时间:">
+              <el-date-picker
+                v-model="form.begin_time"  @change="chooseTimeRange"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
             <el-col :span="6">
               <el-form-item label="结束时间:">
                 <el-date-picker
@@ -89,11 +89,11 @@
           label="状态"
         />
         <el-table-column
-          prop="started_time" :formatter="dateFormat"
+          prop="started_time" width="170" :formatter="dateFormat"
           label="开始时间"
         />
         <el-table-column
-          prop="stopped_time"
+          prop="stopped_time" width="170" :formatter="dateFormat"
           label="结束时间"
         />
         <el-table-column
@@ -116,6 +116,7 @@
 <script>
 import ElHeader from 'element-ui/packages/header/src/main'
 import axios from 'axios'
+import moment from 'moment'
 
 export default {
 
@@ -156,23 +157,17 @@ export default {
     chooseTimeRange(t) {
       console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
-    dateFormat(row, column, cellValue, index){
-      const daterc = row[column.property]
-      if(daterc!=null){
-        const dateMat= new Date(parseInt(daterc.replace("/Date(", "").replace(")/", ""), 10));
-        const year = dateMat.getFullYear();
-        const month = dateMat.getMonth() + 1;
-        const day = dateMat.getDate();
-        const hh = dateMat.getHours();
-        const mm = dateMat.getMinutes();
-        const ss = dateMat.getSeconds();
-        const timeFormat= year + "/" + month + "/" + day + " " + hh + ":" + mm + ":" + ss;
-        return timeFormat;
+    dateFormat:function(row, column) {
+      var date = row[column.property];
+      if (date == undefined) {
+        return "";
       }
-
+      return moment(date).format("YYYY-MM-DD HH:mm:ss");
     },
 
-    search: function () {
+
+
+  search: function () {
       axios({
         method: 'get',
         baseURL: '/api',

@@ -85,7 +85,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="stop_cnt_time"
+          prop="stop_cnt_time" :formatter="dateFormat"
           label="达成时间"
         >
         </el-table-column>
@@ -97,6 +97,7 @@
 <script>
   import ElHeader from "element-ui/packages/header/src/main";
   import axios from 'axios'
+  import moment from 'moment'
 
 
 
@@ -128,10 +129,19 @@
         )
 
       },
+      chooseTimeRange(t) {
+        console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
+      },
+      dateFormat:function(row, column) {
+        var date = row[column.property];
+        if (date == undefined) {
+          return "";
+        }
+        return moment(date).format("YYYY-MM-DD HH:mm:ss");
+      },
     },
-    chooseTimeRange(t) {
-      console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
-    },
+
+
     created(index){
       axios({
         method:'get',
