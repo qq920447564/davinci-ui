@@ -48,7 +48,7 @@
             <el-col :span="4" :push="2">
               <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
               <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
-              <el-button  type="primary" @click="search">搜索</el-button>
+              <el-button  type="primary" @click="search">  搜索  </el-button>
               <el-button  type="primary" @click="handle">导出</el-button>
             </el-col>
           </el-row>
