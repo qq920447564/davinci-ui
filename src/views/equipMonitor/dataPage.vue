@@ -42,7 +42,7 @@
         style="width: 100%">
         <el-table-column
           fixed
-          prop="date"
+          prop="id"
           label="ID"
         >
         </el-table-column>
@@ -52,37 +52,37 @@
         >
         </el-table-column>
         <el-table-column
-          prop="province"
+          prop="data_type"
           label="类型"
         >
         </el-table-column>
         <el-table-column
-          prop="city"
+          prop="dpkey"
           label="数据项编码"
         >
         </el-table-column>
         <el-table-column
-          prop="state"
+          prop="name"
           label="数据名称"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="data_type"
           label="数据类型"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="formula"
           label="公式"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="unit"
           label="单位"
         >
         </el-table-column>
         <el-table-column
-          prop="begin_time"
+          prop="persist"
           label="需要保留历史值"
         >
         </el-table-column>
@@ -181,6 +181,7 @@
   import ElHeader from "element-ui/packages/header/src/main";
    import axios from 'axios'
 
+var num=[];
 
   export default {
     components: {},
@@ -232,26 +233,58 @@
         tableData: []
       }
     },
-    created:function(){
-      console.log(num)
-      axios({
-        method:'get',
-        baseURL:'/api',
-        url:'data_points?device_no='+num,
+    // created(){
+    //   axios({
+    //     method:'get',
+    //     baseURL:'/api',
+    //     url:'data_points',
+    //     params:{
+    //       id:this.$router.push.params.id
+    //     }
+    //
+    //   }).then(
+    //     response=>{
+    //       console.log(response);
+    //       this.tableData=response.data.data;
+    //     }
+    //   ).catch(
+    //     error=>{
+    //       console.log(error);
+    //       alert('网络错误，不能访问');
+    //     }
+    //   )
+    // },
+    created(index){
 
-      }).then(
-        response=>{
-          console.log(response);
-          this.tableData=response.data.data;
+        axios({
+          method:'get',
+          baseURL:'/api',
+          url:'data_points',
+          params:{
+       device_id:this.$route.query.id
+          },
 
-        }
-      ).catch(
-        error=>{
-          console.log(error);
-          alert('网络错误，不能访问');
-        }
-      )
+        }).then(
+          response=>{
+            console.log(response);
+            this.tableData=response.data.data;
+          }
+        ).catch(
+          error=>{
+            console.log(error);
+            alert('网络错误，不能访问');
+          }
+        )
+
+
+
+
+
     },
+    mounted(){
+      console.log(this.$route.query.id)
+    },
+
     methods:{
       //显示编辑页面
       handleEdit: function (index, row) {
