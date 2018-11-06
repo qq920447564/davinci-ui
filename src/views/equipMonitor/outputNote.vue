@@ -5,27 +5,45 @@
 
       <el-form ref="form" :model="form" label-width="80px">
         <el-row :gutter="20">
-        <el-col :span="8">
+        <el-col :span="4">
         <el-form-item label="产线:">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.line_id"></el-input>
         </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="4">
         <el-form-item label="设备编号:">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.device_no"></el-input>
         </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="日期:">
-            <el-date-picker
-              v-model="value6"
-              type="datetimerange"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :default-time="['12:00:00']">
-            </el-date-picker>
-          </el-form-item>
-        </el-col>
+          <el-col :span="4">
+            <el-form-item label="达成开始:">
+              <el-date-picker
+                v-model="form.begin_time"  @change="chooseTimeRange"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" :push="3">
+            <el-form-item label="达成结束:">
+              <el-date-picker
+                v-model="form.end_time" @change="chooseTimeRange"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+
+          </el-col>
+          <el-col :span="6" :push="6">
+            <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
+            <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
+            <el-button  type="primary" @click="search">搜索</el-button>
+
+          </el-col>
         </el-row>
         </el-form>
       </div>
@@ -85,12 +103,35 @@
   export default {
     components: {ElHeader},
     methods: {
-      // handleClick:function(){
-      //   this.$router.push('/historicalLine/historicalLine');
-      //
-      // }
-    },
+      search: function () {
+        axios({
+          method: 'get',
+          baseURL: '/api',
+          url: 'devices/output_stat',
+          params: {
+            lineId:this.form.line_id,
+            deviceNo:this.form.device_no,
+            beginDate:this.form.begin_time,
+            endDate:this.form.end_time
 
+          }
+        }).then(
+          response => {
+            console.log(response);
+            this.tableData = response.data.data.rows;
+          }
+        ).catch(
+          error => {
+            console.log(error);
+            alert('网络错误，不能访问');
+          }
+        )
+
+      },
+    },
+    chooseTimeRange(t) {
+      console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
     created(index){
       axios({
         method:'get',
@@ -114,14 +155,7 @@
       return {
         value6: '',
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+
         },
         tableData: []
       }
