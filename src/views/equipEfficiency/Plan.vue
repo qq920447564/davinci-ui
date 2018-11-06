@@ -2,8 +2,8 @@
   <el-container>
     <el-header>
       <el-row>
-        <el-col :span="3">
-          <div class="grid-content bg-purple">
+        <el-col :span="24">
+          <div class="grid-content bg-purple mydiv">
             <span class="mytitle">产线</span>
             <el-select v-model="Line" filterable placeholder="请选择" style="width: 100px">
               <el-option
@@ -13,9 +13,7 @@
                 :value="item.value"/>
             </el-select>
           </div>
-        </el-col>
-        <el-col :span="3">
-          <div class="grid-content bg-purple">
+          <div class="grid-content bg-purple mydiv">
             <span class="mytitle">产品</span>
             <el-select v-model="production" filterable placeholder="请选择" style="width: 100px">
               <el-option
@@ -25,9 +23,7 @@
                 :value="item.value"/>
             </el-select>
           </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="grid-content bg-purple">
+          <div class="grid-content bg-purple mydiv">
             <span class="mytitle">统计区间</span>
             <el-select v-model="statistical" filterable placeholder="请选择" style="width: 100px">
               <el-option
@@ -37,9 +33,7 @@
                 :value="item.value"/>
             </el-select>
           </div>
-        </el-col>
-        <el-col :span="10" style="padding-right: 0px">
-          <div class="grid-content bg-purple">
+          <div class="grid-content bg-purple mydiv">
             <span class="mytitle">日期</span>
             <el-date-picker
               v-model="towtimes"
@@ -52,9 +46,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期" />
           </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="grid-content bg-purple">
+          <div class="grid-content bg-purple mydiv">
             <el-button>搜索</el-button>
             <el-button>导出</el-button>
           </div>
@@ -348,5 +340,9 @@ export default {
   .mytitle{
     font-size: .9rem;
     margin-right: 5px;
+  }
+  .mydiv{
+    display: inline;
+    margin-right: 15px;
   }
 </style>

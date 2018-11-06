@@ -13,29 +13,13 @@
           </div>
         </el-col>
       </el-row>
-      <el-row>
-        <el-form label-width="80px" style="padding-top: 20px">
-          <el-col :span="6" :offset="15">
-            <el-form-item label="产线:">
-              <el-select placeholder="请选择">
-                <!--<el-option-->
-                <!--v-for="item in options"-->
-                <!--:key="item.value"-->
-                <!--:label="item.label"-->
-                <!--:value="item.value"/>-->
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-button type="primary">搜索</el-button>
-        </el-form>
-      </el-row>
     </el-header>
     <el-main>
       <el-row>
         <el-col v-for="tab in list" :span="4" :key="tab">
           <el-card :body-style="{ padding: '0'}">
-            <div style="width:100%;text-align: center">
-              <img :src="imgUrl1" class="image">
+            <div :style="{'background-color':color(tab.status), 'width':'100%', 'text-align': center}">
+              <img :src="tab.image" class="image">
             </div>
             <div style="width: 85%;margin: 0 auto">
               <div style="padding: 14px;">
@@ -49,7 +33,7 @@
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">生产数量：</span>
-                  <span style="float: right">{{ tab.did }}</span>
+                  <span style="float: right">{{ tab.output_cnt }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">正常运行：</span>
@@ -65,7 +49,7 @@
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">关机时长：</span>
-                  <span style="float: right">{{ tab.did }}</span>
+                  <span style="float: right">{{ tab.poweroff_duration }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">报警次数：</span>
@@ -108,7 +92,8 @@ export default {
       date: new Date(),
       imgUrl: '../../../static/1.jpg',
       imgUrl1: '../../../static/2.jpg',
-      list: null
+      list: null,
+      colors: null
     }
   },
   created: function() {
@@ -152,6 +137,20 @@ export default {
         console.log(error)
         alert('网络错误，不能访问')
       })
+    },
+    color(status) {
+      switch (status) {
+        case 0:
+          return 'grey'
+        case 1:
+          return 'green'
+        case 2:
+          return 'orange'
+        case 3:
+          return 'red'
+        case 4:
+          return 'white'
+      }
     }
   }
 }
@@ -160,6 +159,7 @@ export default {
   .image {
     margin: 0 auto;
     display: block;
+    height: 80px;
   }
 
   .bottom {
