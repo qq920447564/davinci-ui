@@ -112,26 +112,26 @@ export const constantRouterMap = [
         path: 'operationMonitor',
         component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
         name: 'operationMonitor',
-        meta: { title: '设备信息管理',icon:'yuan' }
+        meta: { title: '设备信息管理', icon: 'yuan' }
       },
       {
         path: 'runNote',
         component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
         name: 'runNote',
-        meta: { title: '设备运行记录',icon:'yuan' }
+        meta: { title: '设备运行记录', icon: 'yuan' }
       },
       {
         path: 'outputNote',
         component: () => import('@/views/equipMonitor/outputNote'),
-        name:'outputNote',
-        meta: { title: '设备产量记录',icon:'yuan' }
+        name: 'outputNote',
+        meta: { title: '设备产量记录', icon: 'yuan' }
       },
       {
         path: 'alarmNote',
         component: () => import('@/views/equipMonitor/alarmNote'), // Parent router-view
         name: 'operationMonitor',
-        meta: { title: '设备报警记录',icon:'yuan' }
-      },
+        meta: { title: '设备报警记录', icon: 'yuan' }
+      }
     ]
   },
   {
@@ -142,14 +142,14 @@ export const constantRouterMap = [
     meta: {
       title: '人员管理',
       icon: 'person',
-      name:'person'
+      name: 'person'
     },
     children: [
       {
         path: 'person',
         name: 'person',
         component: () => import('@/views/person/person'),
-        meta: { title: '上班时间填报',icon:'yuan' }
+        meta: { title: '上班时间填报', icon: 'yuan' }
       }
     ]
   },
@@ -158,20 +158,20 @@ export const constantRouterMap = [
     path: '/makePlan',
     component: Layout,
     redirect: '/makePlan/makePlanPen',
-    name:'makePlan',
+    name: 'makePlan',
     meta: { title: '生产计划', icon: 'plan' },
     children: [
       {
         path: 'makePlanPen',
         meta: { title: '生产计划填报', icon: 'yuan' },
-        name:'makePlanPen',
-        component: () => import('@/views/makePlan/makePlanPen'),
+        name: 'makePlanPen',
+        component: () => import('@/views/makePlan/makePlanPen')
       },
       {
         path: '',
         meta: { title: '计划达成报表', icon: 'yuan' },
-        name:'planList',
-        component: () => import('@/views/makePlan/planList' ),
+        name: 'planList',
+        component: () => import('@/views/makePlan/planList')
       }
     ]
   },
@@ -180,14 +180,14 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/qualityManage/qualityPen',
     alwaysShow: true,
-    name:'qualityManage',
+    name: 'qualityManage',
     meta: { title: '质量管理', icon: 'quality' },
     children: [
       {
         path: '/qualityPen',
         meta: { title: '质量问题填报', icon: 'yuan' },
-        name:'qualityPen',
-        component:() =>import('@/views/qualityManage/qualityPen')
+        name: 'qualityPen',
+        component: () => import('@/views/qualityManage/qualityPen')
       }
     ]
   },
@@ -198,28 +198,34 @@ export const constantRouterMap = [
     meta: { title: '系统管理', icon: 'link' },
     children: [
       {
+        path: 'operationMonitor',
+        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
+        name: 'operationMonitor',
+        meta: { title: '设备信息管理', icon: 'yuan' }
+      },
+      {
         path: '/dataDictionary',
         meta: { title: '数据字典', icon: 'yuan' },
-        name:'dataDictionary',
-        component:() =>import('@/views/systemManage/dataDictionary')
+        name: 'dataDictionary',
+        component: () => import('@/views/systemManage/dataDictionary')
       },
       {
         path: '/userManange',
         meta: { title: '用户管理', icon: 'yuan' },
-        name:'userManage',
-        component:()=>import('@/views/systemManage/userManage')
+        name: 'userManage',
+        component: () => import('@/views/systemManage/userManage')
       },
       {
         path: '/gatewayPage',
         meta: { title: '网关配置', icon: 'yuan' },
-        name:'gatewayPage',
-        component:()=>import('@/views/systemManage/gatewayPage')
+        name: 'gatewayPage',
+        component: () => import('@/views/systemManage/gatewayPage')
       },
       {
         path: '/deployPage',
         meta: { title: '部署配置', icon: 'yuan' },
-        name:'deployPage',
-        component:()=>import('@/views/systemManage/deployPage')
+        name: 'deployPage',
+        component: () => import('@/views/systemManage/deployPage')
       }
     ]
   },

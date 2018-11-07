@@ -14,16 +14,6 @@
             </el-select>
           </div>
           <div class="grid-content bg-purple mydiv">
-            <span class="mytitle">产品</span>
-            <el-select v-model="production" filterable placeholder="请选择" style="width: 130px">
-              <el-option
-                v-for="item in options2"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value" />
-            </el-select>
-          </div>
-          <div class="grid-content bg-purple mydiv">
             <span class="mytitle">日期</span>
             <el-date-picker
               v-model="towtimes"
@@ -34,7 +24,8 @@
               unlink-panels
               range-separator="至"
               start-placeholder="开始日期"
-              end-placeholder="结束日期" />
+              end-placeholder="结束日期"
+            />
           </div>
           <div class="grid-content bg-purple mydiv">
             <el-button>搜索</el-button>
@@ -54,11 +45,6 @@
         <el-table-column align="center" label="日期" >
           <template slot-scope="scope">
             <span>{{ scope.row.date }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="时间区间" >
-          <template slot-scope="scope">
-            <span>{{ scope.row.timeinterval }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="实际生产" >
@@ -109,35 +95,7 @@ export default {
       listLoading: true,
       options1: [{
         value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      options2: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
+        label: '康明斯'
       }],
       pickerOptions2: {
         shortcuts: [{
@@ -168,7 +126,6 @@ export default {
       },
       tableData: [{
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -176,7 +133,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -184,7 +140,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -192,7 +147,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -200,7 +154,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -208,7 +161,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -216,7 +168,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -224,7 +175,6 @@ export default {
         oee: 98
       }, {
         date: '2016-05-02',
-        timeinterval: '0:00-24:00',
         actualpro: 100,
         unqualifynum: 2,
         qualifynum: 98,
@@ -239,7 +189,7 @@ export default {
         type: undefined,
         sort: '+id'
       },
-      towtimes: '',
+      towtimes: [new Date(), new Date()],
       Line: '',
       production: '',
       total: 10
