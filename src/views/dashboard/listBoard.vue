@@ -21,7 +21,7 @@
             <div :style="{'background-color':color(tab.status), 'width':'100%', 'text-align': center}">
               <img :src="tab.image" class="image">
             </div>
-            <div style="width: 85%;margin: 0 auto">
+            <div style="width: 92%;margin: 0 auto">
               <div style="padding: 14px;">
                 <div class="bottom clearfix">
                   <span style="float: left">设备名称：</span>
