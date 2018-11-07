@@ -4,60 +4,54 @@
       <div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
-            <el-col :span="4">
-              <el-form-item label="产线:">
-                <el-input v-model="form.line_id"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="设备编号:">
-                <el-input v-model="form.device_no"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="状态:">
-                <el-input v-model="form.status"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="是否异常:">
-                <el-input v-model="form.isAbnormal"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-            <el-form-item label="开始时间:">
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">产线:</span>
+              <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">设备编号:</span>
+              <el-select v-model="Line2" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options2"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">状态:</span>
+              <el-select v-model="Line3" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options3"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="form.begin_time"  @change="chooseTimeRange"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-            <el-col :span="6">
-              <el-form-item label="结束时间:">
-                <el-date-picker
-                  v-model="form.end_time" @change="chooseTimeRange"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-
-            </el-col>
-            <el-col :span="6" :push="2">
-              <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
-              <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
-              <el-button  type="primary" @click="search">搜索</el-button>
-              <el-button  type="primary" @click="handle">导出</el-button>
-            </el-col>
-            <el-col :span="6">
-
-            </el-col>
+                v-model="towtimes"
+                :picker-options="pickerOptions2"
+                style="width: 390px"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期" />
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <el-checkbox v-model="checked">是否异常</el-checkbox>
+            </div>
+            <el-button type="primary" @click="search">搜索</el-button>
+            <el-button type="primary" @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -85,15 +79,19 @@
           label="设备编号"
         />
         <el-table-column
-          prop="status"
+          prop="statusname"
           label="状态"
         />
         <el-table-column
-          prop="started_time" width="170" :formatter="dateFormat"
+          :formatter="dateFormat"
+          prop="started_time"
+          width="170"
           label="开始时间"
         />
         <el-table-column
-          prop="stopped_time" width="170" :formatter="dateFormat"
+          :formatter="dateFormat"
+          prop="stopped_time"
+          width="170"
           label="结束时间"
         />
         <el-table-column
@@ -121,53 +119,133 @@ import moment from 'moment'
 export default {
 
   components: { ElHeader },
-  created(){
-    axios({
-      method:'get',
-      baseURL:'/api',
-      url:'devices/status_stat',
-    }).then(
-      response=>{
-        console.log(response);
-        this.tableData=response.data.data.rows;
-      }
-    ).catch(
-      error=>{
-        console.log(error);
-        alert('网络错误，不能访问');
-      }
-    )
-
-  },
   data() {
     return {
+      options1: [{
+        value: '选项1',
+        label: '康明斯'
+      }],
+      options2: [{
+        value: '选项1',
+        label: 'OP10-1'
+      }, {
+        value: '选项2',
+        label: 'OP10-2'
+      }, {
+        value: '选项3',
+        label: 'OP10-3'
+      }, {
+        value: '选项4',
+        label: 'OP10-4'
+      }],
+      options3: [{
+        value: '选项1',
+        label: '关机'
+      }, {
+        value: '选项2',
+        label: '加工'
+      }, {
+        value: '选项3',
+        label: '空闲'
+      }, {
+        value: '选项4',
+        label: '报警'
+      }, {
+        value: '选项4',
+        label: '其他'
+      }],
+      pickerOptions2: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       form: {
-       begin_time:'',
-        end_time:'',
-        line_id:'',
-        device_no:'',
-        status:'',
-        isAbnormal:''
+        begin_time: '',
+        end_time: '',
+        line_id: '',
+        device_no: '',
+        status: '',
+        isAbnormal: ''
       },
       value6: '',
+      towtimes: [new Date(), new Date()],
+      Line: '',
+      Line2: '',
+      Line3: '',
       tableData: []
     }
   },
+  created() {
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices/status_stat'
+    }).then(
+      response => {
+        console.log(response)
+        this.tableData = response.data.data.rows
+        this.tableData.forEach((item, index) => {
+          switch (item.status) {
+            case 0:
+              item['statusname'] = '关机'
+              break
+            case 1:
+              item['statusname'] = '运行'
+              break
+            case 2:
+              item['statusname'] = '空闲'
+              break
+            case 3:
+              item['statusname'] = '报警'
+              break
+            case 4:
+              item['statusname'] = '其它'
+              return
+          }
+        })
+        console.log(this.tableData)
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
   methods: {
     chooseTimeRange(t) {
-      console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
+      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
-    dateFormat:function(row, column) {
-      var date = row[column.property];
-      if (date == undefined) {
-        return "";
+    dateFormat: function(row, column) {
+      var date = row[column.property]
+      if (date === undefined) {
+        return ''
       }
-      return moment(date).format("YYYY-MM-DD HH:mm:ss");
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-
-
-
-  search: function () {
+    search: function() {
       axios({
         method: 'get',
         baseURL: '/api',
@@ -179,24 +257,19 @@ export default {
           isAbnormal: this.form.isAbnormal,
           beginDate: this.form.begin_time,
           endDate: this.form.end_time
-
-
         }
       }).then(
         response => {
-          console.log(response);
-          this.tableData = response.data.data.rows;
+          console.log(response)
+          this.tableData = response.data.data.rows
         }
       ).catch(
         error => {
-          console.log(error);
-          alert('网络错误，不能访问');
+          console.log(error)
+          alert('网络错误，不能访问')
         }
       )
-
-    },
-
-
+    }
   }
 
 }
@@ -205,7 +278,13 @@ export default {
   header.el-header{
     padding-top: 20px;
   }
-  /*.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{*/
-    /*width:220px;*/
-  /*}*/
+  .mytitle{
+    font-size: .8rem;
+    margin-right: 5px;
+    font-weight: 600;
+  }
+  .mydiv{
+    display: inline;
+    margin-right: 15px;
+  }
 </style>
