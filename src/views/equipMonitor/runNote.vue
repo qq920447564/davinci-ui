@@ -79,7 +79,7 @@
           label="设备编号"
         />
         <el-table-column
-          prop="status"
+          prop="statusname"
           label="状态"
         />
         <el-table-column
@@ -121,6 +121,66 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      options1: [{
+        value: '选项1',
+        label: '康明斯'
+      }],
+      options2: [{
+        value: '选项1',
+        label: 'OP10-1'
+      }, {
+        value: '选项2',
+        label: 'OP10-2'
+      }, {
+        value: '选项3',
+        label: 'OP10-3'
+      }, {
+        value: '选项4',
+        label: 'OP10-4'
+      }],
+      options3: [{
+        value: '选项1',
+        label: '关机'
+      }, {
+        value: '选项2',
+        label: '加工'
+      }, {
+        value: '选项3',
+        label: '空闲'
+      }, {
+        value: '选项4',
+        label: '报警'
+      }, {
+        value: '选项4',
+        label: '其他'
+      }],
+      pickerOptions2: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       form: {
         begin_time: '',
         end_time: '',
@@ -130,6 +190,10 @@ export default {
         isAbnormal: ''
       },
       value6: '',
+      towtimes: [new Date(), new Date()],
+      Line: '',
+      Line2: '',
+      Line3: '',
       tableData: []
     }
   },
@@ -142,6 +206,26 @@ export default {
       response => {
         console.log(response)
         this.tableData = response.data.data.rows
+        this.tableData.forEach((item, index) => {
+          switch (item.status) {
+            case 0:
+              item['statusname'] = '关机'
+              break
+            case 1:
+              item['statusname'] = '运行'
+              break
+            case 2:
+              item['statusname'] = '空闲'
+              break
+            case 3:
+              item['statusname'] = '报警'
+              break
+            case 4:
+              item['statusname'] = '其它'
+              return
+          }
+        })
+        console.log(this.tableData)
       }
     ).catch(
       error => {
@@ -161,7 +245,6 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-
     search: function() {
       axios({
         method: 'get',
@@ -174,7 +257,6 @@ export default {
           isAbnormal: this.form.isAbnormal,
           beginDate: this.form.begin_time,
           endDate: this.form.end_time
-
         }
       }).then(
         response => {
@@ -195,7 +277,13 @@ export default {
   header.el-header{
     padding-top: 20px;
   }
-  /*.el-date-editor--datetimerange.el-input, .el-date-editor--datetimerange.el-input__inner{*/
-    /*width:220px;*/
-  /*}*/
+  .mytitle{
+    font-size: .8rem;
+    margin-right: 5px;
+    font-weight: 600;
+  }
+  .mydiv{
+    display: inline;
+    margin-right: 15px;
+  }
 </style>

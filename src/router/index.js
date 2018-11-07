@@ -198,6 +198,12 @@ export const constantRouterMap = [
     meta: { title: '系统管理', icon: 'link' },
     children: [
       {
+        path: 'operationMonitor',
+        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
+        name: 'operationMonitor',
+        meta: { title: '设备信息管理', icon: 'yuan' }
+      },
+      {
         path: '/dataDictionary',
         meta: { title: '数据字典', icon: 'yuan' },
         name: 'dataDictionary',
