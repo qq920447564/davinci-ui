@@ -4,60 +4,54 @@
       <div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
-            <el-col :span="4">
-              <el-form-item label="产线:">
-                <el-input v-model="form.line_id"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="设备编号:">
-                <el-input v-model="form.device_no"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="状态:">
-                <el-input v-model="form.status"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="是否异常:">
-                <el-input v-model="form.isAbnormal"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-            <el-form-item label="开始时间:">
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">产线:</span>
+              <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">设备编号:</span>
+              <el-select v-model="Line2" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options2"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">状态:</span>
+              <el-select v-model="Line3" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options3"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="form.begin_time"  @change="chooseTimeRange"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                type="date"
-                placeholder="选择日期">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-            <el-col :span="6">
-              <el-form-item label="结束时间:">
-                <el-date-picker
-                  v-model="form.end_time" @change="chooseTimeRange"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-
-            </el-col>
-            <el-col :span="6" :push="2">
-              <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
-              <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
-              <el-button  type="primary" @click="search">搜索</el-button>
-              <el-button  type="primary" @click="handle">导出</el-button>
-            </el-col>
-            <el-col :span="6">
-
-            </el-col>
+                v-model="towtimes"
+                :picker-options="pickerOptions2"
+                style="width: 390px"
+                type="daterange"
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期" />
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <el-checkbox v-model="checked">是否异常</el-checkbox>
+            </div>
+            <el-button type="primary" @click="search">搜索</el-button>
+            <el-button type="primary" @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -89,11 +83,15 @@
           label="状态"
         />
         <el-table-column
-          prop="started_time" width="170" :formatter="dateFormat"
+          :formatter="dateFormat"
+          prop="started_time"
+          width="170"
           label="开始时间"
         />
         <el-table-column
-          prop="stopped_time" width="170" :formatter="dateFormat"
+          :formatter="dateFormat"
+          prop="stopped_time"
+          width="170"
           label="结束时间"
         />
         <el-table-column
@@ -121,53 +119,50 @@ import moment from 'moment'
 export default {
 
   components: { ElHeader },
-  created(){
-    axios({
-      method:'get',
-      baseURL:'/api',
-      url:'devices/status_stat',
-    }).then(
-      response=>{
-        console.log(response);
-        this.tableData=response.data.data.rows;
-      }
-    ).catch(
-      error=>{
-        console.log(error);
-        alert('网络错误，不能访问');
-      }
-    )
-
-  },
   data() {
     return {
       form: {
-       begin_time:'',
-        end_time:'',
-        line_id:'',
-        device_no:'',
-        status:'',
-        isAbnormal:''
+        begin_time: '',
+        end_time: '',
+        line_id: '',
+        device_no: '',
+        status: '',
+        isAbnormal: ''
       },
       value6: '',
       tableData: []
     }
   },
+  created() {
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices/status_stat'
+    }).then(
+      response => {
+        console.log(response)
+        this.tableData = response.data.data.rows
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
   methods: {
     chooseTimeRange(t) {
-      console.log(t);//结果为一个数组，如：["2018-08-04", "2018-08-06"]
+      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
-    dateFormat:function(row, column) {
-      var date = row[column.property];
+    dateFormat: function(row, column) {
+      var date = row[column.property]
       if (date == undefined) {
-        return "";
+        return ''
       }
-      return moment(date).format("YYYY-MM-DD HH:mm:ss");
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
 
-
-
-  search: function () {
+    search: function() {
       axios({
         method: 'get',
         baseURL: '/api',
@@ -180,25 +175,20 @@ export default {
           beginDate: this.form.begin_time,
           endDate: this.form.end_time
 
-
         }
       }).then(
         response => {
-          console.log(response);
-          this.tableData = response.data.data.rows;
+          console.log(response)
+          this.tableData = response.data.data.rows
         }
       ).catch(
         error => {
-          console.log(error);
-          alert('网络错误，不能访问');
+          console.log(error)
+          alert('网络错误，不能访问')
         }
       )
-
-    },
-
-
+    }
   }
-
 }
 </script>
 <style>
