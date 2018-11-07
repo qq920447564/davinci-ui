@@ -5,7 +5,7 @@
         <el-col :span="24">
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">产线</span>
-            <el-select v-model="Line" filterable placeholder="请选择" style="width: 100px">
+            <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -14,18 +14,8 @@
             </el-select>
           </div>
           <div class="grid-content bg-purple mydiv">
-            <span class="mytitle">产品</span>
-            <el-select v-model="production" filterable placeholder="请选择" style="width: 100px">
-              <el-option
-                v-for="item in options2"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
-            </el-select>
-          </div>
-          <div class="grid-content bg-purple mydiv">
-            <span class="mytitle">统计区间</span>
-            <el-select v-model="statistical" filterable placeholder="请选择" style="width: 100px">
+            <span class="mytitle">统计方式</span>
+            <el-select v-model="statistical" filterable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -126,51 +116,14 @@ export default {
       listLoading: true,
       options1: [{
         value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      options2: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
+        label: '康斯明'
       }],
       options3: [{
         value: '选项1',
-        label: '黄金糕'
+        label: '按天'
       }, {
         value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
+        label: '按小时'
       }],
       pickerOptions2: {
         shortcuts: [{
@@ -205,56 +158,56 @@ export default {
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }, {
         date: '2016-05-02',
         timeinterval: '0:00-24:00',
         actualpro: 100,
         difference: 2,
         oee: 98,
-        note: 'xxxxxxxxx'
+        note: ''
       }],
       listQuery: {
         currentPage: 1,
@@ -270,7 +223,7 @@ export default {
         down: '2018-11-04 8:00:00'
       }],
       dialogTableVisible: false,
-      towtimes: '',
+      towtimes: [new Date(),new Date()],
       statistical: '',
       Line: '',
       production: '',
