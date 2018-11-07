@@ -240,7 +240,7 @@ export default {
     },
     dateFormat: function(row, column) {
       var date = row[column.property]
-      if (date === undefined) {
+      if (date == undefined) {
         return ''
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -271,7 +271,6 @@ export default {
       )
     }
   }
-
 }
 </script>
 <style>
