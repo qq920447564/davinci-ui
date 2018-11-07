@@ -50,7 +50,7 @@
                 end-placeholder="结束日期" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="form.isAbnormal">是否异常</el-checkbox>
+              <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
             </div>
             <el-button type="primary" @click="search">搜索</el-button>
             <!--<el-button type="primary" @click="handle">导出</el-button>-->
@@ -174,7 +174,7 @@ export default {
         line_id: '',
         device_no: '',
         status: '',
-        isAbnormal: '0',
+        isAbnormal: 0,
         twotimes: [],
       },
       value6: '',
