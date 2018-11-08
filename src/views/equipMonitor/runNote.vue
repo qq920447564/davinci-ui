@@ -6,27 +6,27 @@
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
+                  :label="item.name"
+                  :value="item.id"/>
               </el-select>
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="Line2" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
+                  :label="item.name"
+                  :value="item.device_no"/>
               </el-select>
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">状态:</span>
-              <el-select v-model="Line3" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.status" clearable="true" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options3"
                   :key="item.value"
@@ -37,21 +37,23 @@
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="towtimes"
+                v-model="form.twotimes"
                 :picker-options="pickerOptions2"
-                style="width: 390px"
+                value-format="yyyy-MM-dd"
+              format="yyyy-MM-dd"
+                @change="chooseTimeRange"
+              style="width: 280px"
                 type="daterange"
                 align="right"
                 unlink-panels
-                range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="checked">是否异常</el-checkbox>
+              <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
             </div>
             <el-button type="primary" @click="search">搜索</el-button>
-            <el-button type="primary" @click="handle">导出</el-button>
+            <!--<el-button type="primary" @click="handle">导出</el-button>-->
           </el-row>
         </el-form>
       </div>
@@ -121,53 +123,38 @@ export default {
   components: { ElHeader },
   data() {
     return {
-      options1: [{
-        value: '选项1',
-        label: '康明斯'
-      }],
-      options2: [{
-        value: '选项1',
-        label: 'OP10-1'
-      }, {
-        value: '选项2',
-        label: 'OP10-2'
-      }, {
-        value: '选项3',
-        label: 'OP10-3'
-      }, {
-        value: '选项4',
-        label: 'OP10-4'
-      }],
+      options1: [],
+      options2: [],
       options3: [{
-        value: '选项1',
+        value: '0',
         label: '关机'
       }, {
-        value: '选项2',
+        value: '1',
         label: '加工'
       }, {
-        value: '选项3',
+        value: '2',
         label: '空闲'
       }, {
-        value: '选项4',
+        value: '3',
         label: '报警'
       }, {
-        value: '选项4',
+        value: '4',
         label: '其他'
       }],
       pickerOptions2: {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
-            const end = new Date()
-            const start = new Date()
+            const end = new Date(YYYY-MM-DD)
+            const start = new Date(YYYY-MM-DD)
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
-            const end = new Date()
-            const start = new Date()
+            const end = new Date(YYYY-MM-DD)
+            const start = new Date(YYYY-MM-DD)
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
@@ -187,7 +174,8 @@ export default {
         line_id: '',
         device_no: '',
         status: '',
-        isAbnormal: ''
+        isAbnormal: 0,
+        twotimes: [],
       },
       value6: '',
       towtimes: [new Date(), new Date()],
@@ -198,6 +186,7 @@ export default {
     }
   },
   created() {
+
     axios({
       method: 'get',
       baseURL: '/api',
@@ -234,6 +223,61 @@ export default {
       }
     )
   },
+  mounted(){
+    this.chooseTimeRange()
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'lines'
+    }).then(
+      response => {
+        console.log(response)
+        // this.tableData = response.data.data.rows
+        // this.tableData.forEach((item, index) => {
+        //   switch (item.status) {
+        //     case 0:
+        //       item['statusname'] = '关机'
+        //       break
+        //     case 1:
+        //       item['statusname'] = '运行'
+        //       break
+        //     case 2:
+        //       item['statusname'] = '空闲'
+        //       break
+        //     case 3:
+        //       item['statusname'] = '报警'
+        //       break
+        //     case 4:
+        //       item['statusname'] = '其它'
+        //       return
+        //   }
+        // })
+        // console.log(this.tableData)
+        console.log(response)
+        this.options1=response.data.data
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices'
+    }).then(
+      response => {
+        console.log(response)
+        this.options2=response.data.data
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
   methods: {
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
@@ -246,6 +290,7 @@ export default {
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     search: function() {
+      // alert(this.form.twotimes)
       axios({
         method: 'get',
         baseURL: '/api',
@@ -255,13 +300,33 @@ export default {
           deviceNo: this.form.device_no,
           status: this.form.status,
           isAbnormal: this.form.isAbnormal,
-          beginDate: this.form.begin_time,
-          endDate: this.form.end_time
+          beginDate: this.form.twotimes[0],
+          endDate:this.form.twotimes[1]
         }
       }).then(
         response => {
           console.log(response)
           this.tableData = response.data.data.rows
+          this.tableData.forEach((item, index) => {
+            switch (item.status) {
+              case 0:
+                item['statusname'] = '关机'
+                break
+              case 1:
+                item['statusname'] = '运行'
+                break
+              case 2:
+                item['statusname'] = '空闲'
+                break
+              case 3:
+                item['statusname'] = '报警'
+                break
+              case 4:
+                item['statusname'] = '其它'
+                return
+            }
+          })
+          console.log(this.tableData)
         }
       ).catch(
         error => {
