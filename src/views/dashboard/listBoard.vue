@@ -114,7 +114,7 @@ export default {
       colors: null
     }
   },
-  created: function() {
+  created: function () {
     axios({
       method: 'get',
       baseURL: '/api',
@@ -132,14 +132,20 @@ export default {
   },
   mounted: function() {
     var _this = this // 声明一个变量指向Vue实例this，保证作用域一致
-    this.timer = setInterval(function() {
+    this.timer1 = setInterval(function() {
       _this.date = new Date() // 修改数据date
     }, 1000)
+    this.timer2 = setInterval(function() {
+      _this.myajax()
+    }, 5000)
   },
   // 实例销毁之前调用。主要解绑一些使用addEventListener监听的事件等
   beforeDestroy: function() {
-    if (this.timer) {
-      clearInterval(this.timer) // 在Vue实例销毁前，清除我们的定时器
+    if (this.timer1) {
+      clearInterval(this.timer1) // 在Vue实例销毁前，清除我们的定时器
+    }
+    if (this.timer2) {
+      clearInterval(this.timer2) // 在Vue实例销毁前，清除我们的定时器
     }
   },
   methods: {
@@ -165,6 +171,22 @@ export default {
         case 4:
           return 'white'
       }
+    },
+    myajax() {
+      axios({
+        method: 'get',
+        baseURL: '/api',
+        url: 'dashboard/line/device_stat'
+      }).then(
+        response => {
+          this.list = response.data.data
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
     }
   }
 }
