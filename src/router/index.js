@@ -102,18 +102,11 @@ export const constantRouterMap = [
   {
     path: '/equipMonitor',
     component: Layout,
-    name: 'operationmonitor',
     meta: {
       title: '设备监控',
       icon: 'nested'
     },
     children: [
-      {
-        path: 'operationMonitor',
-        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
-        name: 'operationMonitor',
-        meta: { title: '设备信息管理', icon: 'yuan' }
-      },
       {
         path: 'runNote',
         component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
@@ -129,7 +122,7 @@ export const constantRouterMap = [
       {
         path: 'alarmNote',
         component: () => import('@/views/equipMonitor/alarmNote'), // Parent router-view
-        name: 'operationMonitor',
+        name: 'alarmNote',
         meta: { title: '设备报警记录', icon: 'yuan' }
       }
     ]

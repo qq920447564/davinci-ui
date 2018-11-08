@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-header :height="100">
+  <el-container>
+    <el-header>
       <el-row>
         <el-col :span="12">
           <div class="grid-content bg-purple">
@@ -16,9 +16,9 @@
     </el-header>
     <el-main>
       <el-row>
-        <el-col v-for="tab in list" :span="4" :key="tab">
+        <el-col v-for="(tab, index) in list" :span="4" :key="index">
           <el-card :body-style="{ padding: '0'}">
-            <div :style="{'background-color':color(tab.status), 'width':'100%', 'text-align': center}">
+            <div :style="{'background-color':color(tab.status), 'width':'100%', 'height':'15rem', 'text-align': 'center', 'padding': '10%'}">
               <img :src="tab.image" class="image">
             </div>
             <div style="width: 92%;margin: 0 auto">
@@ -64,7 +64,7 @@
     <el-footer>
       <table/>
     </el-footer>
-  </div>
+  </el-container>
 </template>
 
 <script>
@@ -170,10 +170,40 @@ export default {
 }
 </script>
 <style scoped>
+  .el-header, .el-footer {
+    line-height: 40px;
+  }
+  .el-main {
+    text-align: center;
+    line-height: 160px;
+  }
+
+  .el-aside {
+    text-align: center;
+    line-height: 200px;
+  }
+  .el-main {
+    text-align: center;
+    line-height: 160px;
+  }
+
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
   .image {
     margin: 0 auto;
     display: block;
-    height: 80px;
+    height: 100%;
+    width: 100%;
   }
 
   .bottom {
