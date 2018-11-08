@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-header :height="100">
+  <el-container>
+    <el-header>
       <el-row>
         <el-col :span="12">
           <div class="grid-content bg-purple">
@@ -16,9 +16,9 @@
     </el-header>
     <el-main>
       <el-row>
-        <el-col v-for="tab in list" :span="4" :key="tab">
+        <el-col v-for="(tab, index) in list" :span="4" :key="index">
           <el-card :body-style="{ padding: '0'}">
-            <div :style="{'background-color':color(tab.status), 'width':'100%', 'text-align': center}">
+            <div :style="{'background-color':color(tab.status), 'width':'100%', 'height':'15rem', 'text-align': 'center', 'padding': '10%'}">
               <img :src="tab.image" class="image">
             </div>
             <div style="width: 92%;margin: 0 auto">
@@ -37,19 +37,19 @@
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">正常运行：</span>
-                  <span style="float: right">{{ tab.normal_duration }}</span>
+                  <span style="float: right">{{ tab.normal_duration | MillisecondToDate }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">空闲时长：</span>
-                  <span style="float: right">{{ tab.free_duration }}</span>
+                  <span style="float: right">{{ tab.free_duration | MillisecondToDate }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">报警时长：</span>
-                  <span style="float: right">{{ tab.poweroff_duration }}</span>
+                  <span style="float: right">{{ tab.poweroff_duration | MillisecondToDate }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">关机时长：</span>
-                  <span style="float: right">{{ tab.poweroff_duration }}</span>
+                  <span style="float: right">{{ tab.poweroff_duration | MillisecondToDate }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">报警次数：</span>
@@ -64,7 +64,7 @@
     <el-footer>
       <table/>
     </el-footer>
-  </div>
+  </el-container>
 </template>
 
 <script>
@@ -74,6 +74,7 @@ import { getList } from '@/api/table'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
 }
+
 export default {
   filters: {
     formatDate: function(value) {
@@ -85,6 +86,23 @@ export default {
       var minutes = padDate(date.getMinutes())
       var seconds = padDate(date.getSeconds())
       return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
+    },
+    MillisecondToDate(msd) {
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+            parseInt(time / 60.0)) * 60))
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+            parseInt(time / 3600.0)) * 60)) + ':' +
+            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+        } else {
+          time = '00:00:' + padDate(parseInt(time))
+        }
+      }
+      return time
     }
   },
   data() {
@@ -100,11 +118,10 @@ export default {
     axios({
       method: 'get',
       baseURL: '/api',
-      url: 'dashboard/line/device_stat?date=2018-10-30'
+      url: 'dashboard/line/device_stat'
     }).then(
       response => {
         this.list = response.data.data
-        console.log(this.list)
       }
     ).catch(
       error => {
@@ -125,9 +142,6 @@ export default {
       clearInterval(this.timer) // 在Vue实例销毁前，清除我们的定时器
     }
   },
-  // created() {
-  //   this.fetchData()
-  // },
   methods: {
     fetchData() {
       getList().then(response => {
@@ -156,10 +170,40 @@ export default {
 }
 </script>
 <style scoped>
+  .el-header, .el-footer {
+    line-height: 40px;
+  }
+  .el-main {
+    text-align: center;
+    line-height: 160px;
+  }
+
+  .el-aside {
+    text-align: center;
+    line-height: 200px;
+  }
+  .el-main {
+    text-align: center;
+    line-height: 160px;
+  }
+
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+
+  .el-container:nth-child(7) .el-aside {
+    line-height: 320px;
+  }
   .image {
     margin: 0 auto;
     display: block;
-    height: 80px;
+    height: 100%;
+    width: 100%;
   }
 
   .bottom {
@@ -167,7 +211,7 @@ export default {
     line-height: 12px;
     width:100%;
     text-align: center;
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .clearfix:before,
