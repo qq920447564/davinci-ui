@@ -3,38 +3,33 @@
     <el-header :height="300">
       <div>
         <el-form ref="form" :model="form" label-width="80px">
-
-          <el-row :gutter="10">
-            <el-col :span="6">
-              <el-form-item label="产线:">
-                <el-input v-model="form.name"></el-input>
-              </el-form-item>
-            </el-col>
-            <!--<el-col :span="6">-->
-            <!--<el-form-item label="是否异常:">-->
-            <!--<el-input v-model="form.name"></el-input>-->
-            <!--</el-form-item>-->
-            <!--</el-col>-->
-            <el-col :span="8">
-              <el-form-item label="日期区间:">
-                <el-date-picker
-                  v-model="value6"
-                  type="datetimerange"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :default-time="['12:00:00']">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10" :push="2">
-              <el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>
-              <el-button  type="primary" @click="addFormVisible = true">新增</el-button>
-              <el-button  type="primary" @click="search">搜索</el-button>
-              <el-button  type="primary" @click="handle">导出</el-button>
-            </el-col>
-
-            <!--<el-col :span="4"> <el-button  type="primary" @click="addFormVisible = true">导出</el-button></el-col>-->
-
+          <el-row :gutter="24">
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">产线:</span>
+              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">达成日期</span>
+              <el-date-picker
+                v-model="towtimes"
+                :picker-options="pickerOptions2"
+                style="width: 390px"
+                type="daterange"
+                align="center"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期" />
+            </div>
+            <el-button @click="quickaddFormVisible = true">创建生产计划</el-button>
+            <el-button @click="search">搜索</el-button>
+            <el-button @click="handle">导出</el-button>
           </el-row>
         </el-form>
 
@@ -49,162 +44,129 @@
           fixed
           prop="date"
           label="产线"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="name"
           label="日期"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="province"
           label="时间段"
-        >
-        </el-table-column>
-        <!--<el-table-column-->
-        <!--prop="city"-->
-        <!--label="下班时间"-->
-        <!--&gt;-->
-        <!--</el-table-column>-->
+        />
         <el-table-column
           prop="state"
           label="产品名称"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="begin_time"
           label="计划产量"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="reason"
           label="备注"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="reason"
           label="计划人员"
-        >
-        </el-table-column>
+        />
         <el-table-column
           fixed="right"
           label="操作"
           width="100">
           <template slot-scope="scope">
-            <!--<el-button @click="dialogVisible = true" type="text" size="small" >下班</el-button>-->
-            <!--<el-dialog title="下班提醒" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :append-to-body="true">-->
-            <!--<span>员工确认下班?</span><span slot="footer" class="dialog-footer">-->
-            <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
-            <!--<el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
-            <!--</span>-->
-            <!--</el-dialog>-->
-            <el-button type="text" size="small"  @click="editFormVisible = true">修改</el-button>
+            <el-button type="text" size="small" @click="editFormVisible = true">修改</el-button>
             <!--编辑界面-->
-            <el-dialog title="编辑" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
-              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑">
+              <el-form ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
                 <el-form-item label="产线" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="日期">
-                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                  <el-date-picker v-model="editForm.date" type="date" placeholder="选择日期"/>
                 </el-form-item>
                 <el-form-item label="时间段:">
                   <el-time-picker
+                    v-model="value5"
                     is-range
                     arrow-control
-                    v-model="value5"
                     range-separator="至"
                     start-placeholder="开始时间"
                     end-placeholder="结束时间"
-                    placeholder="选择时间范围">
-                  </el-time-picker>
+                    placeholder="选择时间范围"/>
                 </el-form-item>
                 <el-form-item label="产品名称" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="计划产量" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="备注">
-                  <el-input type="textarea" v-model="editForm.addr"></el-input>
+                  <el-input v-model="editForm.addr" type="textarea"/>
                 </el-form-item>
                 <el-form-item label="计划人员" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+                <el-button :loading="editLoading" type="primary" @click.native="editSubmit">提交</el-button>
               </div>
             </el-dialog>
             <!--//新增弹窗-->
-            <el-dialog title="新增" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
-              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title="新增">
+              <el-form ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
                 <el-form-item label="产线:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="日期:">
-                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                  <el-date-picker v-model="editForm.date" type="date" placeholder="选择日期"/>
                 </el-form-item>
                 <el-form-item label="时间段:">
                   <el-time-picker
+                    v-model="value5"
                     is-range
                     arrow-control
-                    v-model="value5"
                     range-separator="至"
                     start-placeholder="开始时间"
                     end-placeholder="结束时间"
-                    placeholder="选择时间范围">
-                  </el-time-picker>
+                    placeholder="选择时间范围"/>
                 </el-form-item>
-                <!--<el-form-item label="下班时间">-->
-                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>-->
-                <!--</el-form-item>-->
                 <el-form-item label="产品名称:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="计划产量:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="计划人员:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="备注:">
-                  <el-input type="textarea" v-model="editForm.addr"></el-input>
+                  <el-input v-model="editForm.addr" type="textarea"/>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+                <el-button :loading="editLoading" type="primary" @click.native="editSubmit">提交</el-button>
               </div>
             </el-dialog>
-            <el-dialog title="快速创建" v-model="quickaddFormVisible" :visible.sync="quickaddFormVisible" :close-on-click-modal="false" :append-to-body="true">
-              <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-dialog v-model="quickaddFormVisible" :visible.sync="quickaddFormVisible" :close-on-click-modal="false" :append-to-body="true" title="快速创建">
+              <el-form ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
                 <el-form-item label="产线:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="日期:">
-                  <el-date-picker type="date" placeholder="选择日期" v-model="editForm.date"></el-date-picker>
+                  <el-date-picker v-model="editForm.date" type="date" placeholder="选择日期"/>
                 </el-form-item>
-                <!--<el-form-item label="上班时间">-->
-                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.shang"></el-date-picker>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="下班时间">-->
-                <!--<el-date-picker type="date" placeholder="选择日期" v-model="editForm.xia"></el-date-picker>-->
-                <!--</el-form-item>-->
                 <el-form-item label="小时计划产量:" prop="name" >
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
                 <el-form-item label="计划人员:" prop="name">
-                  <el-input v-model="editForm.name" auto-complete="off"></el-input>
+                  <el-input v-model="editForm.name" auto-complete="off"/>
                 </el-form-item>
-                <!--<el-form-item label="备注">-->
-                <!--<el-input type="textarea" v-model="editForm.addr"></el-input>-->
-                <!--</el-form-item>-->
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click.native="editFormVisible = false">取消</el-button>
-                <el-button type="primary" @click.native="editSubmit" :loading="editLoading">快速创建计划</el-button>
+                <el-button :loading="editLoading" type="primary" @click.native="editSubmit">快速创建计划</el-button>
               </div>
             </el-dialog>
           </template>
@@ -215,113 +177,116 @@
 </template>
 
 <script>
-  import ElHeader from "element-ui/packages/header/src/main";
+import ElHeader from 'element-ui/packages/header/src/main'
 
+export default {
+  components: { ElHeader },
 
-
-  export default {
-    components: {ElHeader},
-
-    // handleClick:function(){
-    //   this.$router.push('/historicalLine/historicalLine');
-    //
-    // }
-    data() {
-      return {
-        filters: {
-          name: ''
-        },
-        value5:'',
-        users: [],
-        total: 0,
-        page: 1,
-        listLoading: false,
-        sels: [],//列表选中列
-        editFormVisible: false,//编辑界面是否显示
-        addFormVisible: false,
-        quickaddFormVisible:false,
-        editLoading: false,
-        // editFormRules: {
-        //   name: [
-        //     { required: true, message: '请输入姓名', trigger: 'blur' }
-        //   ]
-        // },
-        editFormVisible:false,
-        editForm: {
-          id: 0,
-          name: '',
-          sex: -1,
-          age: 0,
-          birth: '',
-          addr: ''
-        },
-        dialogVisible: false,
-        dialogFormVisible: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        value6:'',
-        tableData: []
-      }
-    },
-    created(){
-      var fd = new FormData()
-      fd.append('addon','' )
-      let config = {
-
-      }
-      axios.post('http://35.220.189.208:8080/plans', fd,config).then( res => {
-        console.log(res)
-      }).catch( res => {
-        console.log(1)
-      })
-
-    },
-    methods:{
-      //显示编辑页面
-      handleEdit: function (index, row) {
-        this.editFormVisible = true;
-        this.editForm = Object.assign({}, row);
+  // handleClick:function(){
+  //   this.$router.push('/historicalLine/historicalLine');
+  //
+  // }
+  data() {
+    return {
+      filters: {
+        name: ''
       },
-      editSubmit: function () {
-        this.$refs.editForm.validate((valid) => {
-          if (valid) {
-            this.$confirm('确认提交吗？', '提示', {}).then(() => {
-              this.editLoading = true;
-              //NProgress.start();
-              let para = Object.assign({}, this.editForm);
-              para.birth = (!para.birth || para.birth == '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd');
-              editUser(para).then((res) => {
-                this.editLoading = false;
-                //NProgress.done();
-                this.$message({
-                  message: '提交成功',
-                  type: 'success'
-                });
-                this.$refs['editForm'].resetFields();
-                this.editFormVisible = false;
-                this.getUsers();
-              });
-            });
-          }
-        });
+      value5: '',
+      users: [],
+      total: 0,
+      page: 1,
+      listLoading: false,
+      sels: [], // 列表选中列
+      editFormVisible: false, // 编辑界面是否显示
+      addFormVisible: false,
+      quickaddFormVisible: false,
+      editLoading: false,
+      // editFormRules: {
+      //   name: [
+      //     { required: true, message: '请输入姓名', trigger: 'blur' }
+      //   ]
+      // },
+      editFormVisible: false,
+      editForm: {
+        id: 0,
+        name: '',
+        sex: -1,
+        age: 0,
+        birth: '',
+        addr: ''
       },
+      dialogVisible: false,
+      dialogFormVisible: false,
+      form: {
+        name: '',
+        region: '',
+        date1: '',
+        date2: '',
+        delivery: false,
+        type: [],
+        resource: '',
+        desc: ''
+      },
+      value6: '',
+      tableData: []
     }
+  },
+  created() {
+    var fd = new FormData()
+    fd.append('addon', '')
+    const config = {
 
-
+    }
+    axios.post('http://35.220.189.208:8080/plans', fd, config).then(res => {
+      console.log(res)
+    }).catch(res => {
+      console.log(1)
+    })
+  },
+  methods: {
+    // 显示编辑页面
+    handleEdit: function(index, row) {
+      this.editFormVisible = true
+      this.editForm = Object.assign({}, row)
+    },
+    editSubmit: function() {
+      this.$refs.editForm.validate((valid) => {
+        if (valid) {
+          this.$confirm('确认提交吗？', '提示', {}).then(() => {
+            this.editLoading = true
+            // NProgress.start();
+            const para = Object.assign({}, this.editForm)
+            para.birth = (!para.birth || para.birth === '') ? '' : util.formatDate.format(new Date(para.birth), 'yyyy-MM-dd')
+            editUser(para).then((res) => {
+              this.editLoading = false
+              // NProgress.done();
+              this.$message({
+                message: '提交成功',
+                type: 'success'
+              })
+              this.$refs['editForm'].resetFields()
+              this.editFormVisible = false
+              this.getUsers()
+            })
+          })
+        }
+      })
+    }
   }
+
+}
 </script>
 <style>
   header.el-header{
     padding-top: 20px;
   }
-
-
+  .mytitle{
+    font-size: .8rem;
+    margin-right: 5px;
+    font-weight: 600;
+  }
+  .mydiv{
+    display: inline;
+    margin-right: 15px;
+  }
 </style>
