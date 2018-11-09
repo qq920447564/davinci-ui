@@ -40,14 +40,14 @@
                 v-model="form.twotimes"
                 :picker-options="pickerOptions2"
                 value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-                @change="chooseTimeRange"
-              style="width: 280px"
+                format="yyyy-MM-dd"
+                style="width: 280px"
                 type="daterange"
                 align="right"
                 unlink-panels
                 start-placeholder="开始日期"
-                end-placeholder="结束日期" />
+                end-placeholder="结束日期"
+                @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
               <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
@@ -145,16 +145,16 @@ export default {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
-            const end = new Date(YYYY-MM-DD)
-            const start = new Date(YYYY-MM-DD)
+            const end = new Date(YYYY - MM - DD)
+            const start = new Date(YYYY - MM - DD)
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
-            const end = new Date(YYYY-MM-DD)
-            const start = new Date(YYYY-MM-DD)
+            const end = new Date(YYYY - MM - DD)
+            const start = new Date(YYYY - MM - DD)
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
@@ -175,7 +175,7 @@ export default {
         device_no: '',
         status: '',
         isAbnormal: 0,
-        twotimes: [],
+        twotimes: []
       },
       value6: '',
       towtimes: [new Date(), new Date()],
@@ -186,7 +186,6 @@ export default {
     }
   },
   created() {
-
     axios({
       method: 'get',
       baseURL: '/api',
@@ -223,7 +222,7 @@ export default {
       }
     )
   },
-  mounted(){
+  mounted() {
     this.chooseTimeRange()
     axios({
       method: 'get',
@@ -232,29 +231,7 @@ export default {
     }).then(
       response => {
         console.log(response)
-        // this.tableData = response.data.data.rows
-        // this.tableData.forEach((item, index) => {
-        //   switch (item.status) {
-        //     case 0:
-        //       item['statusname'] = '关机'
-        //       break
-        //     case 1:
-        //       item['statusname'] = '运行'
-        //       break
-        //     case 2:
-        //       item['statusname'] = '空闲'
-        //       break
-        //     case 3:
-        //       item['statusname'] = '报警'
-        //       break
-        //     case 4:
-        //       item['statusname'] = '其它'
-        //       return
-        //   }
-        // })
-        // console.log(this.tableData)
-        console.log(response)
-        this.options1=response.data.data
+        this.options1 = response.data.data
       }
     ).catch(
       error => {
@@ -269,7 +246,7 @@ export default {
     }).then(
       response => {
         console.log(response)
-        this.options2=response.data.data
+        this.options2 = response.data.data
       }
     ).catch(
       error => {
@@ -284,7 +261,7 @@ export default {
     },
     dateFormat: function(row, column) {
       var date = row[column.property]
-      if (date == undefined) {
+      if (date === undefined) {
         return ''
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -301,7 +278,7 @@ export default {
           status: this.form.status,
           isAbnormal: this.form.isAbnormal,
           beginDate: this.form.twotimes[0],
-          endDate:this.form.twotimes[1]
+          endDate: this.form.twotimes[1]
         }
       }).then(
         response => {

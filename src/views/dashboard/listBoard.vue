@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import { getList } from '@/api/table'
 // 在月份、日期、小时等小于10前面补0
 var padDate = function(value) {
@@ -114,21 +114,8 @@ export default {
       colors: null
     }
   },
-  created: function() {
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'dashboard/line/device_stat'
-    }).then(
-      response => {
-        this.list = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
+  created() {
+    this.fetchData()
   },
   mounted: function() {
     var _this = this // 声明一个变量指向Vue实例this，保证作用域一致
@@ -145,8 +132,8 @@ export default {
   methods: {
     fetchData() {
       getList().then(response => {
-        this.list = response.data.items
-        console.log(this.list)
+        console.log(response.data)
+        this.list = response.data
       }).catch(error => {
         console.log(error)
         alert('网络错误，不能访问')
