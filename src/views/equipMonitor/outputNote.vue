@@ -4,7 +4,7 @@
       <div>
 
         <el-form ref="form" :model="form" label-width="80px">
-          <el-row :gutter="24">
+          <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
               <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
@@ -25,20 +25,36 @@
                   :value="item.device_no"/>
               </el-select>
             </div>
+            <!--<div class="grid-content bg-purple mydiv">-->
+              <!--<span class="mytitle">状态:</span>-->
+              <!--<el-select v-model="form.status" clearable="true" filterable placeholder="请选择" style="width: 130px">-->
+                <!--<el-option-->
+                  <!--v-for="item in options3"-->
+                  <!--:key="item.value"-->
+                  <!--:label="item.label"-->
+                  <!--:value="item.value"/>-->
+              <!--</el-select>-->
+            <!--</div>-->
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">达成日期</span>
               <el-date-picker
-                v-model="towtimes"
+                v-model="form.twotimes" clearable="true"
                 :picker-options="pickerOptions2"
-                style="width: 390px"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                @change="chooseTimeRange"
+                style="width: 280px"
                 type="daterange"
-                align="center"
+                align="right"
                 unlink-panels
-                range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期" />
             </div>
+            <!--<div class="grid-content bg-purple mydiv">-->
+              <!--<el-checkbox  v-model="form.abnormal">是否异常</el-checkbox>-->
+            <!--</div>-->
             <el-button @click="search">搜索</el-button>
+            <el-button  @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -80,6 +96,16 @@
         />
       </el-table>
     </el-main>
+    <el-footer>
+      <el-pagination
+        :current-page="listQuery.currentPage"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="listQuery.limit"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
+    </el-footer>
   </div>
 </template>
 
@@ -131,6 +157,24 @@ export default {
   },
 
   created(index) {
+    function dateFormatter(str){//默认返回yyyy-MM-dd HH-mm-ss
+      var hasTime = arguments[1] != false ? true : false;//可传第二个参数false，返回yyyy-MM-dd
+      var d = new Date(str);
+      var year = d.getFullYear();
+      var month = (d.getMonth()+1)<10 ? '0'+(d.getMonth()+1) : (d.getMonth()+1);
+      var day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+      // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
+      // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
+      // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
+      if(hasTime){
+        return [year, month, day].join('-');
+      }else{
+        return [year, month, day].join('-');
+      }
+    }
+    let start =dateFormatter(new Date())
+    let end = dateFormatter(new Date())
+    this.form.twotimes = [start, end];
     axios({
       method: 'get',
       baseURL: '/api',
@@ -147,7 +191,7 @@ export default {
       }
     )
   },
-  mounted() {
+  mounted(){
     this.chooseTimeRange()
     axios({
       method: 'get',
@@ -182,6 +226,9 @@ export default {
   },
   methods: {
     search: function() {
+      if (!this.form.twotimes){
+        this.form.twotimes = []
+      }
       axios({
         method: 'get',
         baseURL: '/api',
@@ -221,6 +268,9 @@ export default {
 <style>
   header.el-header{
     padding-top:20px;
+  }
+  header.el-header{
+    padding-top: 20px;
   }
   .mytitle{
     font-size: .8rem;
