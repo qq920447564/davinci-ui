@@ -158,7 +158,7 @@ export default {
         sort: '+id'
       },
       towtimes: [new Date(), new Date()],
-      Line: '',
+      Line: '康明斯',
       production: '',
       total: 10
     }

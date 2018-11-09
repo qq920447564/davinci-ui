@@ -182,9 +182,9 @@ export default {
       gridData: [],
       tableData: [],
       dialogTableVisible: false,
-      twotimes: [new Date(), new Date()],
-      statistical: '',
-      Line: '',
+      towtimes: [new Date(), new Date()],
+      statistical: '按天',
+      Line: '康明斯',
       production: '',
       total: 10
     }

@@ -4,46 +4,41 @@
       <div>
 
         <el-form ref="form" :model="form" label-width="80px">
-          <el-row :gutter="20">
-            <el-col :span="4">
-              <el-form-item label="产线:">
-                <el-input v-model="form.line_id"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="设备编号:">
-                <el-input v-model="form.device_no"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4">
-              <el-form-item label="达成开始:">
-                <el-date-picker
-                  v-model="form.begin_time"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="date"
-                  placeholder="选择日期"
-                  @change="chooseTimeRange"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" :push="3">
-              <el-form-item label="达成结束:">
-                <el-date-picker
-                  v-model="form.end_time"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="date"
-                  placeholder="选择日期"
-                  @change="chooseTimeRange"/>
-              </el-form-item>
-
-            </el-col>
-            <el-col :span="6" :push="6">
-              <!--<el-button  type="primary" @click="quickaddFormVisible = true">快速创建</el-button>-->
-              <!--<el-button  type="primary" @click="addFormVisible = true">新增</el-button>-->
-              <el-button type="primary" @click="search">搜索</el-button>
-
-            </el-col>
+          <el-row :gutter="24">
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">产线:</span>
+              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">设备编号:</span>
+              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
+                <el-option
+                  v-for="item in options2"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.device_no"/>
+              </el-select>
+            </div>
+            <div class="grid-content bg-purple mydiv">
+              <span class="mytitle">达成日期</span>
+              <el-date-picker
+                v-model="towtimes"
+                :picker-options="pickerOptions2"
+                style="width: 390px"
+                type="daterange"
+                align="center"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期" />
+            </div>
+            <el-button @click="search">搜索</el-button>
           </el-row>
         </el-form>
       </div>
@@ -98,10 +93,39 @@ export default {
 
   data() {
     return {
+      options1: [],
+      options2: [],
+      pickerOptions2: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
       value6: '',
       form: {
-
       },
+      towtimes: [new Date(), new Date()],
       tableData: []
     }
   },
@@ -123,6 +147,39 @@ export default {
       }
     )
   },
+  mounted() {
+    this.chooseTimeRange()
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'lines'
+    }).then(
+      response => {
+        this.options1 = response.data.data
+        this.form.line_id = this.options1[0].id
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices'
+    }).then(
+      response => {
+        console.log(response)
+        this.options2 = response.data.data
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
   methods: {
     search: function() {
       axios({
@@ -132,9 +189,8 @@ export default {
         params: {
           lineId: this.form.line_id,
           deviceNo: this.form.device_no,
-          beginDate: this.form.begin_time,
-          endDate: this.form.end_time
-
+          beginDate: moment(this.towtimes[0]).format('YYYY-MM-DD'),
+          endDate: moment(this.towtimes[1]).format('YYYY-MM-DD')
         }
       }).then(
         response => {
@@ -153,7 +209,7 @@ export default {
     },
     dateFormat: function(row, column) {
       var date = row[column.property]
-      if (date == undefined) {
+      if (date === undefined) {
         return ''
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
@@ -166,5 +222,13 @@ export default {
   header.el-header{
     padding-top:20px;
   }
-
+  .mytitle{
+    font-size: .8rem;
+    margin-right: 5px;
+    font-weight: 600;
+  }
+  .mydiv{
+    display: inline;
+    margin-right: 15px;
+  }
 </style>

@@ -146,12 +146,12 @@ export const constantRouterMap = [
       }
     ]
   },
-
   {
     path: '/makePlan',
     component: Layout,
-    redirect: '/makePlan/makePlanPen',
+    redirect: '/makePlan',
     name: 'makePlan',
+    alwaysShow: true,
     meta: { title: '生产计划', icon: 'plan' },
     children: [
       {
@@ -159,12 +159,6 @@ export const constantRouterMap = [
         meta: { title: '生产计划填报', icon: 'yuan' },
         name: 'makePlanPen',
         component: () => import('@/views/makePlan/makePlanPen')
-      },
-      {
-        path: '',
-        meta: { title: '计划达成报表', icon: 'yuan' },
-        name: 'planList',
-        component: () => import('@/views/makePlan/planList')
       }
     ]
   },
