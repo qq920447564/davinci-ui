@@ -223,9 +223,9 @@ export default {
         down: '2018-11-04 8:00:00'
       }],
       dialogTableVisible: false,
-      towtimes: [new Date(),new Date()],
-      statistical: '',
-      Line: '',
+      towtimes: [new Date(), new Date()],
+      statistical: '按天',
+      Line: '康明斯',
       production: '',
       total: 10
     }
