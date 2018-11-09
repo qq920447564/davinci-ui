@@ -37,15 +37,13 @@
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="form.twotimes"
+                v-model="towtimes"
                 :picker-options="pickerOptions2"
-                value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
-                @change="chooseTimeRange"
-              style="width: 280px"
+                style="width: 390px"
                 type="daterange"
-                align="right"
+                align="center"
                 unlink-panels
+                range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期" />
             </div>
@@ -145,16 +143,16 @@ export default {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
-            const end = new Date(YYYY-MM-DD)
-            const start = new Date(YYYY-MM-DD)
+            const end = new Date()
+            const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
-            const end = new Date(YYYY-MM-DD)
-            const start = new Date(YYYY-MM-DD)
+            const end = new Date()
+            const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
@@ -169,13 +167,6 @@ export default {
         }]
       },
       form: {
-        begin_time: '',
-        end_time: '',
-        line_id: '',
-        device_no: '',
-        status: '',
-        isAbnormal: 0,
-        twotimes: [],
       },
       value6: '',
       towtimes: [new Date(), new Date()],
@@ -186,7 +177,6 @@ export default {
     }
   },
   created() {
-
     axios({
       method: 'get',
       baseURL: '/api',
@@ -223,7 +213,7 @@ export default {
       }
     )
   },
-  mounted(){
+  mounted() {
     this.chooseTimeRange()
     axios({
       method: 'get',
@@ -231,30 +221,8 @@ export default {
       url: 'lines'
     }).then(
       response => {
-        console.log(response)
-        // this.tableData = response.data.data.rows
-        // this.tableData.forEach((item, index) => {
-        //   switch (item.status) {
-        //     case 0:
-        //       item['statusname'] = '关机'
-        //       break
-        //     case 1:
-        //       item['statusname'] = '运行'
-        //       break
-        //     case 2:
-        //       item['statusname'] = '空闲'
-        //       break
-        //     case 3:
-        //       item['statusname'] = '报警'
-        //       break
-        //     case 4:
-        //       item['statusname'] = '其它'
-        //       return
-        //   }
-        // })
-        // console.log(this.tableData)
-        console.log(response)
-        this.options1=response.data.data
+        this.options1 = response.data.data
+        this.form.line_id = this.options1[0].id
       }
     ).catch(
       error => {
@@ -269,7 +237,7 @@ export default {
     }).then(
       response => {
         console.log(response)
-        this.options2=response.data.data
+        this.options2 = response.data.data
       }
     ).catch(
       error => {
@@ -284,13 +252,12 @@ export default {
     },
     dateFormat: function(row, column) {
       var date = row[column.property]
-      if (date == undefined) {
+      if (date === undefined) {
         return ''
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
     search: function() {
-      // alert(this.form.twotimes)
       axios({
         method: 'get',
         baseURL: '/api',
@@ -300,8 +267,8 @@ export default {
           deviceNo: this.form.device_no,
           status: this.form.status,
           isAbnormal: this.form.isAbnormal,
-          beginDate: this.form.twotimes[0],
-          endDate:this.form.twotimes[1]
+          beginDate: moment(this.towtimes[0]).format('YYYY-MM-DD'),
+          endDate: moment(this.towtimes[1]).format('YYYY-MM-DD')
         }
       }).then(
         response => {

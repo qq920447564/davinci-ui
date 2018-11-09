@@ -7,22 +7,22 @@
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
+                  :label="item.name"
+                  :value="item.id"/>
               </el-select>
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="Line2" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
+                  :label="item.name"
+                  :value="item.device_no"/>
               </el-select>
             </div>
             <div class="grid-content bg-purple mydiv">
@@ -39,10 +39,10 @@
                 end-placeholder="结束日期" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="checked">是否异常</el-checkbox>
+              <el-checkbox v-model="checked">是否清除</el-checkbox>
             </div>
-            <el-button type="primary" @click="search">搜索</el-button>
-            <el-button type="primary" @click="handle">导出</el-button>
+            <el-button @click="search">搜索</el-button>
+            <el-button @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -114,23 +114,8 @@ export default {
 
   data() {
     return {
-      options1: [{
-        value: '选项1',
-        label: '康明斯'
-      }],
-      options2: [{
-        value: '选项1',
-        label: 'OP10-1'
-      }, {
-        value: '选项2',
-        label: 'OP10-2'
-      }, {
-        value: '选项3',
-        label: 'OP10-3'
-      }, {
-        value: '选项4',
-        label: 'OP10-4'
-      }],
+      options1: [],
+      options2: [],
       pickerOptions2: {
         shortcuts: [{
           text: '最近一周',
@@ -193,6 +178,39 @@ export default {
       }
     )
   },
+  mounted() {
+    this.chooseTimeRange()
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'lines'
+    }).then(
+      response => {
+        this.options1 = response.data.data
+        this.form.line_id = this.options1[0].id
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices'
+    }).then(
+      response => {
+        console.log(response)
+        this.options2 = response.data.data
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
   methods: {
     search: function() {
       axios({
@@ -222,7 +240,7 @@ export default {
     // 表格时间格式转换
     dateFormat: function(row, column) {
       var date = row[column.property]
-      if (date == undefined) {
+      if (date === undefined) {
         return ''
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
