@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import { getList } from '@/api/table'
 // 在月份、日期、小时等小于10前面补0
 var padDate = function(value) {
@@ -151,8 +151,8 @@ export default {
   methods: {
     fetchData() {
       getList().then(response => {
-        this.list = response.data.items
-        console.log(this.list)
+        console.log(response.data)
+        this.list = response.data
       }).catch(error => {
         console.log(error)
         alert('网络错误，不能访问')

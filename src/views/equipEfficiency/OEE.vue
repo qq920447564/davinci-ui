@@ -9,8 +9,8 @@
               <el-option
                 v-for="item in options1"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
+                :label="item.name"
+                :value="item.id"/>
             </el-select>
           </div>
           <div class="grid-content bg-purple mydiv">
@@ -28,7 +28,7 @@
             />
           </div>
           <div class="grid-content bg-purple mydiv">
-            <el-button>搜索</el-button>
+            <el-button @click="search">搜索</el-button>
             <el-button>导出</el-button>
           </div>
         </el-col>
@@ -44,27 +44,27 @@
         style="width: 100%">
         <el-table-column align="center" label="日期" >
           <template slot-scope="scope">
-            <span>{{ scope.row.date }}</span>
+            <span>{{ scope.row.stat_date }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="实际生产" >
           <template slot-scope="scope">
-            <span>{{ scope.row.actualpro }}</span>
+            <span>{{ scope.row.cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="不合格产品数" >
           <template slot-scope="scope">
-            <span>{{ scope.row.unqualifynum }}</span>
+            <span>{{ scope.row.unqualified_cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="合格产品数" >
           <template slot-scope="scope">
-            <span>{{ scope.row.qualifynum }}</span>
+            <span>{{ scope.row.qualified_cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="正常运行时间" >
           <template slot-scope="scope">
-            <span>{{ scope.row.normaltime }}</span>
+            <span>{{ scope.row.normal_duration | MillisecondToDate }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="OEE" >
@@ -88,15 +88,39 @@
 </template>
 
 <script>
+import { getLines } from '@/api/line'
+import { getOEE } from '@/api/table'
+import moment from 'moment'
+
+var padDate = function(value) {
+  return value < 10 ? '0' + value : value
+}
+
 export default {
   name: 'OEE',
+  filters: {
+    MillisecondToDate(msd) {
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+            parseInt(time / 60.0)) * 60))
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+            parseInt(time / 3600.0)) * 60)) + ':' +
+            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+        } else {
+          time = '00:00:' + padDate(parseInt(time))
+        }
+      }
+      return time
+    }
+  },
   data() {
     return {
       listLoading: true,
-      options1: [{
-        value: '选项1',
-        label: '康明斯'
-      }],
+      options1: [],
       pickerOptions2: {
         shortcuts: [{
           text: '最近一周',
@@ -124,66 +148,10 @@ export default {
           }
         }]
       },
-      tableData: [{
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }, {
-        date: '2016-05-02',
-        actualpro: 100,
-        unqualifynum: 2,
-        qualifynum: 98,
-        normaltime: '10:00:00',
-        oee: 98
-      }],
+      tableData: [],
       listQuery: {
         currentPage: 1,
-        limit: 20,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -196,18 +164,51 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
+  },
+  mounted() {
+    this.chooseTimeRange()
+    this.fetchDataLine()
   },
   methods: {
-    getList() {
-      this.listLoading = true
-      this.listLoading = false
+    chooseTimeRange(t) {
+      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
+    fetchDataLine() {
+      getLines().then(response => {
+        this.options1 = response.data
+        this.Line = response.data[0].id
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchDataOEE(lineId, beginTime, EndTime) {
+      getOEE(lineId, beginTime, EndTime).then(response => {
+        this.listLoading = false
+        this.total = response.data.total
+        this.tableData = response.data.rows
+        console.log(response.data)
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
+    },
+    search() {
+      if (!this.towtimes) {
+        this.towtimes = []
+      }
+      this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
     }
   }
 }

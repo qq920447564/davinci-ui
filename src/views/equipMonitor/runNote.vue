@@ -39,13 +39,20 @@
               <el-date-picker
                 v-model="towtimes"
                 :picker-options="pickerOptions2"
+<<<<<<< HEAD
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                style="width: 280px"
+=======
                 style="width: 390px"
+>>>>>>> releases/20181109
                 type="daterange"
                 align="center"
                 unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期" />
+                end-placeholder="结束日期"
+                @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
               <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
@@ -143,16 +150,26 @@ export default {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
+<<<<<<< HEAD
+            const end = new Date(YYYY - MM - DD)
+            const start = new Date(YYYY - MM - DD)
+=======
             const end = new Date()
             const start = new Date()
+>>>>>>> releases/20181109
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
+<<<<<<< HEAD
+            const end = new Date(YYYY - MM - DD)
+            const start = new Date(YYYY - MM - DD)
+=======
             const end = new Date()
             const start = new Date()
+>>>>>>> releases/20181109
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
@@ -167,6 +184,16 @@ export default {
         }]
       },
       form: {
+<<<<<<< HEAD
+        begin_time: '',
+        end_time: '',
+        line_id: '',
+        device_no: '',
+        status: '',
+        isAbnormal: 0,
+        twotimes: []
+=======
+>>>>>>> releases/20181109
       },
       value6: '',
       towtimes: [new Date(), new Date()],
@@ -267,8 +294,13 @@ export default {
           deviceNo: this.form.device_no,
           status: this.form.status,
           isAbnormal: this.form.isAbnormal,
+<<<<<<< HEAD
+          beginDate: this.form.twotimes[0],
+          endDate: this.form.twotimes[1]
+=======
           beginDate: moment(this.towtimes[0]).format('YYYY-MM-DD'),
           endDate: moment(this.towtimes[1]).format('YYYY-MM-DD')
+>>>>>>> releases/20181109
         }
       }).then(
         response => {

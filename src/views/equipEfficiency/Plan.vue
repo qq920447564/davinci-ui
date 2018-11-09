@@ -9,8 +9,8 @@
               <el-option
                 v-for="item in options1"
                 :key="item.value"
-                :label="item.label"
-                :value="item.value"/>
+                :label="item.name"
+                :value="item.id"/>
             </el-select>
           </div>
           <div class="grid-content bg-purple mydiv">
@@ -26,7 +26,7 @@
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">日期</span>
             <el-date-picker
-              v-model="towtimes"
+              v-model="twotimes"
               :picker-options="pickerOptions2"
               style="width: 390px"
               type="daterange"
@@ -37,7 +37,7 @@
               end-placeholder="结束日期" />
           </div>
           <div class="grid-content bg-purple mydiv">
-            <el-button>搜索</el-button>
+            <el-button @click="search">搜索</el-button>
             <el-button>导出</el-button>
           </div>
         </el-col>
@@ -53,27 +53,32 @@
         style="width: 100%">
         <el-table-column align="center" label="日期" >
           <template slot-scope="scope">
-            <span>{{ scope.row.date }}</span>
+            <span>{{ scope.row.stat_date | formatDate }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="时间区间" >
           <template slot-scope="scope">
-            <span>{{ scope.row.timeinterval }}</span>
+            <span>{{ scope.row.plan_time_name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="计划生产" >
+          <template slot-scope="scope">
+            <span>{{ scope.row.plan_cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="实际生产" >
           <template slot-scope="scope">
-            <span>{{ scope.row.actualpro }}</span>
+            <span>{{ scope.row.cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="生产差异" >
           <template slot-scope="scope">
-            <span>{{ scope.row.difference }}</span>
+            <span>{{ scope.row.diff_cnt }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="达成率" >
           <template slot-scope="scope">
-            <span>{{ scope.row.oee }}</span>
+            <span>{{ scope.row.rate }}%</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" >
@@ -83,7 +88,7 @@
         </el-table-column>
         <el-table-column align="center" label="备注" >
           <template slot-scope="scope">
-            <span>{{ scope.row.note }}</span>
+            <span>{{ scope.row.addon }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -109,20 +114,34 @@
 </template>
 
 <script>
+import { getLines } from '@/api/line'
+import { getPlanResult } from '@/api/table'
+import moment from 'moment'
+
+var padDate = function(value) {
+  return value < 10 ? '0' + value : value
+}
+
 export default {
   name: 'Plan',
+  filters: {
+    formatDate: function(value) {
+      var date = new Date(value)
+      var year = date.getFullYear()
+      var month = padDate(date.getMonth() + 1)
+      var day = padDate(date.getDate())
+      return year + '-' + month + '-' + day
+    }
+  },
   data() {
     return {
       listLoading: true,
-      options1: [{
-        value: '选项1',
-        label: '康斯明'
-      }],
+      options1: [],
       options3: [{
-        value: '选项1',
+        value: 'DAILY',
         label: '按天'
       }, {
-        value: '选项2',
+        value: 'HOURLY',
         label: '按小时'
       }],
       pickerOptions2: {
@@ -152,76 +171,16 @@ export default {
           }
         }]
       },
-      tableData: [{
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }, {
-        date: '2016-05-02',
-        timeinterval: '0:00-24:00',
-        actualpro: 100,
-        difference: 2,
-        oee: 98,
-        note: ''
-      }],
       listQuery: {
         currentPage: 1,
-        limit: 20,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
         sort: '+id'
       },
-      gridData: [{
-        name: '王小虎',
-        up: '2018-11-03 21:00:00',
-        down: '2018-11-04 8:00:00'
-      }],
+      gridData: [],
+      tableData: [],
       dialogTableVisible: false,
       towtimes: [new Date(), new Date()],
       statistical: '按天',
@@ -231,12 +190,39 @@ export default {
     }
   },
   created() {
-    this.getList()
+    this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+  },
+  mounted() {
+    this.statistical = this.options3[1].value
+    this.chooseTimeRange()
+    this.fetchDataLine()
   },
   methods: {
-    getList() {
-      this.listLoading = true
-      this.listLoading = false
+    chooseTimeRange(t) {
+      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
+    fetchDataLine() {
+      getLines().then(response => {
+        this.options1 = response.data
+        this.Line = response.data[0].id
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchDataPlan(lineId,statType, beginTime, EndTime) {
+      getPlanResult(lineId, beginTime, EndTime, statType).then(response => {
+        this.listLoading = false
+        this.total = response.data.pagination.total
+        this.tableData = response.data.pagination.rows
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -246,6 +232,12 @@ export default {
     },
     handleClick() {
       this.dialogTableVisible = true
+    },
+    search() {
+      if (!this.towtimes) {
+        this.twotimes = []
+      }
+      this.fetchDataOEE(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
     }
   }
 }
