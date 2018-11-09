@@ -183,6 +183,14 @@ export default {
       response => {
         console.log(response)
         this.tableData = response.data.data.rows
+        this.tableData.forEach((item, index) => {
+          switch (item.line_id) {
+            case 10000:
+              item['line_id'] = '康明斯'
+              break
+              return
+          }
+        })
       }
     ).catch(
       error => {
@@ -243,6 +251,14 @@ export default {
         response => {
           console.log(response)
           this.tableData = response.data.data.rows
+          this.tableData.forEach((item, index) => {
+            switch (item.line_id) {
+              case 10000:
+                item['line_id'] = '康明斯'
+                break
+                return
+            }
+          })
         }
       ).catch(
         error => {
