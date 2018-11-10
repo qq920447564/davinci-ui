@@ -158,17 +158,16 @@ export default {
         sort: '+id'
       },
       towtimes: [new Date(), new Date()],
-      Line: '康明斯',
+      Line: '',
       production: '',
       total: 10
     }
   },
   created() {
-    this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
+    this.fetchDataLine()
   },
   mounted() {
     this.chooseTimeRange()
-    this.fetchDataLine()
   },
   methods: {
     chooseTimeRange(t) {
@@ -178,6 +177,7 @@ export default {
       getLines().then(response => {
         this.options1 = response.data
         this.Line = response.data[0].id
+        this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
       }).catch(
         error => {
           console.log(error)
@@ -190,7 +190,6 @@ export default {
         this.listLoading = false
         this.total = response.data.total
         this.tableData = response.data.rows
-        console.log(response.data)
       }).catch(
         error => {
           console.log(error)
