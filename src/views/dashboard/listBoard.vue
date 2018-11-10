@@ -68,128 +68,97 @@
 </template>
 
 <script>
-// import axios from 'axios'
-import { getList } from '@/api/table'
-// 在月份、日期、小时等小于10前面补0
-var padDate = function(value) {
-  return value < 10 ? '0' + value : value
-}
+  import { getList } from '@/api/table'
+  // 在月份、日期、小时等小于10前面补0
+  var padDate = function(value) {
+    return value < 10 ? '0' + value : value
+  }
 
-export default {
-  filters: {
-    formatDate: function(value) {
-      var date = new Date(value)
-      var year = date.getFullYear()
-      var month = padDate(date.getMonth() + 1)
-      var day = padDate(date.getDate())
-      var hours = padDate(date.getHours())
-      var minutes = padDate(date.getMinutes())
-      var seconds = padDate(date.getSeconds())
-      return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
-    },
-    MillisecondToDate(msd) {
-      var time = parseFloat(msd) / 1000
-      if (time != null && time !== '') {
-        if (time > 60 && time < 60 * 60) {
-          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
-            parseInt(time / 60.0)) * 60))
-        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
-            parseInt(time / 3600.0)) * 60)) + ':' +
-            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
-        } else {
-          time = '00:00:' + padDate(parseInt(time))
+  export default {
+    filters: {
+      formatDate: function(value) {
+        var date = new Date(value)
+        var year = date.getFullYear()
+        var month = padDate(date.getMonth() + 1)
+        var day = padDate(date.getDate())
+        var hours = padDate(date.getHours())
+        var minutes = padDate(date.getMinutes())
+        var seconds = padDate(date.getSeconds())
+        return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
+      },
+      MillisecondToDate(msd) {
+        var time = parseFloat(msd) / 1000
+        if (time != null && time !== '') {
+          if (time > 60 && time < 60 * 60) {
+            time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+              parseInt(time / 60.0)) * 60))
+          } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+              parseInt(time / 3600.0)) * 60)) + ':' +
+              padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+                parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+          } else {
+            time = '00:00:' + padDate(parseInt(time))
+          }
         }
-      }
-      return time
-    }
-  },
-  data() {
-    return {
-      date: new Date(),
-      imgUrl: '../../../static/1.jpg',
-      imgUrl1: '../../../static/2.jpg',
-      list: null,
-      colors: null
-    }
-  },
-  created: function () {
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'dashboard/line/device_stat'
-    }).then(
-      response => {
-        this.list = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-  },
-  mounted: function() {
-    var _this = this // 声明一个变量指向Vue实例this，保证作用域一致
-    this.timer1 = setInterval(function() {
-      _this.date = new Date() // 修改数据date
-    }, 1000)
-    this.timer2 = setInterval(function() {
-      _this.myajax()
-    }, 5000)
-  },
-  // 实例销毁之前调用。主要解绑一些使用addEventListener监听的事件等
-  beforeDestroy: function() {
-    if (this.timer1) {
-      clearInterval(this.timer1) // 在Vue实例销毁前，清除我们的定时器
-    }
-    if (this.timer2) {
-      clearInterval(this.timer2) // 在Vue实例销毁前，清除我们的定时器
-    }
-  },
-  methods: {
-    fetchData() {
-      getList().then(response => {
-        console.log(response.data)
-        this.list = response.data
-      }).catch(error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      })
-    },
-    color(status) {
-      switch (status) {
-        case 0:
-          return 'grey'
-        case 1:
-          return 'green'
-        case 2:
-          return 'orange'
-        case 3:
-          return 'red'
-        case 4:
-          return 'white'
+        return time
       }
     },
-    myajax() {
-      axios({
-        method: 'get',
-        baseURL: '/api',
-        url: 'dashboard/line/device_stat'
-      }).then(
-        response => {
-          this.list = response.data.data
-        }
-      ).catch(
-        error => {
+    data() {
+      return {
+        date: new Date(),
+        imgUrl: '../../../static/1.jpg',
+        imgUrl1: '../../../static/2.jpg',
+        list: null,
+        colors: null
+      }
+    },
+    created() {
+      this.fetchData()
+    },
+    mounted: function() {
+      var _this = this // 声明一个变量指向Vue实例this，保证作用域一致
+      this.timer1 = setInterval(function() {
+        _this.date = new Date() // 修改数据date
+      }, 1000)
+      this.timer2 = setInterval(function() {
+        _this.fetchData()
+      }, 5000)
+    },
+    // 实例销毁之前调用。主要解绑一些使用addEventListener监听的事件等
+    beforeDestroy: function() {
+      if (this.timer1) {
+        clearInterval(this.timer1) // 在Vue实例销毁前，清除我们的定时器
+      }
+      if (this.timer2) {
+        clearInterval(this.timer2) // 在Vue实例销毁前，清除我们的定时器
+      }
+    },
+    methods: {
+      fetchData() {
+        getList().then(response => {
+          this.list = response.data
+        }).catch(error => {
           console.log(error)
           alert('网络错误，不能访问')
+        })
+      },
+      color(status) {
+        switch (status) {
+          case 0:
+            return 'grey'
+          case 1:
+            return 'green'
+          case 2:
+            return 'orange'
+          case 3:
+            return 'red'
+          case 4:
+            return 'white'
         }
-      )
+      }
     }
   }
-}
 </script>
 <style scoped>
   .el-header, .el-footer {
