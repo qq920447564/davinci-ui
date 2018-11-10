@@ -182,20 +182,18 @@ export default {
       gridData: [],
       tableData: [],
       dialogTableVisible: false,
-      towtimes: [new Date(), new Date()],
-      statistical: '按天',
-      Line: '康明斯',
+      twotimes: [new Date(), new Date()],
+      statistical: '',
+      Line: '',
       production: '',
       total: 10
     }
   },
   created() {
-    this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+    this.fetchDataLine()
   },
   mounted() {
-    this.statistical = this.options3[1].value
     this.chooseTimeRange()
-    this.fetchDataLine()
   },
   methods: {
     chooseTimeRange(t) {
@@ -205,6 +203,8 @@ export default {
       getLines().then(response => {
         this.options1 = response.data
         this.Line = response.data[0].id
+        this.statistical = this.options3[1].value
+        this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
       }).catch(
         error => {
           console.log(error)
