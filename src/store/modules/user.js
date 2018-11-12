@@ -31,10 +31,11 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
           const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
+          setToken(data.data)
+          commit('SET_TOKEN', data.data)
           resolve()
         }).catch(error => {
+          alert(error)
           reject(error)
         })
       })
@@ -82,7 +83,7 @@ const user = {
       })
     },
     // 动态修改权限
-    ChangeRoles ({ commit }, role) {
+    ChangeRoles({ commit }, role) {
       return new Promise(resolve => {
         commit('SET_TOKEN', role)
         setToken(role)

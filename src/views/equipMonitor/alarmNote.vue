@@ -7,7 +7,7 @@
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
@@ -17,32 +17,31 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="form.device_no" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
                   :label="item.name"
-                  :value="item.device_no"/>
+                  :value="item.id"/>
               </el-select>
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="towtimes"
+                v-model="form.twotimes"
                 :picker-options="pickerOptions2"
                 style="width: 390px"
                 type="daterange"
                 align="right"
-                unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="checked">是否清除</el-checkbox>
+              <el-checkbox v-model="form.is_clear">是否消除</el-checkbox>
             </div>
-            <el-button @click="search">搜索</el-button>
-            <el-button @click="handle">导出</el-button>
+            <el-button  @click="search">搜索</el-button>
+            <el-button  @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -93,14 +92,25 @@
         />
         <el-table-column
           prop="duration"
+          :formatter="formatDuring"
           label="持续时间"
         />
         <el-table-column
-          prop="is_clear"
+          prop="cleared"
           label="是否消除"
         />
       </el-table>
     </el-main>
+    <el-footer>
+      <el-pagination
+        :current-page="listQuery.currentPage"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="listQuery.limit"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
+    </el-footer>
   </div>
 </template>
 
@@ -108,12 +118,22 @@
 import ElHeader from 'element-ui/packages/header/src/main'
 import axios from 'axios'
 import moment from 'moment'
-
+var padDate = function(value) {
+  return value < 10 ? '0' + value : value
+}
 export default {
   components: { ElHeader },
 
   data() {
     return {
+      listQuery: {
+        currentPage: 1,
+        limit: 20,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
+      },
       options1: [],
       options2: [],
       pickerOptions2: {
@@ -146,22 +166,34 @@ export default {
       value: '',
       value6: '',
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        line_id: '',
+        device_no: '',
+        towtimes: [],
+        is_clear:''
       },
-      towtimes: [new Date(), new Date()],
-      Line: '',
-      Line2: '',
       tableData: []
     }
   },
   created() {
+
+    function dateFormatter(str){//默认返回yyyy-MM-dd HH-mm-ss
+      var hasTime = arguments[1] != false ? true : false;//可传第二个参数false，返回yyyy-MM-dd
+      var d = new Date(str);
+      var year = d.getFullYear();
+      var month = (d.getMonth()+1)<10 ? '0'+(d.getMonth()+1) : (d.getMonth()+1);
+      var day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+      // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
+      // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
+      // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
+      if(hasTime){
+        return [year, month, day].join('-');
+      }else{
+        return [year, month, day].join('-');
+      }
+    }
+    let start =dateFormatter(new Date())
+    let end = dateFormatter(new Date())
+    this.form.twotimes = [start, end];
     axios({
       method: 'get',
       baseURL: '/api',
@@ -170,6 +202,57 @@ export default {
       response => {
         console.log(response)
         this.tableData = response.data.data.rows
+        this.tableData.forEach((item, index) => {
+          switch (item.cleared) {
+            case false:
+              item['cleared'] = '否'
+              break
+            case true:
+              item['cleared'] = '是'
+              break
+              return
+          }
+        })
+        this.tableData.forEach((item, index) => {
+          switch (item.line_id) {
+            case 10000:
+              item['line_id'] = '康明斯'
+              break
+              return
+          }
+        })
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+  },
+  mounted(){
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'lines'
+    }).then(
+      response => {
+        console.log(response)
+        this.options1=response.data.data
+      }
+    ).catch(
+      error => {
+        console.log(error)
+        alert('网络错误，不能访问')
+      }
+    )
+    axios({
+      method: 'get',
+      baseURL: '/api',
+      url: 'devices'
+    }).then(
+      response => {
+        console.log(response)
+        this.options2=response.data.data
       }
     ).catch(
       error => {
@@ -212,23 +295,54 @@ export default {
     )
   },
   methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+    },
+
     search: function() {
+      if (!this.form.twotimes){
+        this.form.twotimes = []
+      }
       axios({
+
         method: 'get',
         baseURL: '/api',
         url: 'devices/alarm_stat',
         params: {
           lineId: this.form.line_id,
           deviceNo: this.form.device_no,
-          process: this.form.process,
-          beginDate: this.form.begin_time,
-          endDate: this.form.endDate,
+          beginDate: this.form.twotimes[0],
+          endDate:this.form.twotimes[1],
           isCleared: this.form.is_clear
         }
       }).then(
         response => {
           console.log(response)
           this.tableData = response.data.data.rows
+          this.tableData.forEach((item, index) => {
+            switch (item.cleared) {
+              case false:
+                item['cleared'] = '否'
+                break
+              case true:
+                item['cleared'] = '是'
+                break
+                return
+            }
+          })
+          this.tableData.forEach((item, index) => {
+            switch (item.line_id) {
+              case 10000:
+                item['line_id'] = '康明斯'
+                break
+                return
+            }
+          })
+
+
         }
       ).catch(
         error => {
@@ -245,10 +359,29 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
+    formatDuring: function (row, column) {
+      var msd = row[column.property]
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+            parseInt(time / 60.0)) * 60))
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+            parseInt(time / 3600.0)) * 60)) + ':' +
+            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+        } else {
+          time = '00:00:' + padDate(parseInt(time))
+        }
+      }
+      return time
+    },
     // 时间选择框格式转换
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
-    }
+    },
+
   }
 }
 </script>

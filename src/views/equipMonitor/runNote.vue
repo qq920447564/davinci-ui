@@ -36,12 +36,15 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">日期</span>
+              <!--<p>组件值：{{ form.twotimes  | formatDate}}</p>-->
               <el-date-picker
-                v-model="towtimes"
+                v-model="form.twotimes" clearable="true"
                 :picker-options="pickerOptions2"
                 value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                style="width: 280px"
+              format="yyyy-MM-dd"
+                :unlink-panels="true"
+                @change="chooseTimeRange"
+              style="width: 280px"
                 type="daterange"
                 align="center"
                 unlink-panels
@@ -51,10 +54,10 @@
                 @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
+              <el-checkbox  v-model="form.abnormal">是否异常</el-checkbox>
             </div>
-            <el-button type="primary" @click="search">搜索</el-button>
-            <!--<el-button type="primary" @click="handle">导出</el-button>-->
+            <el-button  @click="search">搜索</el-button>
+            <el-button  @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -98,11 +101,12 @@
           label="结束时间"
         />
         <el-table-column
+          :formatter="dateFormat"
           prop="duration"
           label="持续时间"
         />
         <el-table-column
-          prop="is_abnormal"
+          prop="abnormal"
           label="是否异常"
         />
         <el-table-column
@@ -111,6 +115,16 @@
         />
       </el-table>
     </el-main>
+    <el-footer>
+      <el-pagination
+        :current-page="listQuery.currentPage"
+        :page-sizes="[10,20,30, 50]"
+        :page-size="listQuery.limit"
+        :total="total"
+        layout="total, sizes, prev, pager, next, jumper"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
+    </el-footer>
   </div>
 </template>
 
@@ -119,11 +133,34 @@ import ElHeader from 'element-ui/packages/header/src/main'
 import axios from 'axios'
 import moment from 'moment'
 
+// 在月份、日期、小时等小于10前面补0
+var padDate = function(value) {
+  return value < 10 ? '0' + value : value
+}
 export default {
-
-  components: { ElHeader },
+filters:{
+  formatDate: function(value) {
+    var date = new Date(value)
+    var year = date.getFullYear()
+    var month = padDate(date.getMonth() + 1)
+    var day = padDate(date.getDate())
+    var hours = padDate(date.getHours())
+    var minutes = padDate(date.getMinutes())
+    var seconds = padDate(date.getSeconds())
+    return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
+  },
+},
+components: { ElHeader },
   data() {
     return {
+      listQuery: {
+        currentPage: 1,
+        limit: 20,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
+      },
       options1: [],
       options2: [],
       options3: [{
@@ -175,11 +212,10 @@ export default {
         line_id: '',
         device_no: '',
         status: '',
-        isAbnormal: 0,
-        twotimes: []
+        abnormal: 0,
+        twotimes: [],
       },
       value6: '',
-      towtimes: [new Date(), new Date()],
       Line: '',
       Line2: '',
       Line3: '',
@@ -187,6 +223,26 @@ export default {
     }
   },
   created() {
+  //处理默认时间控件的方法
+     function dateFormatter(str){//默认返回yyyy-MM-dd HH-mm-ss
+      var hasTime = arguments[1] != false ? true : false;//可传第二个参数false，返回yyyy-MM-dd
+      var d = new Date(str);
+      var year = d.getFullYear();
+      var month = (d.getMonth()+1)<10 ? '0'+(d.getMonth()+1) : (d.getMonth()+1);
+      var day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+      // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
+      // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
+      // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
+      if(hasTime){
+        return [year, month, day].join('-');
+      }else{
+        return [year, month, day].join('-');
+      }
+    }
+      let start =dateFormatter(new Date())
+      let end = dateFormatter(new Date())
+      this.form.twotimes = [start, end];
+     //后台接收数据get得到表格数据
     axios({
       method: 'get',
       baseURL: '/api',
@@ -214,6 +270,26 @@ export default {
               return
           }
         })
+        this.tableData.forEach((item, index) => {
+          switch (item.abnormal) {
+            case false:
+              item['abnormal'] = '否'
+              break
+            case true:
+              item['abnormal'] = '是'
+              break
+              return
+          }
+        })
+        this.tableData.forEach((item, index) => {
+          switch (item.line_id) {
+            case 10000:
+              item['line_id'] = '康明斯'
+              break
+              return
+          }
+        })
+
         console.log(this.tableData)
       }
     ).catch(
@@ -267,7 +343,30 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
+    //表格里面的时间格式转换
+      formatDuring: function (row, column) {
+        var msd = row[column.property]
+        var time = parseFloat(msd) / 1000
+        if (time != null && time !== '') {
+          if (time > 60 && time < 60 * 60) {
+            time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+              parseInt(time / 60.0)) * 60))
+          } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+              parseInt(time / 3600.0)) * 60)) + ':' +
+              padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+                parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+          } else {
+            time = '00:00:' + padDate(parseInt(time))
+          }
+        }
+        return time
+},
     search: function() {
+      if (!this.form.twotimes){
+        this.form.twotimes = []
+      }
+      // alert(this.form.twotimes)
       axios({
         method: 'get',
         baseURL: '/api',
@@ -276,9 +375,9 @@ export default {
           lineId: this.form.line_id,
           deviceNo: this.form.device_no,
           status: this.form.status,
-          isAbnormal: this.form.isAbnormal,
-          beginDate: moment(this.towtimes[0]).format('YYYY-MM-DD'),
-          endDate: moment(this.towtimes[1]).format('YYYY-MM-DD')
+          abnormal: this.form.abnormal,
+          beginDate: this.form.twotimes[0],
+          endDate:this.form.twotimes[1]
         }
       }).then(
         response => {
@@ -302,15 +401,34 @@ export default {
                 item['statusname'] = '其它'
                 return
             }
+            switch (item.abnormal) {
+              case false:
+                item['abnormal'] = '否'
+                break
+              case true:
+                item['abnormal'] = '是'
+                break
+                return
+            }
+            this.tableData.forEach((item, index) => {
+              switch (item.line_id) {
+                case 10000:
+                  item['line_id'] = '康明斯'
+                  break
+                  return
+              }
+            })
           })
           console.log(this.tableData)
         }
       ).catch(
         error => {
+          alert(3)
           console.log(error)
           alert('网络错误，不能访问')
         }
       )
+
     }
   }
 }
