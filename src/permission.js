@@ -1,5 +1,5 @@
 import router from './router'
-// import store from './store'
+import store from './store'
 import NProgress from 'nprogress' // Progress 进度条
 import 'nprogress/nprogress.css'// Progress 进度条样式
 // import { Message } from 'element-ui'
@@ -11,7 +11,7 @@ router.beforeEach((to, from, next) => {
   if (getToken()) {
     if (to.path === '/login') {
       next({ path: '/' })
-      NProgress.done() 
+      NProgress.done()
     } else {
       if (store.getters.roles.length === 0) {
         // store.dispatch('GetInfo').then(res => { // 拉取用户信息
