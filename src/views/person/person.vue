@@ -40,10 +40,11 @@
             <el-button @click="search">搜索</el-button>
             <el-button @click="out">导出</el-button>
             <el-button @click="addFormVisible = true">上机签到</el-button>
+            <br>
             <el-dialog
               :visible.sync="addFormVisible"
               title="上下机签卡"
-              width="20%" >
+              width="25%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
                   <el-select v-model="form.line3" :style="{ width: '90%' }" filterable placeholder="请选择">
@@ -124,7 +125,7 @@
           label="下班时间"
         />
         <el-table-column
-          prop="product_id"
+          prop="product.name"
           label="产品"
         />
         <el-table-column
@@ -139,19 +140,20 @@
             <el-dialog
               :visible.sync="dialogVisible"
               title="上下机签卡"
-              width="20%" >
+              width="25%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line1" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.line1" :style="{ width: '90%' }" filterable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
                       :label="item.name"
-                      :value="item.id"/>
+                      :value="item.id"
+                      disabled/>
                   </el-select>
                 </el-form-item>
-                <el-form-item :label-width="formLabelWidth" label="姓名：">
-                  <el-select v-model="form.name1" :style="{ width: '90%' }" filterable placeholder="请选择">
+                <el-form-item :label-width="formLabelWidth" label="姓名：" disabled>
+                  <el-select v-model="form.name1" :style="{ width: '90%' }" filterable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -166,7 +168,8 @@
                     :style="{ width: '90%' }"
                     type="datetime"
                     placeholder="选择日期时间"
-                    align="right"/>
+                    align="right"
+                    disabled/>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="下机：">
                   <el-date-picker
@@ -200,7 +203,7 @@
             <el-dialog
               :visible.sync="editFormVisible"
               title="上下机签卡"
-              width="20%" >
+              width="25%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
                   <el-select v-model="form.line2" :style="{ width: '90%' }" filterable placeholder="请选择">
@@ -540,5 +543,8 @@ export default {
   .mydiv{
     display: inline;
     margin-left: 15px;
+  }
+  .el-main {
+    text-align: center;
   }
 </style>
