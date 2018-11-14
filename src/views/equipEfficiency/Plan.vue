@@ -257,10 +257,10 @@ export default {
       this.dialogTableVisible = true
     },
     search() {
-      if (!this.towtimes) {
+      if (!this.twotimes) {
         this.twotimes = []
       }
-      this.fetchDataOEE(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
     }
   }
 }
