@@ -108,6 +108,12 @@ export const constantRouterMap = [
     },
     children: [
       {
+        path: 'equMonitor',
+        component: () => import('@/views/equipMonitor/equMonitor'), // Parent router-view
+        name: 'equMonitor',
+        meta: { title: '设备在线监控', icon: 'yuan' }
+      },
+      {
         path: 'runNote',
         component: () => import('@/views/equipMonitor/runNote'), // Parent router-view
         name: 'runNote',
