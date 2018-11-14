@@ -100,7 +100,7 @@
           label="结束时间"
         />
         <el-table-column
-          :formatter="dateFormat"
+          :formatter="formatDuring"
           prop="duration"
           label="持续时间"
         />
