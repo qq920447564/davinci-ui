@@ -6,3 +6,10 @@ export function getLines() {
     method: 'get'
   })
 }
+
+export function getLineTree() {
+  return request({
+    url: '/lines/tree',
+    method: 'get'
+  })
+}
