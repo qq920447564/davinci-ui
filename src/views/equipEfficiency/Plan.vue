@@ -78,12 +78,12 @@
         </el-table-column>
         <el-table-column align="center" label="达成率" >
           <template slot-scope="scope">
-            <span>{{ scope.row.rate }}%</span>
+            <span>{{ scope.row.rate }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" >
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click="handleClick()">查看当班人员</el-button>
+            <el-button type="text" size="small" @click="handleClick(scope.row)">查看当班人员</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="备注" >
@@ -105,9 +105,9 @@
     </el-footer>
     <el-dialog :visible.sync="dialogTableVisible" title="当班人员信息">
       <el-table :data="gridData">
-        <el-table-column property="name" label="姓名" />
-        <el-table-column property="up" label="上班时间" />
-        <el-table-column property="down" label="下班时间"/>
+        <el-table-column property="user.realname" label="姓名" />
+        <el-table-column property="clockin_time" label="上班时间" />
+        <el-table-column property="clockout_time" label="下班时间"/>
       </el-table>
     </el-dialog>
   </el-container>
@@ -116,6 +116,7 @@
 <script>
 import { getLines } from '@/api/line'
 import { getPlanResult } from '@/api/table'
+import { getWorkTime } from '@/api/table'
 import moment from 'moment'
 
 var padDate = function(value) {
@@ -179,13 +180,14 @@ export default {
         type: undefined,
         sort: '+id'
       },
-      gridData: [],
+      gridData: null,
       tableData: [],
       dialogTableVisible: false,
       twotimes: [new Date(), new Date()],
       statistical: '',
       Line: '',
       production: '',
+      str: [],
       total: 10
     }
   },
@@ -212,11 +214,16 @@ export default {
         }
       )
     },
-    fetchDataPlan(lineId,statType, beginTime, EndTime) {
+    fetchDataPlan(lineId, statType, beginTime, EndTime) {
       getPlanResult(lineId, beginTime, EndTime, statType).then(response => {
         this.listLoading = false
         this.total = response.data.pagination.total
         this.tableData = response.data.pagination.rows
+        this.tableData.forEach((item, index) => {
+          if (item.rate) {
+            item['rate'] = (Number(item.rate) * 100).toFixed(2) + '%'
+          }
+        })
       }).catch(
         error => {
           console.log(error)
@@ -230,7 +237,23 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
     },
-    handleClick() {
+    handleClick(row) {
+      if (row.plan_time_name) {
+        this.str = row.plan_time_name.split('-')
+        this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[0] + ':00'
+        this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[1] + ':00'
+      }
+      getWorkTime(this.str[0], this.str[1], this.Line, null).then(response => {
+        this.gridData = response.data.rows
+        this.gridData.forEach((item, index) => {
+          if (item.clockin_time) {
+            item['clockin_time'] = moment(this.gridData.clockin_time).format('YYYY-MM-DD hh:mm:ss')
+          }
+          if (item.clockout_time) {
+            item['clockout_time'] = moment(this.gridData.clockout_time).format('YYYY-MM-DD hh:mm:ss')
+          }
+        })
+      })
       this.dialogTableVisible = true
     },
     search() {
