@@ -4,56 +4,24 @@
       <div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
+            <!--<div class="grid-content bg-purple mydiv">-->
+              <!--<span class="mytitle">用户名:</span>-->
+              <!--<el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">-->
+                <!--<el-option-->
+                  <!--v-for="item in options1"-->
+                  <!--:key="item.value"-->
+                  <!--:label="item.name"-->
+                  <!--:value="item.id"/>-->
+              <!--</el-select>-->
+            <!--</div>-->
             <div class="grid-content bg-purple mydiv">
-              <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
-                <el-option
-                  v-for="item in options1"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </div>
-            <div class="grid-content bg-purple mydiv">
-              <span class="mytitle">设备编号:</span>
-              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
-                <el-option
-                  v-for="item in options2"
-                  :key="item.value"
-                  :label="item.name"
-                  :value="item.device_no"/>
-              </el-select>
-            </div>
-            <div class="grid-content bg-purple mydiv">
-              <span class="mytitle">状态:</span>
-              <el-select v-model="form.status" clearable="true" filterable placeholder="请选择" style="width: 130px">
-                <el-option
-                  v-for="item in options3"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"/>
-              </el-select>
-            </div>
-            <div class="grid-content bg-purple mydiv">
-              <span class="mytitle">日期</span>
-              <el-date-picker
-                v-model="form.twotimes" clearable="true"
-                :picker-options="pickerOptions2"
-                value-format="yyyy-MM-dd"
-                format="yyyy-MM-dd"
-                @change="chooseTimeRange"
-                style="width: 280px"
-                type="daterange"
-                align="right"
-                unlink-panels
-                start-placeholder="开始日期"
-                end-placeholder="结束日期" />
-            </div>
-            <div class="grid-content bg-purple mydiv">
-              <el-checkbox :true-label="1" :false-label="0" v-model="form.isAbnormal">是否异常</el-checkbox>
+              <span class="mytitle">姓名:</span>
+              <el-input v-model="form.realname" clearable="true" filterable placeholder="请选择" style="width: 130px">
+
+              </el-input>
             </div>
             <el-button  @click="search">搜索</el-button>
-            <el-button @click="handleDownload">导出</el-button>
+            <el-button @click='addHandle'>新增</el-button>
           </el-row>
         </el-form>
       </div>
@@ -65,50 +33,109 @@
         style="width: 100%">
         <el-table-column
           fixed
-          prop="line_id"
-          label="产线"
+          prop="username"
+          label="用户名"
         />
         <el-table-column
-          prop="process"
-          label="工序"
+          prop="email"
+          label="邮箱"
         />
         <el-table-column
-          prop="name"
-          label="设备名称"
+          prop="mobile"
+          label="电话"
         />
         <el-table-column
-          prop="device_no"
-          label="设备编号"
+          prop="realname"
+          label="姓名"
         />
         <el-table-column
-          prop="statusname"
-          label="状态"
+          prop="employee_id"
+          label="工号"
         />
         <el-table-column
-          :formatter="dateFormat"
-          prop="started_time"
+          prop="role_id"
           width="170"
-          label="开始时间"
+          label="角色"
         />
         <el-table-column
           :formatter="dateFormat"
           prop="stopped_time"
           width="170"
-          label="结束时间"
+          label="状态"
         />
         <el-table-column
-          prop="duration"
-          label="持续时间"
-        />
-        <el-table-column
-          prop="abnormal"
-          label="是否异常"
-        />
-        <el-table-column
-          prop="addon"
-          label="异常原因"
-        />
+          fixed="right"
+          label="操作"
+          width="">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+            <el-button type="text" size="small" @click="handleClick">重置密码</el-button>
+          </template>
+        </el-table-column>
+
       </el-table>
+      <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑" @close="closeDialog" >
+        <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+          <el-form-item label="角色">
+
+            <el-input v-model="addForm.role_id" width="200" auto-complete="off"></el-input>
+
+          </el-form-item>
+          <el-form-item label="用户名" prop="name">
+            <el-input v-model="addForm.username" width="200" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="addForm.email" @change="checkemail" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="addForm.mobile" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input  v-model="addForm.realname" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="工号">
+            <el-input v-model="addForm.employee_id" :width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-checkbox v-model="addForm.statue">启用</el-checkbox>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="addFormVisible = false">取消</el-button>
+          <el-button :loading="addLoading" type="primary" @click.native="addSubmit(addForm)">提交</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑">
+        <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+          <el-form-item label="角色">
+
+              <el-input v-model="editForm.role_id" width="200" auto-complete="off"></el-input>
+
+          </el-form-item>
+          <el-form-item label="用户名" prop="name">
+            <el-input v-model="editForm.username" width="200" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱">
+            <el-input v-model="editForm.email" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="editForm.mobile" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input  v-model="editForm.realname" width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="工号">
+            <el-input v-model="editForm.employee_id" :width="200"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-checkbox v-model="editForm.statue">启用</el-checkbox>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="editFormVisible = false">取消</el-button>
+          <el-button :loading="editLoading" type="primary" @click.native="editSubmit(editForm)">提交</el-button>
+        </div>
+      </el-dialog>
     </el-main>
     <el-footer>
       <el-pagination
@@ -148,6 +175,36 @@
     components: { ElHeader },
     data() {
       return {
+        editFormVisible:false,
+        addFormVisible:false,
+        addForm:{
+          id: 0,
+          name: '',
+          price: 0,
+          desc: '',
+          reserve:'',
+          options: [{
+            value: '选项1',
+            label: '黄金糕'
+          }, {
+            value: '选项2',
+            label: '双皮奶'
+          }]
+        },
+        editForm: {
+          id: 0,
+          name: '',
+          price: 0,
+          desc: '',
+          reserve:'',
+          options: [{
+            value: '选项1',
+            label: '黄金糕'
+          }, {
+            value: '选项2',
+            label: '双皮奶'
+          }]
+        },
         listQuery: {
           currentPage: 1,
           limit: 20,
@@ -241,7 +298,7 @@
       axios({
         method: 'get',
         baseURL: '/api',
-        url: 'devices/status_stat'
+        url: 'users'
       }).then(
         response => {
           console.log(response)
@@ -328,21 +385,98 @@
       )
     },
     methods: {
-      handleDownload() {
-        this.downloadLoading = true
-        require.ensure([], () => {
-          const { export_json_to_excel } = require('@/vendor/Export2Excel')
-          const tHeader = ['产线','工序', '设备名称', '设备编号','状态', '开始时间', '结束时间','持续时间','是否异常','异常原因']
-          const filterVal = ['line_id', 'process', 'name','device_no','statusname','started_time','stopped_time','duration','abnormal','addon']
-          const list = this.tableData
-          const data = this.formatJson(filterVal, list)
-          export_json_to_excel(tHeader, data, '运行记录列表excel')
-          this.downloadLoading = false
-        })
+      checkemail:function(){
+        var regEmail=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+        if(this.email==''){
+          this.msgmail="请输入邮箱";
+        }else if(!regEmail.test(this.email)){
+          this.msgmail="邮箱格式不正确";
+        }
       },
-      formatJson(filterVal, jsonData) {
-        return jsonData.map(v => filterVal.map(j => v[j]))
+      closeDialog:function(){
+        this.$refs.addForm.resetFields()
       },
+      addSubmit:function(){
+         axios({
+           method:'post',
+           baseURL:'api',
+           url:'users',
+           data:{
+             email:this.addForm.email,
+             employee_id:this.addForm.email,
+             mobile:this.addForm.mobile,
+             realname:this.addForm.realname,
+             username:this.addForm.username,
+             role_id:this.addForm.role_id,
+           }
+         }).then(
+           response=>{
+             console.log(response)
+             this.$router.go(0)
+
+           }
+         ).catch(
+           error=>{
+             console.log(error)
+             alert('网络错误请检查网络')
+           }
+         )
+      },
+      addHandle:function(){
+        this.addFormVisible=true;
+
+  },
+      editSubmit:function(editForm){
+        alert(editForm)
+        axios({
+          method:'put',
+          baseURL:'api',
+          url:'users/'+this.editForm.id,
+          data:{
+            email:this.editForm.email,
+            employee_id:this.editForm.email,
+            mobile:this.editForm.mobile,
+            realname:this.editForm.realname,
+            username:this.editForm.username,
+            role_id:this.editForm.role_id,
+          }
+
+
+        }).then(
+          response=>{
+            console.log(response)
+
+          }
+        ).catch(
+          error=>{
+            console.log(error)
+            alert('网络错误，不能访问')
+          }
+        )
+      },
+      handleEdit: function (index, row) {
+       console.log(row.id)
+        this.editFormVisible = true;
+        this.editForm = Object.assign({}, row);
+        this.id=row.id
+
+
+      },
+      // handleDownload() {
+      //   this.downloadLoading = true
+      //   require.ensure([], () => {
+      //     const { export_json_to_excel } = require('@/vendor/Export2Excel')
+      //     const tHeader = ['产线','工序', '设备名称', '设备编号','状态', '开始时间', '结束时间','持续时间','是否异常','异常原因']
+      //     const filterVal = ['line_id', 'process', 'name','device_no','statusname','started_time','stopped_time','duration','abnormal','addon']
+      //     const list = this.tableData
+      //     const data = this.formatJson(filterVal, list)
+      //     export_json_to_excel(tHeader, data, '运行记录列表excel')
+      //     this.downloadLoading = false
+      //   })
+      // },
+      // formatJson(filterVal, jsonData) {
+      //   return jsonData.map(v => filterVal.map(j => v[j]))
+      // },
       chooseTimeRange(t) {
         console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
       },
@@ -353,41 +487,17 @@
         }
         return moment(date).format('YYYY-MM-DD HH:mm:ss')
       },
-      //表格里面的时间格式转换
-      formatDuring: function (row, column) {
-        var msd = row[column.property]
-        var time = parseFloat(msd) / 1000
-        if (time != null && time !== '') {
-          if (time > 60 && time < 60 * 60) {
-            time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
-              parseInt(time / 60.0)) * 60))
-          } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
-              parseInt(time / 3600.0)) * 60)) + ':' +
-              padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
-                parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
-          } else {
-            time = '00:00:' + padDate(parseInt(time))
-          }
-        }
-        return time
-      },
       search: function() {
-        if (!this.form.twotimes){
-          this.form.twotimes = []
-        }
+        // if (!this.form.twotimes){
+        //   this.form.twotimes = []
+        // }
         // alert(this.form.twotimes)
         axios({
           method: 'get',
           baseURL: '/api',
-          url: 'devices/status_stat',
+          url: 'users',
           params: {
-            lineId: this.form.line_id,
-            deviceNo: this.form.device_no,
-            status: this.form.status,
-            abnormal: this.form.isAbnormal,
-            beginDate: this.form.twotimes[0],
-            endDate:this.form.twotimes[1]
+            realname: this.form.realname,
           }
         }).then(
           response => {
