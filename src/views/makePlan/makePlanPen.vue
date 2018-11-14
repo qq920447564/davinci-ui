@@ -32,7 +32,7 @@
               <div class="grid-content bg-purple mydiv">
                 <el-button  @click="addHandle" >创建生产计划</el-button>
                 <el-button @click="search">搜索</el-button>
-                <el-button>导出</el-button>
+                <el-button @click="handleDownload" :loading="downloadLoading">导出</el-button>
               </div>
             </el-col>
           </el-row>
@@ -90,8 +90,14 @@
       <el-dialog  width="20%" v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title='新增' @close="closeDialog" >
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="产线">
-            <el-input v-model="addForm.line_id" width="200" auto-complete="off"></el-input>
-          </el-form-item>
+              <el-select v-model="addForm.line2" :style="{ width: '90%' }" filterable placeholder="请选择">
+                <el-option
+                  v-for="item in options1"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+            </el-form-item>
           <el-form-item label="日期">
             <el-date-picker
               v-model="addForm.plan_date"
@@ -113,7 +119,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="产品名称">
-            <el-input v-model="addForm.product_id " width="200"></el-input>
+            <el-select v-model="addForm.pro2" :style="{ width: '90%' }" filterable placeholder="请选择">
+              <el-option
+                v-for="item in options3"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="计划产量">
             <el-input  v-model="addForm.cnt" width="200"></el-input>
@@ -133,7 +145,13 @@
       <el-dialog width="20%" v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑">
         <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
           <el-form-item label="产线">
-            <el-input v-model="editForm.line_id" width="200" auto-complete="off"></el-input>
+            <el-select v-model="editForm.line2" :style="{ width: '90%' }" filterable placeholder="请选择">
+              <el-option
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
             <el-form-item label="日期">
               <el-date-picker
@@ -156,7 +174,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="产品名称">
-            <el-input v-model="editForm.product_id" width="200"></el-input>
+            <el-select v-model="editForm.pro2" :style="{ width: '90%' }" filterable placeholder="请选择">
+              <el-option
+                v-for="item in options3"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="计划产量">
             <el-input  v-model="editForm.cnt" width="200"></el-input>
@@ -362,6 +386,7 @@
           status: '',
           abnormal: 0,
           twotimes: [],
+          line2:''
         },
         value6: '',
         Line: '',
@@ -464,23 +489,53 @@
           alert('网络错误，不能访问')
         }
       )
-      axios({
-        method: 'get',
-        baseURL: '/api',
-        url: 'devices'
-      }).then(
-        response => {
-          console.log(response)
-          this.options2=response.data.data
-        }
-      ).catch(
-        error => {
-          console.log(error)
-          alert('网络错误，不能访问')
-        }
-      )
+      // axios({
+      //   method: 'get',
+      //   baseURL: '/api',
+      //   url: 'devices'
+      // }).then(
+      //   response => {
+      //     console.log(response)
+      //     this.options2=response.data.data
+      //   }
+      // ).catch(
+      //   error => {
+      //     console.log(error)
+      //     alert('网络错误，不能访问')
+      //   }
+      // ),
+        axios({
+          method: 'get',
+          baseURL: '/api',
+          url: 'products'
+        }).then(
+          response => {
+            console.log(response)
+            this.options3=response.data.data
+          }
+        ).catch(
+          error => {
+            console.log(error)
+            alert('网络错误，不能访问')
+          }
+        )
     },
     methods: {
+      // handleDownload() {
+      //   this.downloadLoading = true
+      //   require.ensure([], () => {
+      //     const { export_json_to_excel } = require('@/vendor/Export2Excel')
+      //     const tHeader = ['日期', '姓名', '地址']
+      //     const filterVal = ['date', 'name', 'address']
+      //     const list = this.tableData
+      //     const data = this.formatJson(filterVal, list)
+      //     export_json_to_excel(tHeader, data, '列表excel')
+      //     this.downloadLoading = false
+      //   })
+      // },
+      // formatJson(filterVal, jsonData) {
+      //   return jsonData.map(v => filterVal.map(j => v[j]))
+      // },
       checkemail:function(){
         var regEmail=/^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
         if(this.email==''){
@@ -498,11 +553,11 @@
           baseURL:'api',
           url:'plans',
           data:{
-            line_id:this.addForm.line_id,
+            line_id:this.addForm.line2,
             plan_date :this.addForm.plan_date ,
             mobile:this.addForm.mobile,
             plan_time_id:this.addForm.time,
-            product_id :this.addForm.product_id ,
+            product_id :this.addForm.pro2 ,
             cnt:this.addForm.cnt,
             addon:this.addForm.addon,
             plan_user_id :this.addForm.plan_user_id ,
@@ -525,16 +580,16 @@
 
       },
       editSubmit:function(editForm){
-        alert(editForm)
+
         axios({
           method:'put',
           baseURL:'api',
           url:'plans/'+this.editForm.id,
           data:{
-            line_id:this.editForm.line_id,
+            line_id:this.editForm.line2,
             plan_date :this.editForm.plan_date ,
             plan_time_id:this.editForm.plan_time_id,
-            product_id :this.editForm.product_id ,
+            product_id :this.editForm.pro2 ,
             cnt:this.editForm.cnt,
             addon:this.editForm.addon,
             plan_user_id :this.editForm.plan_user_id ,
@@ -544,6 +599,7 @@
         }).then(
           response=>{
             console.log(response)
+            this.$router.go(0)
 
           }
         ).catch(
@@ -584,60 +640,61 @@
         if (date == undefined) {
           return ''
         }
-        return moment(date).format('YYYY-MM-DD ')
+        return moment(date).format('YYYY-MM-DD')
       },
       search: function() {
-        // if (!this.form.twotimes){
-        //   this.form.twotimes = []
-        // }
-        // alert(this.form.twotimes)
+        if (!this.form.twotimes){
+          this.form.twotimes = []
+        }
         axios({
           method: 'get',
           baseURL: '/api',
-          url: 'users',
+          url: 'plans',
           params: {
-            realname: this.form.realname,
+            line_id: this.form.line_id,
+            begin_date: this.form.twotimes[0],
+            end_date:this.form.twotimes[1]
           }
         }).then(
           response => {
             console.log(response)
             this.tableData = response.data.data.rows
-            this.tableData.forEach((item, index) => {
-              switch (item.status) {
-                case 0:
-                  item['statusname'] = '关机'
-                  break
-                case 1:
-                  item['statusname'] = '运行'
-                  break
-                case 2:
-                  item['statusname'] = '空闲'
-                  break
-                case 3:
-                  item['statusname'] = '报警'
-                  break
-                case 4:
-                  item['statusname'] = '其它'
-                  return
-              }
-              switch (item.abnormal) {
-                case false:
-                  item['abnormal'] = '否'
-                  break
-                case true:
-                  item['abnormal'] = '是'
-                  break
-                  return
-              }
-              this.tableData.forEach((item, index) => {
-                switch (item.line_id) {
-                  case 10000:
-                    item['line_id'] = '康明斯'
-                    break
-                    return
-                }
-              })
-            })
+            // this.tableData.forEach((item, index) => {
+            //   switch (item.status) {
+            //     case 0:
+            //       item['statusname'] = '关机'
+            //       break
+            //     case 1:
+            //       item['statusname'] = '运行'
+            //       break
+            //     case 2:
+            //       item['statusname'] = '空闲'
+            //       break
+            //     case 3:
+            //       item['statusname'] = '报警'
+            //       break
+            //     case 4:
+            //       item['statusname'] = '其它'
+            //       return
+            //   }
+            //   switch (item.abnormal) {
+            //     case false:
+            //       item['abnormal'] = '否'
+            //       break
+            //     case true:
+            //       item['abnormal'] = '是'
+            //       break
+            //       return
+            //   }
+            //   this.tableData.forEach((item, index) => {
+            //     switch (item.line_id) {
+            //       case 10000:
+            //         item['line_id'] = '康明斯'
+            //         break
+            //         return
+            //     }
+            //   })
+            // })
             console.log(this.tableData)
           }
         ).catch(
