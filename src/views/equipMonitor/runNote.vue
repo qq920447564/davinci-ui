@@ -43,7 +43,6 @@
                 value-format="yyyy-MM-dd"
               format="yyyy-MM-dd"
                 :unlink-panels="true"
-                @change="chooseTimeRange"
               style="width: 280px"
                 type="daterange"
                 align="center"
