@@ -423,7 +423,6 @@ export default {
     fetchData(beginTime, EndTime, lineId, userId, limit, offset) {
       getWorkTime(beginTime, EndTime, lineId, userId, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
-        this.total = response.data.total
         this.tableData = response.data.rows
         this.tableData.forEach((item, index) => {
           if (item.clockin_time) {
@@ -465,9 +464,11 @@ export default {
       this.deleted = false
     },
     search() {
+      this.listLoading = true
       if (!this.twotimes) {
         this.twotimes = []
       }
+      this.getTotal()
       this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, this.listQuery.limit, this.listQuery.currentPage)
     },
     out() {
@@ -523,6 +524,16 @@ export default {
         alert('修改成功！')
         this.editFormVisible = false
         this.search()
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    getTotal() {
+      getWorkTime(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name).then(response => {
+        this.total = response.data.total
       }).catch(
         error => {
           console.log(error)

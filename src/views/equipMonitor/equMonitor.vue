@@ -373,9 +373,9 @@ export default {
         this.tableData2 = response.data
         this.total = this.tableData2.length
         this.tableData2.forEach((item, index) => {
-          item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
-          item['updated_time'] = moment(item.updated_time).format('YYYY-MM-DD hh:mm:ss')
-          item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
+          if (item.latest && item.latest.ts) {
+            item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
+          }
         })
         this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       }).catch(

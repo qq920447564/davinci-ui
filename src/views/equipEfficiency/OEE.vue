@@ -178,9 +178,7 @@ export default {
         this.options1 = response.data
         this.Line = response.data[0].id
         this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
-        getOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD')).then(response => {
-          this.total = response.data.total
-        })
+        this.getTotal()
       }).catch(
         error => {
           console.log(error)
@@ -213,10 +211,17 @@ export default {
       console.log(`当前页: ${val}`)
     },
     search() {
+      this.listLoading = true
       if (!this.towtimes) {
         this.towtimes = []
       }
+      this.getTotal()
       this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+    },
+    getTotal() {
+      getOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD')).then(response => {
+        this.total = response.data.total
+      })
     }
   }
 }
