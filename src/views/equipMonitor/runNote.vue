@@ -167,7 +167,7 @@ components: { ElHeader },
         label: '关机'
       }, {
         value: '1',
-        label: '加工'
+        label: '运行'
       }, {
         value: '2',
         label: '空闲'
@@ -345,6 +345,10 @@ components: { ElHeader },
     //表格里面的时间格式转换
       formatDuring: function (row, column) {
         var msd = row[column.property]
+        // if (msd === undefined) {
+        //   return ''
+        // }
+        // return moment.duration(msd).hours()
         var time = parseFloat(msd) / 1000
         if (time != null && time !== '') {
           if (time > 60 && time < 60 * 60) {
@@ -356,7 +360,10 @@ components: { ElHeader },
               padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
                 parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
           } else {
-            time = '00:00:' + padDate(parseInt(time))
+            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+              parseInt(time / 3600.0)) * 60)) + ':' +
+              padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+                parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
           }
         }
         return time
