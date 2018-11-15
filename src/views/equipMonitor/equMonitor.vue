@@ -127,7 +127,7 @@
           <el-tab-pane label="实时数据" name="second">
             <el-table
               v-loading="listLoading"
-              :data="tableData2"
+              :data="tableData"
               border
               fit
               highlight-current-row
@@ -285,6 +285,7 @@ export default {
       input2: null,
       equId: null,
       listLoading: false,
+      tableData: null,
       tableData2: null,
       activeName: 'first',
       filterText: '',
@@ -300,7 +301,8 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id'
-      }
+      },
+      total: null
     }
   },
   watch: {
@@ -313,9 +315,13 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
+      this.listQuery.limit = val
+      this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.listQuery.currentPage = val
+      this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       console.log(`当前页: ${val}`)
     },
     fetchLines() {
@@ -366,9 +372,12 @@ export default {
     fetchPoints() {
       getDevicePoint(this.equId).then(response => {
         this.tableData2 = response.data
+        this.total = this.tableData2.length
         this.tableData2.forEach((item, index) => {
+          item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
           item['updated_time'] = moment(item.updated_time).format('YYYY-MM-DD hh:mm:ss')
         })
+        this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       }).catch(
         error => {
           console.log(error)

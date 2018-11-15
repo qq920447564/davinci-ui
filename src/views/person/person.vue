@@ -420,8 +420,8 @@ export default {
         }
       )
     },
-    fetchData(beginTime, EndTime, lineId, userId) {
-      getWorkTime(beginTime, EndTime, lineId, userId).then(response => {
+    fetchData(beginTime, EndTime, lineId, userId, limit, offset) {
+      getWorkTime(beginTime, EndTime, lineId, userId, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
         this.total = response.data.total
         this.tableData = response.data.rows
@@ -454,9 +454,11 @@ export default {
       )
     },
     handleSizeChange(val) {
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     conf() {
@@ -466,7 +468,7 @@ export default {
       if (!this.twotimes) {
         this.twotimes = []
       }
-      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name)
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, this.listQuery.limit, this.listQuery.currentPage)
     },
     out() {
       console.log()

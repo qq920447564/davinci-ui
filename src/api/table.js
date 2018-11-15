@@ -7,19 +7,21 @@ export function getList() {
   })
 }
 
-export function getOEE(lineId, beginDate, endDate) {
+export function getOEE(lineId, beginDate, endDate, limit, offset) {
   return request({
     url: '/reports/oee',
     method: 'get',
     params: {
       lineId,
       beginDate,
-      endDate
+      endDate,
+      limit,
+      offset
     }
   })
 }
 
-export function getWorkTime(begin_date, end_date, line_id, user_id) {
+export function getWorkTime(begin_date, end_date, line_id, user_id, limit, offset) {
   return request({
     url: '/punch_logs',
     method: 'get',
@@ -27,12 +29,14 @@ export function getWorkTime(begin_date, end_date, line_id, user_id) {
       begin_date,
       end_date,
       line_id,
-      user_id
+      user_id,
+      limit,
+      offset
     }
   })
 }
 
-export function getPlanResult(lineId, beginDate, endDate, statType) {
+export function getPlanResult(lineId, beginDate, endDate, statType, limit, offset) {
   return request({
     url: '/reports/plan_result',
     method: 'get',
@@ -40,7 +44,9 @@ export function getPlanResult(lineId, beginDate, endDate, statType) {
       lineId,
       beginDate,
       endDate,
-      statType
+      statType,
+      limit,
+      offset
     }
   })
 }

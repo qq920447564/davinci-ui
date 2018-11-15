@@ -188,7 +188,7 @@ export default {
       Line: '',
       production: '',
       str: [],
-      total: 10
+      total: null
     }
   },
   created() {
@@ -206,7 +206,10 @@ export default {
         this.options1 = response.data
         this.Line = response.data[0].id
         this.statistical = this.options3[1].value
-        this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+        this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+        getPlanResult(this.Line, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.statistical).then(response => {
+          this.total = response.data.pagination.total
+        })
       }).catch(
         error => {
           console.log(error)
@@ -214,10 +217,9 @@ export default {
         }
       )
     },
-    fetchDataPlan(lineId, statType, beginTime, EndTime) {
-      getPlanResult(lineId, beginTime, EndTime, statType).then(response => {
+    fetchDataPlan(lineId, statType, beginTime, EndTime, limit, offset) {
+      getPlanResult(lineId, beginTime, EndTime, statType, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
-        this.total = response.data.pagination.total
         this.tableData = response.data.pagination.rows
         this.tableData.forEach((item, index) => {
           if (item.rate) {
@@ -232,9 +234,11 @@ export default {
       )
     },
     handleSizeChange(val) {
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     handleClick(row) {
@@ -260,7 +264,7 @@ export default {
       if (!this.twotimes) {
         this.twotimes = []
       }
-      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
     }
   }
 }
