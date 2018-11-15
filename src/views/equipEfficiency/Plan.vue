@@ -244,8 +244,16 @@ export default {
     handleClick(row) {
       if (row.plan_time_name) {
         this.str = row.plan_time_name.split('-')
-        this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[0] + ':00'
-        this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[1] + ':00'
+        if (this.str[0] === '24:00') {
+          this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + '23:59:59'
+        } else {
+          this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[0] + ':00'
+        }
+        if (this.str[1] === '24:00') {
+          this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + '23:59:59'
+        } else {
+          this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[1] + ':00'
+        }
       }
       getWorkTime(this.str[0], this.str[1], this.Line, null).then(response => {
         this.gridData = response.data.rows
