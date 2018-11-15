@@ -5,7 +5,7 @@
         <el-col :span="24">
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">产线</span>
-            <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+            <el-select v-model="Line" filterable clearable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
