@@ -160,7 +160,7 @@ export default {
       towtimes: [new Date(), new Date()],
       Line: '',
       production: '',
-      total: 10
+      total: null
     }
   },
   created() {
@@ -177,7 +177,10 @@ export default {
       getLines().then(response => {
         this.options1 = response.data
         this.Line = response.data[0].id
-        this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
+        this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+        getOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD')).then(response => {
+          this.total = response.data.total
+        })
       }).catch(
         error => {
           console.log(error)
@@ -185,10 +188,9 @@ export default {
         }
       )
     },
-    fetchDataOEE(lineId, beginTime, EndTime) {
-      getOEE(lineId, beginTime, EndTime).then(response => {
+    fetchDataOEE(lineId, beginTime, EndTime, limit, offset) {
+      getOEE(lineId, beginTime, EndTime, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
-        this.total = response.data.total
         this.tableData = response.data.rows
         this.tableData.forEach((item, index) => {
           if (item.oee || item.oee === 0) {
@@ -203,16 +205,18 @@ export default {
       )
     },
     handleSizeChange(val) {
+      this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     search() {
       if (!this.towtimes) {
         this.towtimes = []
       }
-      this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'))
+      this.fetchDataOEE(this.Line, moment(this.towtimes[0]).format('YYYY-MM-DD'), moment(this.towtimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
     }
   }
 }
