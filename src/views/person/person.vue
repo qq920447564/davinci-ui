@@ -44,7 +44,7 @@
             <el-dialog
               :visible.sync="addFormVisible"
               title="上下机签卡"
-              width="25%" >
+              width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
                   <el-select v-model="form.line3" :style="{ width: '90%' }" filterable placeholder="请选择">
@@ -140,7 +140,7 @@
             <el-dialog
               :visible.sync="dialogVisible"
               title="上下机签卡"
-              width="25%" >
+              width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
                   <el-select v-model="form.line1" :style="{ width: '90%' }" filterable placeholder="请选择" disabled>
@@ -203,7 +203,7 @@
             <el-dialog
               :visible.sync="editFormVisible"
               title="上下机签卡"
-              width="25%" >
+              width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
                   <el-select v-model="form.line2" :style="{ width: '90%' }" filterable placeholder="请选择">
