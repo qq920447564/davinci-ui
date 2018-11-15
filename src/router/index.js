@@ -190,36 +190,36 @@ export const constantRouterMap = [
     alwaysShow: true,
     meta: { title: '系统管理', icon: 'link' },
     children: [
-      {
-        path: 'operationMonitor',
-        component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
-        name: 'operationMonitor',
-        meta: { title: '设备信息管理', icon: 'yuan' }
-      },
-      {
-        path: '/dataDictionary',
-        meta: { title: '数据字典', icon: 'yuan' },
-        name: 'dataDictionary',
-        component: () => import('@/views/systemManage/dataDictionary')
-      },
+      // {
+      //   path: 'operationMonitor',
+      //   component: () => import('@/views/equipMonitor/equipInfoManage'), // Parent router-view
+      //   name: 'operationMonitor',
+      //   meta: { title: '设备信息管理', icon: 'yuan' }
+      // },
+      // {
+      //   path: '/dataDictionary',
+      //   meta: { title: '数据字典', icon: 'yuan' },
+      //   name: 'dataDictionary',
+      //   component: () => import('@/views/systemManage/dataDictionary')
+      // },
       {
         path: '/userManange',
         meta: { title: '用户管理', icon: 'yuan' },
         name: 'userManage',
         component: () => import('@/views/systemManage/userManage')
-      },
-      {
-        path: '/gatewayPage',
-        meta: { title: '网关配置', icon: 'yuan' },
-        name: 'gatewayPage',
-        component: () => import('@/views/systemManage/gatewayPage')
-      },
-      {
-        path: '/deployPage',
-        meta: { title: '部署配置', icon: 'yuan' },
-        name: 'deployPage',
-        component: () => import('@/views/systemManage/deployPage')
       }
+      // {
+      //   path: '/gatewayPage',
+      //   meta: { title: '网关配置', icon: 'yuan' },
+      //   name: 'gatewayPage',
+      //   component: () => import('@/views/systemManage/gatewayPage')
+      // },
+      // {
+      //   path: '/deployPage',
+      //   meta: { title: '部署配置', icon: 'yuan' },
+      //   name: 'deployPage',
+      //   component: () => import('@/views/systemManage/deployPage')
+      // }
     ]
   },
 

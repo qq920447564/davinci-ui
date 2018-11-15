@@ -28,15 +28,15 @@
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">日期</span>
               <el-date-picker
-                v-model="form.twotimes" clearable="true"
+                v-model="form.twotimes"
                 :picker-options="pickerOptions2"
+                :unlink-panels="true"
+                clearable="true"
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                :unlink-panels="true"
-                style="width: 280px"
+                style="width: 390px"
                 type="daterange"
                 align="center"
-                unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
@@ -45,8 +45,8 @@
             <div class="grid-content bg-purple mydiv">
               <el-checkbox v-model="form.is_clear">是否消除</el-checkbox>
             </div>
-            <el-button  @click="search">搜索</el-button>
-            <el-button  @click="handle">导出</el-button>
+            <el-button @click="search">搜索</el-button>
+            <el-button @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -96,8 +96,8 @@
           label="结束时间"
         />
         <el-table-column
-          prop="duration"
           :formatter="formatDuring"
+          prop="duration"
           label="持续时间"
         />
         <el-table-column
@@ -174,31 +174,30 @@ export default {
         line_id: '',
         device_no: '',
         twotimes: [],
-        is_clear:''
+        is_clear: ''
       },
       tableData: []
     }
   },
   created() {
-
-    function dateFormatter(str){//默认返回yyyy-MM-dd HH-mm-ss
-      var hasTime = arguments[1] != false ? true : false;//可传第二个参数false，返回yyyy-MM-dd
-      var d = new Date(str);
-      var year = d.getFullYear();
-      var month = (d.getMonth()+1)<10 ? '0'+(d.getMonth()+1) : (d.getMonth()+1);
-      var day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+    function dateFormatter(str) { // 默认返回yyyy-MM-dd HH-mm-ss
+      var hasTime = arguments[1] != false// 可传第二个参数false，返回yyyy-MM-dd
+      var d = new Date(str)
+      var year = d.getFullYear()
+      var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)
+      var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate()
       // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
       // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
       // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
-      if(hasTime){
-        return [year, month, day].join('-');
-      }else{
-        return [year, month, day].join('-');
+      if (hasTime) {
+        return [year, month, day].join('-')
+      } else {
+        return [year, month, day].join('-')
       }
     }
-    let start =dateFormatter(new Date())
-    let end = dateFormatter(new Date())
-    this.form.twotimes = [start, end];
+    const start = dateFormatter(new Date())
+    const end = dateFormatter(new Date())
+    this.form.twotimes = [start, end]
     axios({
       method: 'get',
       baseURL: '/api',
@@ -234,7 +233,7 @@ export default {
       }
     )
   },
-  mounted(){
+  mounted() {
     axios({
       method: 'get',
       baseURL: '/api',
@@ -242,7 +241,7 @@ export default {
     }).then(
       response => {
         console.log(response)
-        this.options1=response.data.data
+        this.options1 = response.data.data
       }
     ).catch(
       error => {
@@ -257,7 +256,7 @@ export default {
     }).then(
       response => {
         console.log(response)
-        this.options2=response.data.data
+        this.options2 = response.data.data
       }
     ).catch(
       error => {
@@ -308,7 +307,7 @@ export default {
     },
 
     search: function() {
-      if (!this.form.twotimes){
+      if (!this.form.twotimes) {
         this.form.twotimes = []
       }
       axios({
@@ -320,7 +319,7 @@ export default {
           lineId: this.form.line_id,
           deviceNo: this.form.device_no,
           beginDate: this.form.twotimes[0],
-          endDate:this.form.twotimes[1],
+          endDate: this.form.twotimes[1],
           isCleared: this.form.is_clear
         }
       }).then(
@@ -346,8 +345,6 @@ export default {
                 return
             }
           })
-
-
         }
       ).catch(
         error => {
@@ -364,7 +361,7 @@ export default {
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-    formatDuring: function (row, column) {
+    formatDuring: function(row, column) {
       var msd = row[column.property]
       var time = parseFloat(msd) / 1000
       if (time != null && time !== '') {
@@ -388,7 +385,7 @@ export default {
     // 时间选择框格式转换
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
-    },
+    }
 
   }
 }
