@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column align="center" label="OEE" >
           <template slot-scope="scope">
-            <span>{{ scope.row.oee }}%</span>
+            <span>{{ scope.row.oee }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -190,6 +190,12 @@ export default {
         this.listLoading = false
         this.total = response.data.total
         this.tableData = response.data.rows
+        this.tableData.forEach((item, index) => {
+          console.log('oee' + item.oee)
+          if (item.oee) {
+            item['oee'] = (Number(item.oee) * 100).toFixed(2) + '%'
+          }
+        })
       }).catch(
         error => {
           console.log(error)
