@@ -191,8 +191,7 @@ export default {
         this.total = response.data.total
         this.tableData = response.data.rows
         this.tableData.forEach((item, index) => {
-          console.log('oee' + item.oee)
-          if (item.oee) {
+          if (item.oee || item.oee === 0) {
             item['oee'] = (Number(item.oee) * 100).toFixed(2) + '%'
           }
         })
