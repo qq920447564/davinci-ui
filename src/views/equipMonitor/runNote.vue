@@ -38,25 +38,25 @@
               <span class="mytitle">日期</span>
               <!--<p>组件值：{{ form.twotimes  | formatDate}}</p>-->
               <el-date-picker
-                v-model="form.twotimes" clearable="true"
+                v-model="form.twotimes"
                 :picker-options="pickerOptions2"
-                value-format="yyyy-MM-dd"
-              format="yyyy-MM-dd"
                 :unlink-panels="true"
-              style="width: 280px"
+                clearable="true"
+                value-format="yyyy-MM-dd"
+                format="yyyy-MM-dd"
+                style="width: 390px"
                 type="daterange"
                 align="center"
-                unlink-panels
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox  v-model="form.abnormal">是否异常</el-checkbox>
+              <el-checkbox v-model="form.abnormal">是否异常</el-checkbox>
             </div>
-            <el-button  @click="search">搜索</el-button>
-            <el-button  @click="handle">导出</el-button>
+            <el-button @click="search">搜索</el-button>
+            <el-button @click="handle">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -137,19 +137,19 @@ var padDate = function(value) {
   return value < 10 ? '0' + value : value
 }
 export default {
-filters:{
-  formatDate: function(value) {
-    var date = new Date(value)
-    var year = date.getFullYear()
-    var month = padDate(date.getMonth() + 1)
-    var day = padDate(date.getDate())
-    var hours = padDate(date.getHours())
-    var minutes = padDate(date.getMinutes())
-    var seconds = padDate(date.getSeconds())
-    return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
+  filters: {
+    formatDate: function(value) {
+      var date = new Date(value)
+      var year = date.getFullYear()
+      var month = padDate(date.getMonth() + 1)
+      var day = padDate(date.getDate())
+      var hours = padDate(date.getHours())
+      var minutes = padDate(date.getMinutes())
+      var seconds = padDate(date.getSeconds())
+      return year + '-' + month + '-' + day + ' ' + ' ' + hours + ':' + minutes + ':' + seconds
+    }
   },
-},
-components: { ElHeader },
+  components: { ElHeader },
   data() {
     return {
       listQuery: {
@@ -212,7 +212,7 @@ components: { ElHeader },
         device_no: '',
         status: '',
         abnormal: 0,
-        twotimes: [],
+        twotimes: []
       },
       value6: '',
       Line: '',
@@ -222,26 +222,26 @@ components: { ElHeader },
     }
   },
   created() {
-  //处理默认时间控件的方法
-     function dateFormatter(str){//默认返回yyyy-MM-dd HH-mm-ss
-      var hasTime = arguments[1] != false ? true : false;//可传第二个参数false，返回yyyy-MM-dd
-      var d = new Date(str);
-      var year = d.getFullYear();
-      var month = (d.getMonth()+1)<10 ? '0'+(d.getMonth()+1) : (d.getMonth()+1);
-      var day = d.getDate()<10 ? '0'+d.getDate() : d.getDate();
+  // 处理默认时间控件的方法
+    function dateFormatter(str) { // 默认返回yyyy-MM-dd HH-mm-ss
+      var hasTime = arguments[1] != false// 可传第二个参数false，返回yyyy-MM-dd
+      var d = new Date(str)
+      var year = d.getFullYear()
+      var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)
+      var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate()
       // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
       // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
       // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
-      if(hasTime){
-        return [year, month, day].join('-');
-      }else{
-        return [year, month, day].join('-');
+      if (hasTime) {
+        return [year, month, day].join('-')
+      } else {
+        return [year, month, day].join('-')
       }
     }
-      let start =dateFormatter(new Date())
-      let end = dateFormatter(new Date())
-      this.form.twotimes = [start, end];
-     //后台接收数据get得到表格数据
+    const start = dateFormatter(new Date())
+    const end = dateFormatter(new Date())
+    this.form.twotimes = [start, end]
+    // 后台接收数据get得到表格数据
     axios({
       method: 'get',
       baseURL: '/api',
@@ -342,34 +342,34 @@ components: { ElHeader },
       }
       return moment(date).format('YYYY-MM-DD HH:mm:ss')
     },
-    //表格里面的时间格式转换
-      formatDuring: function (row, column) {
-        var msd = row[column.property]
-        // if (msd === undefined) {
-        //   return ''
-        // }
-        // return moment.duration(msd).hours()
-        var time = parseFloat(msd) / 1000
-        if (time != null && time !== '') {
-          if (time > 60 && time < 60 * 60) {
-            time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+    // 表格里面的时间格式转换
+    formatDuring: function(row, column) {
+      var msd = row[column.property]
+      // if (msd === undefined) {
+      //   return ''
+      // }
+      // return moment.duration(msd).hours()
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
               parseInt(time / 60.0)) * 60))
-          } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
-            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
               parseInt(time / 3600.0)) * 60)) + ':' +
               padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
                 parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
-          } else {
-            time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+        } else {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
               parseInt(time / 3600.0)) * 60)) + ':' +
               padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
                 parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
-          }
         }
-        return time
-},
+      }
+      return time
+    },
     search: function() {
-      if (!this.form.twotimes){
+      if (!this.form.twotimes) {
         this.form.twotimes = []
       }
       // alert(this.form.twotimes)
@@ -383,7 +383,7 @@ components: { ElHeader },
           status: this.form.status,
           abnormal: this.form.abnormal,
           beginDate: this.form.twotimes[0],
-          endDate:this.form.twotimes[1]
+          endDate: this.form.twotimes[1]
         }
       }).then(
         response => {
@@ -434,7 +434,6 @@ components: { ElHeader },
           alert('网络错误，不能访问')
         }
       )
-
     }
   }
 }

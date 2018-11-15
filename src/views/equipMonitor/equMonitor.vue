@@ -106,20 +106,20 @@
                 <!--<el-button type="primary" style="margin-left: 45%">保存</el-button>-->
               </el-aside>
               <!--<el-main>-->
-                <!--<div style="height: 50%">-->
-                  <!--<el-upload-->
-                    <!--:show-file-list="false"-->
-                    <!--:on-success="handleAvatarSuccess"-->
-                    <!--:before-upload="beforeAvatarUpload"-->
-                    <!--class="avatar-uploader"-->
-                    <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-                    <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
-                    <!--<i v-else class="el-icon-plus avatar-uploader-icon"/>-->
-                  <!--</el-upload>-->
-                <!--</div>-->
-                <!--<div>-->
-                  <!--<div style="background-color: #1f2d3d;width: 100%;height: 15rem" />-->
-                <!--</div>-->
+              <!--<div style="height: 50%">-->
+              <!--<el-upload-->
+              <!--:show-file-list="false"-->
+              <!--:on-success="handleAvatarSuccess"-->
+              <!--:before-upload="beforeAvatarUpload"-->
+              <!--class="avatar-uploader"-->
+              <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+              <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
+              <!--<i v-else class="el-icon-plus avatar-uploader-icon"/>-->
+              <!--</el-upload>-->
+              <!--</div>-->
+              <!--<div>-->
+              <!--<div style="background-color: #1f2d3d;width: 100%;height: 15rem" />-->
+              <!--</div>-->
               <!--</el-main>-->
             </el-container>
           </el-tab-pane>
@@ -127,7 +127,7 @@
           <el-tab-pane label="实时数据" name="second">
             <el-table
               v-loading="listLoading"
-              :data="tableData2"
+              :data="tableData"
               border
               fit
               highlight-current-row
@@ -146,11 +146,10 @@
                 prop="latest.value"
                 label="当前值"
               />
-              <el-table-column align="center" label="更新时间" >
-                <template slot-scope="scope">
-                  <span>{{ scope.row.updated_time }}</span>
-                </template>
-              </el-table-column>
+              <el-table-column
+                prop="latest.ts"
+                label="更新时间"
+              />
               <el-table-column align="center" label="单位" >
                 <template slot-scope="scope">
                   <span>{{ scope.row.unit }}</span>
@@ -174,48 +173,48 @@
           </el-tab-pane>
           <!-- 动态曲线 -->
           <!--<el-tab-pane label="动态曲线" name="third">-->
-            <!--<el-container>-->
-              <!--<el-header>-->
-                <!--<div>-->
-                  <!--<span>数据项目：</span>-->
-                  <!--<el-select-->
-                    <!--v-model="value5"-->
-                    <!--multiple-->
-                    <!--collapse-tags-->
-                    <!--style="margin-left: 20px;"-->
-                    <!--placeholder="请选择">-->
-                    <!--<el-option-->
-                      <!--v-for="item in tableData2"-->
-                      <!--:key="item.value"-->
-                      <!--:label="item.name"-->
-                      <!--:value="item.id"/>-->
-                  <!--</el-select>-->
-                  <!--&nbsp;&nbsp;-->
-                  <!--<span>日期：</span>-->
-                  <!--<el-date-picker-->
-                    <!--v-model="twotimes"-->
-                    <!--:picker-options="pickerOptions2"-->
-                    <!--style="width: 390px"-->
-                    <!--type="daterange"-->
-                    <!--align="right"-->
-                    <!--unlink-panels-->
-                    <!--range-separator="至"-->
-                    <!--start-placeholder="开始日期"-->
-                    <!--end-placeholder="结束日期"-->
-                  <!--/>-->
-                  <!--&nbsp;&nbsp;&nbsp;-->
-                  <!--<span>自动刷新：</span>-->
-                  <!--<el-switch-->
-                    <!--v-model="switch1"-->
-                    <!--active-color="#13ce66"-->
-                    <!--inactive-color="grey"/>-->
-                  <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-                  <!--<el-button>搜索</el-button>-->
-                  <!--<el-button>导出</el-button>-->
-                <!--</div>-->
-              <!--</el-header>-->
-              <!--<el-main>Main</el-main>-->
-            <!--</el-container>-->
+          <!--<el-container>-->
+          <!--<el-header>-->
+          <!--<div>-->
+          <!--<span>数据项目：</span>-->
+          <!--<el-select-->
+          <!--v-model="value5"-->
+          <!--multiple-->
+          <!--collapse-tags-->
+          <!--style="margin-left: 20px;"-->
+          <!--placeholder="请选择">-->
+          <!--<el-option-->
+          <!--v-for="item in tableData2"-->
+          <!--:key="item.value"-->
+          <!--:label="item.name"-->
+          <!--:value="item.id"/>-->
+          <!--</el-select>-->
+          <!--&nbsp;&nbsp;-->
+          <!--<span>日期：</span>-->
+          <!--<el-date-picker-->
+          <!--v-model="twotimes"-->
+          <!--:picker-options="pickerOptions2"-->
+          <!--style="width: 390px"-->
+          <!--type="daterange"-->
+          <!--align="right"-->
+          <!--unlink-panels-->
+          <!--range-separator="至"-->
+          <!--start-placeholder="开始日期"-->
+          <!--end-placeholder="结束日期"-->
+          <!--/>-->
+          <!--&nbsp;&nbsp;&nbsp;-->
+          <!--<span>自动刷新：</span>-->
+          <!--<el-switch-->
+          <!--v-model="switch1"-->
+          <!--active-color="#13ce66"-->
+          <!--inactive-color="grey"/>-->
+          <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+          <!--<el-button>搜索</el-button>-->
+          <!--<el-button>导出</el-button>-->
+          <!--</div>-->
+          <!--</el-header>-->
+          <!--<el-main>Main</el-main>-->
+          <!--</el-container>-->
           <!--</el-tab-pane>-->
           <!-- 报警记录 -->
           <!--<el-tab-pane label="报警记录" name="fourth">报警记录</el-tab-pane>-->
@@ -285,6 +284,7 @@ export default {
       input2: null,
       equId: null,
       listLoading: false,
+      tableData: null,
       tableData2: null,
       activeName: 'first',
       filterText: '',
@@ -300,7 +300,8 @@ export default {
         title: undefined,
         type: undefined,
         sort: '+id'
-      }
+      },
+      total: null
     }
   },
   watch: {
@@ -313,9 +314,13 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
+      this.listQuery.limit = val
+      this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.listQuery.currentPage = val
+      this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       console.log(`当前页: ${val}`)
     },
     fetchLines() {
@@ -366,9 +371,13 @@ export default {
     fetchPoints() {
       getDevicePoint(this.equId).then(response => {
         this.tableData2 = response.data
+        this.total = this.tableData2.length
         this.tableData2.forEach((item, index) => {
+          item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
           item['updated_time'] = moment(item.updated_time).format('YYYY-MM-DD hh:mm:ss')
+          item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
         })
+        this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       }).catch(
         error => {
           console.log(error)

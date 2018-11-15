@@ -6,7 +6,7 @@
           <el-row :gutter="24">
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" filterable clearable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
@@ -16,7 +16,7 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">姓名:</span>
-              <el-select v-model="form.name" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.name" filterable clearable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
@@ -47,7 +47,7 @@
               width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line3" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.line3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
@@ -56,7 +56,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="姓名：">
-                  <el-select v-model="form.name3" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.name3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -84,7 +84,7 @@
                     disabled/>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="产品：">
-                  <el-select v-model="form.pro3" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.pro3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options3"
                       :key="item.value"
@@ -143,7 +143,7 @@
               width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line1" :style="{ width: '90%' }" filterable placeholder="请选择" disabled>
+                  <el-select v-model="form.line1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
@@ -153,7 +153,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="姓名：" disabled>
-                  <el-select v-model="form.name1" :style="{ width: '90%' }" filterable placeholder="请选择" disabled>
+                  <el-select v-model="form.name1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -181,7 +181,7 @@
                     align="right"/>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="产品：">
-                  <el-select v-model="form.pro1" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.pro1" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options3"
                       :key="item.value"
@@ -206,7 +206,7 @@
               width="30%" >
               <el-form :model="form">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line2" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.line2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
@@ -215,7 +215,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="姓名：">
-                  <el-select v-model="form.name2" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.name2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -242,7 +242,7 @@
                     align="right"/>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="产品：">
-                  <el-select v-model="form.pro2" :style="{ width: '90%' }" filterable placeholder="请选择">
+                  <el-select v-model="form.pro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options3"
                       :key="item.value"
@@ -420,8 +420,8 @@ export default {
         }
       )
     },
-    fetchData(beginTime, EndTime, lineId, userId) {
-      getWorkTime(beginTime, EndTime, lineId, userId).then(response => {
+    fetchData(beginTime, EndTime, lineId, userId, limit, offset) {
+      getWorkTime(beginTime, EndTime, lineId, userId, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
         this.total = response.data.total
         this.tableData = response.data.rows
@@ -454,9 +454,11 @@ export default {
       )
     },
     handleSizeChange(val) {
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     conf() {
@@ -466,7 +468,7 @@ export default {
       if (!this.twotimes) {
         this.twotimes = []
       }
-      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name)
+      this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, this.listQuery.limit, this.listQuery.currentPage)
     },
     out() {
       console.log()

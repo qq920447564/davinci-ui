@@ -5,7 +5,7 @@
         <el-col :span="24">
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">产线</span>
-            <el-select v-model="Line" filterable placeholder="请选择" style="width: 130px">
+            <el-select v-model="Line" filterable clearable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -15,7 +15,7 @@
           </div>
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">统计方式</span>
-            <el-select v-model="statistical" filterable placeholder="请选择" style="width: 130px">
+            <el-select v-model="statistical" filterable clearable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -188,7 +188,7 @@ export default {
       Line: '',
       production: '',
       str: [],
-      total: 10
+      total: null
     }
   },
   created() {
@@ -206,7 +206,10 @@ export default {
         this.options1 = response.data
         this.Line = response.data[0].id
         this.statistical = this.options3[1].value
-        this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+        this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+        getPlanResult(this.Line, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.statistical).then(response => {
+          this.total = response.data.pagination.total
+        })
       }).catch(
         error => {
           console.log(error)
@@ -214,10 +217,9 @@ export default {
         }
       )
     },
-    fetchDataPlan(lineId, statType, beginTime, EndTime) {
-      getPlanResult(lineId, beginTime, EndTime, statType).then(response => {
+    fetchDataPlan(lineId, statType, beginTime, EndTime, limit, offset) {
+      getPlanResult(lineId, beginTime, EndTime, statType, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
-        this.total = response.data.pagination.total
         this.tableData = response.data.pagination.rows
         this.tableData.forEach((item, index) => {
           if (item.rate) {
@@ -232,16 +234,26 @@ export default {
       )
     },
     handleSizeChange(val) {
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     handleClick(row) {
       if (row.plan_time_name) {
         this.str = row.plan_time_name.split('-')
-        this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[0] + ':00'
-        this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[1] + ':00'
+        if (this.str[0] === '24:00') {
+          this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + '23:59:59'
+        } else {
+          this.str[0] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[0] + ':00'
+        }
+        if (this.str[1] === '24:00') {
+          this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + '23:59:59'
+        } else {
+          this.str[1] = moment(row.stat_date).format('YYYY-MM-DD') + ' ' + this.str[1] + ':00'
+        }
       }
       getWorkTime(this.str[0], this.str[1], this.Line, null).then(response => {
         this.gridData = response.data.rows
@@ -260,7 +272,7 @@ export default {
       if (!this.twotimes) {
         this.twotimes = []
       }
-      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'))
+      this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
     }
   }
 }
