@@ -18,16 +18,19 @@
               <div class="grid-content bg-purple mydiv">
                 <span class="mytitle">日期</span>
                 <el-date-picker
-                  v-model="form.twotimes"
+                  v-model="form.twotimes" clearable="true"
                   :picker-options="pickerOptions2"
-                  style="width: 390px"
+                  value-format="yyyy-MM-dd"
+                  format="yyyy-MM-dd"
+                  :unlink-panels="true"
+                  style="width: 280px"
                   type="daterange"
-                  align="right"
+                  align="center"
                   unlink-panels
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                />
+                  @change="chooseTimeRange" />
               </div>
               <div class="grid-content bg-purple mydiv">
                 <el-button  @click="addHandle" >创建生产计划</el-button>
