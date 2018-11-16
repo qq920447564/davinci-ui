@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-header :height="300">
+    <el-header>
       <div>
 
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" clearable filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
@@ -17,7 +17,7 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" clearable filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
@@ -32,7 +32,7 @@
                 v-model="form.twotimes"
                 :picker-options="pickerOptions2"
                 :unlink-panels="true"
-                clearable="true"
+                clearable
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 style="width: 390px"
@@ -54,6 +54,7 @@
     </el-header>
     <el-main>
       <el-table
+        v-loading="listLoading"
         :data="tableData"
         border
         style="width: 100%">
@@ -100,7 +101,9 @@
 
 <script>
 import ElHeader from 'element-ui/packages/header/src/main'
-import axios from 'axios'
+import { getLines } from '@/api/line'
+import { getDevices } from '@/api/device'
+import { getDeviceOutPut } from '@/api/device'
 import moment from 'moment'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
@@ -110,6 +113,7 @@ export default {
 
   data() {
     return {
+      listLoading: true,
       listQuery: {
         currentPage: 1,
         limit: 20,
@@ -155,12 +159,13 @@ export default {
         twotimes: [],
         is_clear: ''
       },
-      tableData: []
+      tableData: [],
+      total: null
     }
   },
   created() {
     function dateFormatter(str) { // 默认返回yyyy-MM-dd HH-mm-ss
-      var hasTime = arguments[1] != false// 可传第二个参数false，返回yyyy-MM-dd
+      var hasTime = arguments[1] !== false// 可传第二个参数false，返回yyyy-MM-dd
       var d = new Date(str)
       var year = d.getFullYear()
       var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)
@@ -177,134 +182,54 @@ export default {
     const start = dateFormatter(new Date())
     const end = dateFormatter(new Date())
     this.form.twotimes = [start, end]
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices/output_stat'
-    }).then(
-      response => {
-        console.log(response)
-        this.tableData = response.data.data.rows
-        this.tableData.forEach((item, index) => {
-          switch (item.cleared) {
-            case false:
-              item['cleared'] = '否'
-              break
-            case true:
-              item['cleared'] = '是'
-              break
-              return
-          }
-        })
-        this.tableData.forEach((item, index) => {
-          switch (item.line_id) {
-            case 10000:
-              item['line_id'] = '康明斯'
-              break
-              return
-          }
-        })
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-  },
-  mounted() {
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'lines'
-    }).then(
-      response => {
-        console.log(response)
-        this.options1 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices'
-    }).then(
-      response => {
-        console.log(response)
-        this.options2 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
   },
   mounted() {
     this.chooseTimeRange()
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'lines'
-    }).then(
-      response => {
-        this.options1 = response.data.data
-        this.form.line_id = this.options1[0].id
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices'
-    }).then(
-      response => {
-        console.log(response)
-        this.options2 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
+    this.fetchLines()
   },
   methods: {
     handleSizeChange(val) {
+      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
+      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
-
-    search: function() {
-      if (!this.form.twotimes) {
-        this.form.twotimes = []
-      }
-      axios({
-
-        method: 'get',
-        baseURL: '/api',
-        url: 'devices/output_stat',
-        params: {
-          lineId: this.form.line_id,
-          deviceNo: this.form.device_no,
-          beginDate: this.form.twotimes[0],
-          endDate: this.form.twotimes[1]
-
+    fetchLines() {
+      getLines().then(
+        response => {
+          this.options1 = response.data
+          this.form.line_id = this.options1[0].id
+          this.fetchDevices()
         }
-      }).then(
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchDevices() {
+      getDevices().then(
         response => {
           console.log(response)
-          this.tableData = response.data.data.rows
+          this.options2 = response.data
+          this.search()
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchData(lineId, deviceNo, beginDate, endDate, limit, offset) {
+      getDeviceOutPut(lineId, deviceNo, beginDate, endDate, limit, ((offset - 1) * limit)).then(
+        response => {
+          this.listLoading = false
+          console.log(response)
+          this.tableData = response.data.rows
           this.tableData.forEach((item, index) => {
             switch (item.cleared) {
               case false:
@@ -313,7 +238,6 @@ export default {
               case true:
                 item['cleared'] = '是'
                 break
-                return
             }
           })
           this.tableData.forEach((item, index) => {
@@ -321,9 +245,29 @@ export default {
               case 10000:
                 item['line_id'] = '康明斯'
                 break
-                return
             }
           })
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    search() {
+      this.listLoading = true
+      if (!this.form.twotimes) {
+        this.form.twotimes = []
+      }
+      this.getTotal()
+      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+    },
+    getTotal() {
+      getDeviceOutPut(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD')).then(
+        response => {
+          console.log(response)
+          this.total = response.data.total
         }
       ).catch(
         error => {

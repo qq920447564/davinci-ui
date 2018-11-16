@@ -1,12 +1,12 @@
 <template>
   <div>
-    <el-header :height="300">
+    <el-header>
       <div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" clearable filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
@@ -16,7 +16,7 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="form.device_no" clearable="true" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" clearable filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
@@ -26,7 +26,7 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">状态:</span>
-              <el-select v-model="form.status" clearable="true" filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.status" clearable filterable placeholder="请选择" style="width: 130px">
                 <el-option
                   v-for="item in options3"
                   :key="item.value"
@@ -41,7 +41,7 @@
                 v-model="form.twotimes"
                 :picker-options="pickerOptions2"
                 :unlink-panels="true"
-                clearable="true"
+                clearable
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
                 style="width: 390px"
@@ -63,6 +63,7 @@
     </el-header>
     <el-main>
       <el-table
+        v-loading="listLoading"
         :data="tableData"
         border
         style="width: 100%">
@@ -129,7 +130,9 @@
 
 <script>
 import ElHeader from 'element-ui/packages/header/src/main'
-import axios from 'axios'
+import { getLines } from '@/api/line'
+import { getDevices } from '@/api/device'
+import { getDeviceStatus } from '@/api/device'
 import moment from 'moment'
 
 // 在月份、日期、小时等小于10前面补0
@@ -152,9 +155,10 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      listLoading: true,
       listQuery: {
         currentPage: 1,
-        limit: 20,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -211,20 +215,21 @@ export default {
         line_id: '',
         device_no: '',
         status: '',
-        abnormal: 0,
+        abnormal: false,
         twotimes: []
       },
       value6: '',
       Line: '',
       Line2: '',
       Line3: '',
-      tableData: []
+      tableData: [],
+      total: null
     }
   },
   created() {
   // 处理默认时间控件的方法
     function dateFormatter(str) { // 默认返回yyyy-MM-dd HH-mm-ss
-      var hasTime = arguments[1] != false// 可传第二个参数false，返回yyyy-MM-dd
+      var hasTime = arguments[1] !== false// 可传第二个参数false，返回yyyy-MM-dd
       var d = new Date(str)
       var year = d.getFullYear()
       var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)
@@ -242,94 +247,10 @@ export default {
     const end = dateFormatter(new Date())
     this.form.twotimes = [start, end]
     // 后台接收数据get得到表格数据
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices/status_stat'
-    }).then(
-      response => {
-        console.log(response)
-        this.tableData = response.data.data.rows
-        this.tableData.forEach((item, index) => {
-          switch (item.status) {
-            case 0:
-              item['statusname'] = '关机'
-              break
-            case 1:
-              item['statusname'] = '运行'
-              break
-            case 2:
-              item['statusname'] = '空闲'
-              break
-            case 3:
-              item['statusname'] = '报警'
-              break
-            case 4:
-              item['statusname'] = '其它'
-              return
-          }
-        })
-        this.tableData.forEach((item, index) => {
-          switch (item.abnormal) {
-            case false:
-              item['abnormal'] = '否'
-              break
-            case true:
-              item['abnormal'] = '是'
-              break
-              return
-          }
-        })
-        this.tableData.forEach((item, index) => {
-          switch (item.line_id) {
-            case 10000:
-              item['line_id'] = '康明斯'
-              break
-              return
-          }
-        })
-
-        console.log(this.tableData)
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
   },
   mounted() {
     this.chooseTimeRange()
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'lines'
-    }).then(
-      response => {
-        this.options1 = response.data.data
-        this.form.line_id = this.options1[0].id
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices'
-    }).then(
-      response => {
-        console.log(response)
-        this.options2 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
+    this.fetchLines()
   },
   methods: {
     chooseTimeRange(t) {
@@ -368,27 +289,40 @@ export default {
       }
       return time
     },
-    search: function() {
-      if (!this.form.twotimes) {
-        this.form.twotimes = []
-      }
-      // alert(this.form.twotimes)
-      axios({
-        method: 'get',
-        baseURL: '/api',
-        url: 'devices/status_stat',
-        params: {
-          lineId: this.form.line_id,
-          deviceNo: this.form.device_no,
-          status: this.form.status,
-          abnormal: this.form.abnormal,
-          beginDate: this.form.twotimes[0],
-          endDate: this.form.twotimes[1]
+    fetchLines() {
+      getLines().then(
+        response => {
+          this.options1 = response.data
+          this.form.line_id = this.options1[0].id
+          this.fetchDevices()
         }
-      }).then(
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchDevices() {
+      getDevices().then(
         response => {
           console.log(response)
-          this.tableData = response.data.data.rows
+          this.options2 = response.data
+          this.search()
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    fetchDeviceData(lineId, deviceNo, status, beginDate, endDate, abnormal, limit, offset) {
+      getDeviceStatus(lineId, deviceNo, status, beginDate, endDate, abnormal, limit, ((offset - 1) * limit)).then(
+        response => {
+          console.log(response)
+          this.listLoading = false
+          this.tableData = response.data.rows
           this.tableData.forEach((item, index) => {
             switch (item.status) {
               case 0:
@@ -407,6 +341,8 @@ export default {
                 item['statusname'] = '其它'
                 return
             }
+          })
+          this.tableData.forEach((item, index) => {
             switch (item.abnormal) {
               case false:
                 item['abnormal'] = '否'
@@ -414,27 +350,55 @@ export default {
               case true:
                 item['abnormal'] = '是'
                 break
-                return
             }
-            this.tableData.forEach((item, index) => {
-              switch (item.line_id) {
-                case 10000:
-                  item['line_id'] = '康明斯'
-                  break
-                  return
-              }
-            })
           })
+          this.tableData.forEach((item, index) => {
+            switch (item.line_id) {
+              case 10000:
+                item['line_id'] = '康明斯'
+                break
+            }
+          })
+
           console.log(this.tableData)
         }
       ).catch(
         error => {
-          alert(3)
           console.log(error)
           alert('网络错误，不能访问')
         }
       )
-    }
+    },
+    search() {
+      this.listLoading = true
+      if (!this.form.twotimes) {
+        this.form.twotimes = []
+      }
+      this.getTotal()
+      this.fetchDeviceData(this.form.line_id, this.form.device_no, this.form.status, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.abnormal, this.listQuery.limit, this.listQuery.currentPage)
+    },
+    getTotal() {
+      getDeviceStatus().then(
+        response => {
+          console.log(response)
+          this.total = response.data.total
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    handleSizeChange(val) {
+      this.fetchDeviceData(this.form.line_id, this.form.device_no, this.form.status, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.abnormal, val, this.listQuery.currentPage)
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      this.fetchDeviceData(this.form.line_id, this.form.device_no, this.form.status, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.abnormal, this.listQuery.limit, val)
+      console.log(`当前页: ${val}`)
+    },
+    handle() {}
   }
 }
 </script>

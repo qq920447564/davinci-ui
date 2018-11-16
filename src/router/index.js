@@ -156,7 +156,6 @@ export const constantRouterMap = [
     path: '/makePlan',
     component: Layout,
     redirect: '/makePlan',
-    name: 'makePlan',
     alwaysShow: true,
     meta: { title: '生产计划', icon: 'plan' },
     children: [
@@ -173,7 +172,6 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/qualityManage/qualityPen',
     alwaysShow: true,
-    name: 'qualityManage',
     meta: { title: '质量管理', icon: 'quality' },
     children: [
       {
