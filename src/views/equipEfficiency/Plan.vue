@@ -15,7 +15,7 @@
           </div>
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">统计方式</span>
-            <el-select v-model="statistical" filterable clearable placeholder="请选择" style="width: 130px">
+            <el-select v-model="statistical" filterable placeholder="请选择" style="width: 130px">
               <el-option
                 v-for="item in options3"
                 :key="item.value"
@@ -207,9 +207,7 @@ export default {
         this.Line = response.data[0].id
         this.statistical = this.options3[1].value
         this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
-        getPlanResult(this.Line, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.statistical).then(response => {
-          this.total = response.data.pagination.total
-        })
+        this.getTotal()
       }).catch(
         error => {
           console.log(error)
@@ -269,10 +267,17 @@ export default {
       this.dialogTableVisible = true
     },
     search() {
+      this.listLoading = true
       if (!this.twotimes) {
         this.twotimes = []
       }
+      this.getTotal()
       this.fetchDataPlan(this.Line, this.statistical, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.listQuery.limit, this.listQuery.currentPage)
+    },
+    getTotal() {
+      getPlanResult(this.Line, moment(this.twotimes[0]).format('YYYY-MM-DD'), moment(this.twotimes[1]).format('YYYY-MM-DD'), this.statistical).then(response => {
+        this.total = response.data.pagination.total
+      })
     }
   }
 }
