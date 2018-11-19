@@ -7,6 +7,13 @@ export function getDevices() {
   })
 }
 
+export function getDevicesValue() {
+  return request({
+    url: '/devices?with_data_point=true',
+    method: 'get'
+  })
+}
+
 export function getDeviceStatus(lineId, deviceNo, status, beginDate, endDate, abnormal, limit, offset) {
   return request({
     url: '/devices/status_stat',
