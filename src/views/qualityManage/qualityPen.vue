@@ -82,7 +82,7 @@
           width="">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row, scope.row.line_id)">修改</el-button>
-            <el-button type="text" size="small" @click="handleClick">删除</el-button>
+            <!--<el-button type="text" size="small" @click="handleClick">删除</el-button>-->
           </template>
         </el-table-column>
 

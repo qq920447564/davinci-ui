@@ -63,7 +63,7 @@
           label="时间段"
         />
         <el-table-column
-          prop="product_id"
+          prop="product.name"
           label="产品名称"
         />
         <el-table-column
@@ -86,7 +86,7 @@
           width="">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button type="text" size="small" @click="handleClick">删除</el-button>
+            <!--<el-button type="text" size="small" @click="handleClick">删除</el-button>-->
           </template>
         </el-table-column>
 
@@ -142,7 +142,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="addSubmit(addForm)">提交</el-button>
+          <el-button :loading="addsub" type="primary" @click.native="addSubmit(addForm)">提交</el-button>
         </div>
       </el-dialog>
       <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" width="30%" title="编辑">
@@ -193,7 +193,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="editSubmit(editForm)">提交</el-button>
+          <el-button :loading="editsub" type="primary" @click.native="editSubmit(editForm)">提交</el-button>
         </div>
       </el-dialog>
       <el-dialog
@@ -250,6 +250,8 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      addsub: false,
+      editsub: false,
       thisdisable: false,
       listLoading: true,
       iscover: false,
@@ -439,6 +441,7 @@ export default {
       this.$refs.addForm.resetFields()
     },
     addSubmit(addForm) {
+      this.addsub = true
       if (this.addForm.line2 && this.addForm.plan_date && this.addForm.pro2 && this.addForm.cnt) {
         if (this.thisdisable) {
           this.options.forEach((item, index) => {
@@ -460,6 +463,7 @@ export default {
       this.addFormVisible = true
     },
     editSubmit(editForm) {
+      this.editsub = true
       this.coverPlan(this.rep, this.editForm.line2, this.editForm.plan_date, this.editForm.plan_time_id, this.editForm.pro2, this.editForm.cnt, this.editForm.addon, this.editForm.plan_user_id)
     },
     handleEdit: function(index, row) {
@@ -568,6 +572,7 @@ export default {
           if (response.data.existed) {
             this.planIds.push(response.data.plan_id)
             this.planTimeIds.push(plan_time_id)
+            this.iscover = true
           } else {
             this.newPlan(line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index)
           }
@@ -584,14 +589,16 @@ export default {
         response => {
           if (index !== null && index !== undefined) {
             if (index === this.options.length - 1) {
+              this.addsub = false
               alert('创建成功！')
               this.search()
-              this.iscover = false
+              this.addFormVisible = false
             }
           } else {
+            this.addsub = false
             alert('创建成功！')
             this.search()
-            this.iscover = false
+            this.addFormVisible = false
           }
         }
       ).catch(
@@ -624,15 +631,19 @@ export default {
     coverPlan(id, line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index) {
       putPlans(id, line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id).then(
         response => {
-          if (index && this.planIds.length !== 0) {
+          if (index !== null && index !== undefined && this.planIds.length !== 0) {
             if (index === this.planIds.length - 1) {
+              this.addsub = false
               alert('修改成功！')
               this.search()
+              this.addFormVisible = false
             }
           } else {
+            this.editsub = false
             console.log(response)
             alert('修改成功！')
             this.search()
+            this.editFormVisible = false
           }
         }
       ).catch(
