@@ -87,7 +87,7 @@
         </el-table-column>
 
       </el-table>
-      <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" width="20%" title="新增" @close="closeDialog" >
+      <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" width="30%" title="新增" @close="closeDialog" >
         <el-form ref="addForm" :model="addForm" label-width="80px">
           <el-form-item label="产线">
             <el-select v-model="addForm.line2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
@@ -110,6 +110,7 @@
           <el-form-item label="生产日期">
             <el-date-picker
               v-model="addForm.opt_date"
+              :style="{ width: '90%' }"
               type="date"
               placeholder="选择日期"
               value-format="yyyy-MM-dd"
@@ -118,10 +119,10 @@
           </el-form-item>
 
           <el-form-item label="不良数量">
-            <el-input v-model="addForm.cnt" width="200"/>
+            <el-input v-model="addForm.cnt" :style="{ width: '90%' }"/>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="addForm.addon" :width="200"/>
+            <el-input v-model="addForm.addon" :style="{ width: '90%' }"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -129,7 +130,7 @@
           <el-button type="primary" @click.native="addSubmit(addForm)">提交</el-button>
         </div>
       </el-dialog>
-      <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" width="20%" title="修改" @close="closeDialog" >
+      <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" width="30%" title="修改" @close="closeDialog" >
         <el-form ref="editForm" :model="editForm" label-width="80px">
           <el-form-item label="产线">
             <el-select v-model="editForm.line2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
@@ -151,6 +152,7 @@
           </el-form-item>
           <el-form-item label="生产日期">
             <el-date-picker
+              :style="{ width: '90%' }"
               v-model="editForm.opt_date"
               clearable
               type="date"
@@ -161,10 +163,10 @@
           </el-form-item>
 
           <el-form-item label="不良数量">
-            <el-input v-model="editForm.cnt" width="200"/>
+            <el-input v-model="editForm.cnt" :style="{ width: '90%' }"/>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="editForm.addon" width="200"/>
+            <el-input v-model="editForm.addon" :style="{ width: '90%' }"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
