@@ -50,3 +50,31 @@ export function getPlanResult(lineId, beginDate, endDate, statType, limit, offse
     }
   })
 }
+
+export function getPlans(line_id, begin_date, end_date, limit, offset) {
+  return request({
+    url: '/plans',
+    method: 'get',
+    params: {
+      line_id,
+      begin_date,
+      end_date,
+      limit,
+      offset
+    }
+  })
+}
+
+export function getPoor(line_id, beginDate, endDate, limit, offset) {
+  return request({
+    url: '/poor_quality_logs',
+    method: 'get',
+    params: {
+      line_id,
+      beginDate,
+      endDate,
+      limit,
+      offset
+    }
+  })
+}
