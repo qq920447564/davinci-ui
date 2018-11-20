@@ -1,22 +1,12 @@
 <template>
   <div>
-    <el-header :height="300">
+    <el-header>
       <div>
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
-            <!--<div class="grid-content bg-purple mydiv">-->
-            <!--<span class="mytitle">用户名:</span>-->
-            <!--<el-select v-model="form.line_id" clearable="true" filterable placeholder="请选择" style="width: 130px">-->
-            <!--<el-option-->
-            <!--v-for="item in options1"-->
-            <!--:key="item.value"-->
-            <!--:label="item.name"-->
-            <!--:value="item.id"/>-->
-            <!--</el-select>-->
-            <!--</div>-->
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">姓名:</span>
-              <el-input v-model="form.realname" clearable="true" filterable placeholder="请选择" style="width: 130px"/>
+              <el-input v-model="form.realname" clearable filterable placeholder="请选择" style="width: 130px"/>
             </div>
             <el-button @click="search">搜索</el-button>
             <el-button @click="addHandle">新增</el-button>
@@ -51,7 +41,7 @@
           label="工号"
         />
         <el-table-column
-          prop="role_id"
+          prop="role.name"
           width="170"
           label="角色"
         />
@@ -67,32 +57,36 @@
           width="">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button type="text" size="small" @click="handleClick">重置密码</el-button>
+            <!--<el-button type="text" size="small" @click="handleClick">重置密码</el-button>-->
           </template>
         </el-table-column>
 
       </el-table>
       <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑" @close="closeDialog" >
-        <el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="80px">
+        <el-form ref="addForm" :model="addForm" label-width="80px">
           <el-form-item label="角色">
-
-            <el-input v-model="addForm.role_id" width="200" auto-complete="off"/>
-
+            <el-select v-model="Role1" filterable clearable placeholder="请选择" style="width: 90%">
+              <el-option
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="addForm.username" width="200" auto-complete="off"/>
+            <el-input v-model="addForm.username" style="width: 90%" auto-complete="off"/>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="addForm.email" width="200" @change="checkemail"/>
+            <el-input v-model="addForm.email" style="width: 90%" @change="checkemail"/>
           </el-form-item>
           <el-form-item label="电话">
-            <el-input v-model="addForm.mobile" width="200"/>
+            <el-input v-model="addForm.mobile" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="姓名">
-            <el-input v-model="addForm.realname" width="200"/>
+            <el-input v-model="addForm.realname" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="工号">
-            <el-input v-model="addForm.employee_id" :width="200"/>
+            <el-input v-model="addForm.employee_id" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="状态">
             <el-checkbox v-model="addForm.statue">启用</el-checkbox>
@@ -104,26 +98,30 @@
         </div>
       </el-dialog>
       <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑">
-        <el-form ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
+        <el-form ref="editForm" :model="editForm" label-width="80px">
           <el-form-item label="角色">
-
-            <el-input v-model="editForm.role_id" width="200" auto-complete="off"/>
-
+            <el-select v-model="editForm.role_id" filterable clearable placeholder="请选择" style="width: 90%">
+              <el-option
+                v-for="item in options1"
+                :key="item.value"
+                :label="item.name"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="用户名" prop="name">
-            <el-input v-model="editForm.username" width="200" auto-complete="off"/>
+            <el-input v-model="editForm.username" style="width: 90%" auto-complete="off"/>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="editForm.email" width="200"/>
+            <el-input v-model="editForm.email" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="电话">
-            <el-input v-model="editForm.mobile" width="200"/>
+            <el-input v-model="editForm.mobile" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="姓名">
-            <el-input v-model="editForm.realname" width="200"/>
+            <el-input v-model="editForm.realname" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="工号">
-            <el-input v-model="editForm.employee_id" :width="200"/>
+            <el-input v-model="editForm.employee_id" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="状态">
             <el-checkbox v-model="editForm.statue">启用</el-checkbox>
@@ -150,8 +148,10 @@
 
 <script>
 import ElHeader from 'element-ui/packages/header/src/main'
-import axios from 'axios'
 import { getRoles } from '@/api/role'
+import { getUsers } from '@/api/user'
+import { postUser } from '@/api/user'
+import { putUser } from '@/api/user'
 import moment from 'moment'
 
 // 在月份、日期、小时等小于10前面补0
@@ -174,6 +174,14 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      addLoading: true,
+      editLoading: true,
+      Role1: null,
+      Role2: null,
+      options1: null,
+      form: {
+        realname: null
+      },
       editFormVisible: false,
       addFormVisible: false,
       addForm: {
@@ -181,69 +189,37 @@ export default {
         name: '',
         price: 0,
         desc: '',
-        reserve: '',
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }]
+        reserve: ''
       },
       editForm: {
         id: 0,
         name: '',
         price: 0,
         desc: '',
-        reserve: '',
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }]
+        reserve: ''
       },
       listQuery: {
         currentPage: 1,
-        limit: 20,
+        limit: 10,
         importance: undefined,
         title: undefined,
         type: undefined,
         sort: '+id'
       },
-      options1: [],
-      options2: [],
-      options3: [{
-        value: '0',
-        label: '关机'
-      }, {
-        value: '1',
-        label: '加工'
-      }, {
-        value: '2',
-        label: '空闲'
-      }, {
-        value: '3',
-        label: '报警'
-      }, {
-        value: '4',
-        label: '其他'
-      }],
       pickerOptions2: {
         shortcuts: [{
           text: '最近一周',
           onClick(picker) {
-            const end = new Date(YYYY - MM - DD)
-            const start = new Date(YYYY - MM - DD)
+            const end = new Date()
+            const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
           }
         }, {
           text: '最近一个月',
           onClick(picker) {
-            const end = new Date(YYYY - MM - DD)
-            const start = new Date(YYYY - MM - DD)
+            const end = new Date()
+            const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
           }
@@ -257,131 +233,26 @@ export default {
           }
         }]
       },
-      form: {
-        begin_time: '',
-        end_time: '',
-        line_id: '',
-        device_no: '',
-        status: '',
-        abnormal: 0,
-        twotimes: []
-      },
-      value6: '',
-      Line: '',
-      Line2: '',
-      Line3: '',
-      tableData: []
+      tableData: null,
+      total: null
     }
   },
   created() {
-    // 处理默认时间控件的方法
-    function dateFormatter(str) { // 默认返回yyyy-MM-dd HH-mm-ss
-      var hasTime = arguments[1] !== false// 可传第二个参数false，返回yyyy-MM-dd
-      var d = new Date(str)
-      var year = d.getFullYear()
-      var month = (d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1)
-      var day = d.getDate() < 10 ? '0' + d.getDate() : d.getDate()
-      // var hour = d.getHours()<10 ? '0'+d.getHours() : d.getHours();
-      // var minute = d.getMinutes()<10 ? '0'+d.getMinutes() : d.getMinutes();
-      // var second = d.getSeconds()<10 ? '0'+d.getSeconds() : d.getSeconds();
-      if (hasTime) {
-        return [year, month, day].join('-')
-      } else {
-        return [year, month, day].join('-')
-      }
-    }
-    const start = dateFormatter(new Date())
-    const end = dateFormatter(new Date())
-    this.form.twotimes = [start, end]
-    // 后台接收数据get得到表格数据
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'users'
-    }).then(
-      response => {
-        console.log(response)
-        this.tableData = response.data.data.rows
-        this.tableData.forEach((item, index) => {
-          switch (item.status) {
-            case 0:
-              item['statusname'] = '关机'
-              break
-            case 1:
-              item['statusname'] = '运行'
-              break
-            case 2:
-              item['statusname'] = '空闲'
-              break
-            case 3:
-              item['statusname'] = '报警'
-              break
-            case 4:
-              item['statusname'] = '其它'
-              return
-          }
-        })
-        this.tableData.forEach((item, index) => {
-          switch (item.abnormal) {
-            case false:
-              item['abnormal'] = '否'
-              break
-            case true:
-              item['abnormal'] = '是'
-              break
-          }
-        })
-        this.tableData.forEach((item, index) => {
-          switch (item.line_id) {
-            case 10000:
-              item['line_id'] = '康明斯'
-              break
-          }
-        })
-
-        console.log(this.tableData)
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
+    this.search()
+    this.fetchRole()
   },
   mounted() {
     this.chooseTimeRange()
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'lines'
-    }).then(
-      response => {
-        console.log(response)
-        this.options1 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
-    axios({
-      method: 'get',
-      baseURL: '/api',
-      url: 'devices'
-    }).then(
-      response => {
-        console.log(response)
-        this.options2 = response.data.data
-      }
-    ).catch(
-      error => {
-        console.log(error)
-        alert('网络错误，不能访问')
-      }
-    )
   },
   methods: {
+    handleSizeChange(val) {
+      this.fetchUserData(null, this.form.realname, null, val, this.listQuery.currentPage)
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      this.fetchUserData(null, this.form.realname, null, this.listQuery.limit, val)
+      console.log(`当前页: ${val}`)
+    },
     checkemail: function() {
       var regEmail = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/
       if (this.email === '') {
@@ -393,52 +264,11 @@ export default {
     closeDialog: function() {
       this.$refs.addForm.resetFields()
     },
-    addSubmit: function() {
-      axios({
-        method: 'post',
-        baseURL: 'api',
-        url: 'users',
-        data: {
-          email: this.addForm.email,
-          employee_id: this.addForm.email,
-          mobile: this.addForm.mobile,
-          realname: this.addForm.realname,
-          username: this.addForm.username,
-          role_id: this.addForm.role_id
-        }
-      }).then(
+    fetchRole() {
+      getRoles().then(
         response => {
           console.log(response)
-          this.$router.go(0)
-        }
-      ).catch(
-        error => {
-          console.log(error)
-          alert('网络错误请检查网络')
-        }
-      )
-    },
-    addHandle: function() {
-      this.addFormVisible = true
-    },
-    editSubmit: function(editForm) {
-      alert(editForm)
-      axios({
-        method: 'put',
-        baseURL: 'api',
-        url: 'users/' + this.editForm.id,
-        data: {
-          email: this.editForm.email,
-          employee_id: this.editForm.email,
-          mobile: this.editForm.mobile,
-          realname: this.editForm.realname,
-          username: this.editForm.username,
-          role_id: this.editForm.role_id
-        }
-
-      }).then(
-        response => {
-          console.log(response)
+          this.options1 = response.data
         }
       ).catch(
         error => {
@@ -447,87 +277,12 @@ export default {
         }
       )
     },
-    handleEdit: function(index, row) {
-      console.log(row.id)
-      this.editFormVisible = true
-      this.editForm = Object.assign({}, row)
-      this.id = row.id
-    },
-    // handleDownload() {
-    //   this.downloadLoading = true
-    //   require.ensure([], () => {
-    //     const { export_json_to_excel } = require('@/vendor/Export2Excel')
-    //     const tHeader = ['产线','工序', '设备名称', '设备编号','状态', '开始时间', '结束时间','持续时间','是否异常','异常原因']
-    //     const filterVal = ['line_id', 'process', 'name','device_no','statusname','started_time','stopped_time','duration','abnormal','addon']
-    //     const list = this.tableData
-    //     const data = this.formatJson(filterVal, list)
-    //     export_json_to_excel(tHeader, data, '运行记录列表excel')
-    //     this.downloadLoading = false
-    //   })
-    // },
-    // formatJson(filterVal, jsonData) {
-    //   return jsonData.map(v => filterVal.map(j => v[j]))
-    // },
-    chooseTimeRange(t) {
-      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
-    },
-    dateFormat: function(row, column) {
-      var date = row[column.property]
-      if (date == undefined) {
-        return ''
-      }
-      return moment(date).format('YYYY-MM-DD HH:mm:ss')
-    },
-    search: function() {
-      // if (!this.form.twotimes){
-      //   this.form.twotimes = []
-      // }
-      // alert(this.form.twotimes)
-      axios({
-        method: 'get',
-        baseURL: '/api',
-        url: 'users',
-        params: {
-          realname: this.form.realname
-        }
-      }).then(
+    fetchUserData(mobile, realname, username, limit, offset) {
+      getUsers(mobile, realname, username, limit, ((offset - 1) * limit)).then(
         response => {
           console.log(response)
-          this.tableData = response.data.data.rows
-          this.tableData.forEach((item, index) => {
-            switch (item.status) {
-              case 0:
-                item['statusname'] = '关机'
-                break
-              case 1:
-                item['statusname'] = '运行'
-                break
-              case 2:
-                item['statusname'] = '空闲'
-                break
-              case 3:
-                item['statusname'] = '报警'
-                break
-              case 4:
-                item['statusname'] = '其它'
-                return
-            }
-            switch (item.abnormal) {
-              case false:
-                item['abnormal'] = '否'
-                break
-              case true:
-                item['abnormal'] = '是'
-                break
-            }
-            this.tableData.forEach((item, index) => {
-              switch (item.line_id) {
-                case 10000:
-                  item['line_id'] = '康明斯'
-                  break
-              }
-            })
-          })
+          this.tableData = response.data.rows
+          this.addLoading = false
           console.log(this.tableData)
         }
       ).catch(
@@ -536,6 +291,76 @@ export default {
           alert('网络错误，不能访问')
         }
       )
+    },
+    addUser(email, employee_id, mobile, realname, username, role_id) {
+      postUser(email, employee_id, mobile, realname, username, role_id).then(
+        response => {
+          console.log(response)
+          alert('新建成功！')
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    editUser(email, employee_id, mobile, realname, username, role_id) {
+      putUser(email, employee_id, mobile, realname, username, role_id).then(
+        response => {
+          this.editLoading = false
+          console.log(response)
+          alert('修改成功！')
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    getTotal() {
+      getUsers().then(
+        response => {
+          console.log(response)
+          this.total = response.data.rows.length
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    addSubmit: function() {
+      this.addUser(this.addForm.email, this.addForm.employee_id, this.addForm.mobile, this.addForm.realname, this.addForm.username, this.addForm.role_id)
+      this.search()
+    },
+    addHandle: function() {
+      this.addFormVisible = true
+    },
+    editSubmit: function(editForm) {
+      this.editUser(this.editForm.id, this.editForm.email, this.editForm.employee_id, this.editForm.mobile, this.editForm.realname, this.editForm.username, this.editForm.role_id)
+    },
+    handleEdit: function(index, row) {
+      console.log(row.id)
+      this.editFormVisible = true
+      this.editForm = Object.assign({}, row)
+      this.id = row.id
+    },
+    chooseTimeRange(t) {
+      console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
+    dateFormat: function(row, column) {
+      var date = row[column.property]
+      if (date === undefined) {
+        return ''
+      }
+      return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
+    search: function() {
+      this.getTotal()
+      this.fetchUserData(null, this.form.realname, null, this.listQuery.limit, this.listQuery.currentPage)
     }
   }
 }
