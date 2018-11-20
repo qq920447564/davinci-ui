@@ -53,7 +53,7 @@
                 @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="form.abnormal">是否异常</el-checkbox>
+              <el-checkbox v-model="form.abnormal">仅显示异常状态</el-checkbox>
             </div>
             <el-button @click="search">搜索</el-button>
             <el-button @click="handle">导出</el-button>

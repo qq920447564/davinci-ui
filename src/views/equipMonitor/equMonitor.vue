@@ -155,13 +155,53 @@
                   <span>{{ scope.row.unit }}</span>
                 </template>
               </el-table-column>
-              <!--<el-table-column align="center" label="操作" >-->
-              <!--<template slot-scope="scope">-->
-              <!--<el-button type="text" size="small" @click="history" >历史值</el-button>-->
-              <!--<el-button type="text" size="small" @click="alarmrule" >报警规则</el-button>-->
-              <!--</template>-->
-              <!--</el-table-column>-->
+              <el-table-column align="center" label="操作" >
+                <template slot-scope="scope">
+                  <el-button type="text" size="small" @click="history(scope.row)" >历史值</el-button>
+                <!--<el-button type="text" size="small" @click="alarmrule" >报警规则</el-button>-->
+                </template>
+              </el-table-column>
             </el-table>
+            <el-dialog :visible.sync="dialogTableVisible" title="历史值">
+              <div style="float: left;margin-bottom: 10px">
+                <span>日期：</span>
+                <el-date-picker
+                  v-model="rowValue"
+                  :picker-options="pickerOptions2"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  align="right"/>
+                <el-button @click="search1">搜索</el-button>
+              </div>
+
+              <el-table v-loading="listLoading1" :data="gridData">
+                <el-table-column align="center" label="日期" >
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.ts1 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="时间" >
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.ts2 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column align="center" label="值" >
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.value }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-pagination
+                :current-page="listQuery1.currentPage"
+                :page-sizes="[10,20,30, 50]"
+                :page-size="listQuery1.limit"
+                :total="total1"
+                layout="total, sizes, prev, pager, next, jumper"
+                @size-change="handleSizeChange1"
+                @current-change="handleCurrentChange1" />
+            </el-dialog>
             <el-pagination
               :current-page="listQuery.currentPage"
               :page-sizes="[10,20,30, 50]"
@@ -171,55 +211,55 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange" />
           </el-tab-pane>
-          <!-- 动态曲线 -->
-          <!--<el-tab-pane label="动态曲线" name="third">-->
-          <!--<el-container>-->
-          <!--<el-header>-->
-          <!--<div>-->
-          <!--<span>数据项目：</span>-->
-          <!--<el-select-->
-          <!--v-model="value5"-->
-          <!--multiple-->
-          <!--collapse-tags-->
-          <!--style="margin-left: 20px;"-->
-          <!--placeholder="请选择">-->
-          <!--<el-option-->
-          <!--v-for="item in tableData2"-->
-          <!--:key="item.value"-->
-          <!--:label="item.name"-->
-          <!--:value="item.id"/>-->
-          <!--</el-select>-->
-          <!--&nbsp;&nbsp;-->
-          <!--<span>日期：</span>-->
-          <!--<el-date-picker-->
-          <!--v-model="twotimes"-->
-          <!--:picker-options="pickerOptions2"-->
-          <!--style="width: 390px"-->
-          <!--type="daterange"-->
-          <!--align="right"-->
-          <!--unlink-panels-->
-          <!--range-separator="至"-->
-          <!--start-placeholder="开始日期"-->
-          <!--end-placeholder="结束日期"-->
-          <!--/>-->
-          <!--&nbsp;&nbsp;&nbsp;-->
-          <!--<span>自动刷新：</span>-->
-          <!--<el-switch-->
-          <!--v-model="switch1"-->
-          <!--active-color="#13ce66"-->
-          <!--inactive-color="grey"/>-->
-          <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-          <!--<el-button>搜索</el-button>-->
-          <!--<el-button>导出</el-button>-->
-          <!--</div>-->
-          <!--</el-header>-->
-          <!--<el-main>Main</el-main>-->
-          <!--</el-container>-->
-          <!--</el-tab-pane>-->
-          <!-- 报警记录 -->
-          <!--<el-tab-pane label="报警记录" name="fourth">报警记录</el-tab-pane>-->
-          <!-- 视频监控 -->
-          <!--<el-tab-pane label="视频监控" name="fifth">视频监控</el-tab-pane>-->
+        <!-- 动态曲线 -->
+        <!--<el-tab-pane label="动态曲线" name="third">-->
+        <!--<el-container>-->
+        <!--<el-header>-->
+        <!--<div>-->
+        <!--<span>数据项目：</span>-->
+        <!--<el-select-->
+        <!--v-model="value5"-->
+        <!--multiple-->
+        <!--collapse-tags-->
+        <!--style="margin-left: 20px;"-->
+        <!--placeholder="请选择">-->
+        <!--<el-option-->
+        <!--v-for="item in tableData2"-->
+        <!--:key="item.value"-->
+        <!--:label="item.name"-->
+        <!--:value="item.id"/>-->
+        <!--</el-select>-->
+        <!--&nbsp;&nbsp;-->
+        <!--<span>日期：</span>-->
+        <!--<el-date-picker-->
+        <!--v-model="twotimes"-->
+        <!--:picker-options="pickerOptions2"-->
+        <!--style="width: 390px"-->
+        <!--type="daterange"-->
+        <!--align="right"-->
+        <!--unlink-panels-->
+        <!--range-separator="至"-->
+        <!--start-placeholder="开始日期"-->
+        <!--end-placeholder="结束日期"-->
+        <!--/>-->
+        <!--&nbsp;&nbsp;&nbsp;-->
+        <!--<span>自动刷新：</span>-->
+        <!--<el-switch-->
+        <!--v-model="switch1"-->
+        <!--active-color="#13ce66"-->
+        <!--inactive-color="grey"/>-->
+        <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+        <!--<el-button>搜索</el-button>-->
+        <!--<el-button>导出</el-button>-->
+        <!--</div>-->
+        <!--</el-header>-->
+        <!--<el-main>Main</el-main>-->
+        <!--</el-container>-->
+        <!--</el-tab-pane>-->
+        <!-- 报警记录 -->
+        <!--<el-tab-pane label="报警记录" name="fourth">报警记录</el-tab-pane>-->
+        <!-- 视频监控 -->
+        <!--<el-tab-pane label="视频监控" name="fifth">视频监控</el-tab-pane>-->
         </el-tabs>
       </el-main>
     </el-container>
@@ -232,6 +272,7 @@ import { getLines } from '@/api/line'
 import { getDevicePoint } from '@/api/device'
 import { getDevice } from '@/api/device'
 import { getProcesses } from '@/api/device'
+import { getPoints } from '@/api/point'
 import moment from 'moment'
 
 export default {
@@ -239,6 +280,9 @@ export default {
 
   data() {
     return {
+      listLoading1: true,
+      dialogTableVisible: false,
+      gridData: null,
       imageUrl: '',
       twotimes: [new Date(), new Date()],
       pickerOptions2: {
@@ -268,6 +312,8 @@ export default {
           }
         }]
       },
+      rowId: null,
+      rowValue: [new Date(), new Date()],
       switch1: false,
       value1: null,
       value2: null,
@@ -301,7 +347,16 @@ export default {
         type: undefined,
         sort: '+id'
       },
-      total: null
+      total: null,
+      listQuery1: {
+        currentPage: 1,
+        limit: 10,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
+      },
+      total1: null
     }
   },
   watch: {
@@ -410,7 +465,45 @@ export default {
         this.handleClick()
       }
     },
-    history() {},
+    fetchPointDatas(id, beginDate, endDate, limit, offset) {
+      getPoints(id, beginDate, endDate, limit, ((offset - 1) * limit)).then(response => {
+        this.gridData = response.data
+        this.gridData.forEach((item, index) => {
+          item['ts1'] = moment(new Date(item.ts)).format('YYYY-MM-DD')
+          item['ts2'] = moment(new Date(item.ts)).format('hh:mm:ss')
+        })
+        this.listLoading1 = false
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    getTotal1() {
+      getPoints(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss')).then(response => {
+        this.total1 = response.data.length
+      }).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    history(row) {
+      this.rowId = row.id
+      this.getTotal1()
+      this.fetchPointDatas(row.id, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
+      this.dialogTableVisible = true
+    },
+    search1() {
+      this.listLoading1 = true
+      if (!this.towtimes) {
+        this.towtimes = []
+      }
+      this.getTotal1()
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
+    },
     alarmrule() {},
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -426,6 +519,14 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    handleSizeChange1(val) {
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), val, this.listQuery1.currentPage)
+      console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange1(val) {
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, val)
+      console.log(`当前页: ${val}`)
     }
   }
 }

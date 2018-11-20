@@ -63,7 +63,7 @@
           label="时间段"
         />
         <el-table-column
-          prop="product_id"
+          prop="product.name"
           label="产品名称"
         />
         <el-table-column
@@ -86,7 +86,7 @@
           width="">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button type="text" size="small" @click="handleClick">删除</el-button>
+            <!--<el-button type="text" size="small" @click="handleClick">删除</el-button>-->
           </template>
         </el-table-column>
 
@@ -113,13 +113,16 @@
               @change="chooseTimeRange"/>
           </el-form-item>
           <el-form-item label="时间段">
-            <el-select v-model="addForm.time" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+            <el-select v-model="addForm.time" :style="{ width: '90%' }" :disabled="thisdisable" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"/>
             </el-select>
+          </el-form-item>
+          <el-form-item label="">
+            <el-checkbox v-model="addForm.statue" @change="changes">快速创建小时计划</el-checkbox>
           </el-form-item>
           <el-form-item label="产品名称">
             <el-select v-model="addForm.pro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
@@ -136,13 +139,10 @@
           <el-form-item label="备注">
             <el-input v-model="addForm.addon" :style="{ width: '90%' }"/>
           </el-form-item>
-          <el-form-item label="">
-            <el-checkbox v-model="addForm.statue">快速创建小时计划</el-checkbox>
-          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="addFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="addSubmit(addForm)">提交</el-button>
+          <el-button :loading="addsub" type="primary" @click.native="addSubmit(addForm)">提交</el-button>
         </div>
       </el-dialog>
       <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" width="30%" title="编辑">
@@ -167,7 +167,7 @@
               @change="chooseTimeRange"/>
           </el-form-item>
           <el-form-item label="时间段">
-            <el-select v-model="editForm.plan_time_id" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+            <el-select v-model="editForm.plan_time_id" :style="{ width: '90%'}" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -193,8 +193,18 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="editFormVisible = false">取消</el-button>
-          <el-button type="primary" @click.native="editSubmit(editForm)">提交</el-button>
+          <el-button :loading="editsub" type="primary" @click.native="editSubmit(editForm)">提交</el-button>
         </div>
+      </el-dialog>
+      <el-dialog
+        :visible.sync="iscover"
+        title="提示"
+        width="30%">
+        <span>是否覆盖</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="iscover = false">取 消</el-button>
+          <el-button type="primary" @click="thisconfirm">确 定</el-button>
+        </span>
       </el-dialog>
     </el-main>
     <el-footer>
@@ -216,6 +226,7 @@ import { getLines } from '@/api/line'
 import { getPlans } from '@/api/table'
 import { postPlans } from '@/api/plan'
 import { putPlans } from '@/api/plan'
+import { getExist } from '@/api/plan'
 import { getProducts } from '@/api/product'
 import moment from 'moment'
 
@@ -239,7 +250,11 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      addsub: false,
+      editsub: false,
+      thisdisable: false,
       listLoading: true,
+      iscover: false,
       editFormVisible: false,
       addFormVisible: false,
       options: [{
@@ -321,7 +336,8 @@ export default {
         plan_time_id: null,
         pro2: null,
         cnt: null,
-        addon: null
+        addon: null,
+        statue: false
       },
       editForm: {
         line2: null,
@@ -400,7 +416,9 @@ export default {
       Line3: '',
       total: null,
       tableData: [],
-      rep: null
+      rep: null,
+      planIds: [],
+      planTimeIds: []
     }
   },
   created() {
@@ -423,35 +441,30 @@ export default {
       this.$refs.addForm.resetFields()
     },
     addSubmit(addForm) {
-      postPlans(this.addForm.line2, this.addForm.plan_date, this.addForm.mobile, this.addForm.time, this.addForm.pro2, this.addForm.cnt, this.addForm.addon, this.addForm.plan_user_id).then(
-        response => {
-          console.log(response)
-          alert('创建成功！')
-          this.search()
+      this.addsub = true
+      if (this.addForm.line2 && this.addForm.plan_date && this.addForm.pro2 && this.addForm.cnt) {
+        if (this.thisdisable) {
+          this.options.forEach((item, index) => {
+            this.ifExist(this.addForm.line2, this.addForm.plan_date, item.value, this.addForm.pro2, this.addForm.cnt, this.addForm.addon, this.addForm.plan_user_id, index)
+            if (index === this.options.length - 1) {
+              if (this.planIds.length !== 0) {
+                this.iscover = true
+              }
+            }
+          })
+        } else {
+          this.ifExist(this.addForm.line2, this.addForm.plan_date, this.addForm.time, this.addForm.pro2, this.addForm.cnt, this.addForm.addon, this.addForm.plan_user_id)
         }
-      ).catch(
-        error => {
-          console.log(error)
-          alert('网络错误请检查网络')
-        }
-      )
+      } else {
+        alert('请填写完整')
+      }
     },
     addHandle() {
       this.addFormVisible = true
     },
     editSubmit(editForm) {
-      putPlans(this.rep, this.editForm.line2, this.editForm.plan_date, this.editForm.plan_time_id, this.editForm.pro2, this.editForm.cnt, this.editForm.addon, this.editForm.plan_user_id).then(
-        response => {
-          console.log(response)
-          alert('修改成功！')
-          this.search()
-        }
-      ).catch(
-        error => {
-          console.log(error)
-          alert('网络错误，不能访问')
-        }
-      )
+      this.editsub = true
+      this.coverPlan(this.rep, this.editForm.line2, this.editForm.plan_date, this.editForm.plan_time_id, this.editForm.pro2, this.editForm.cnt, this.editForm.addon, this.editForm.plan_user_id)
     },
     handleEdit: function(index, row) {
       console.log(row.id)
@@ -553,6 +566,48 @@ export default {
         }
       )
     },
+    ifExist(line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index) {
+      getExist(line_id, plan_date, plan_time_id, product_id).then(
+        response => {
+          if (response.data.existed) {
+            this.planIds.push(response.data.plan_id)
+            this.planTimeIds.push(plan_time_id)
+            this.iscover = true
+          } else {
+            this.newPlan(line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index)
+          }
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
+    newPlan(line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index) {
+      postPlans(line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id).then(
+        response => {
+          if (index !== null && index !== undefined) {
+            if (index === this.options.length - 1) {
+              this.addsub = false
+              alert('创建成功！')
+              this.search()
+              this.addFormVisible = false
+            }
+          } else {
+            this.addsub = false
+            alert('创建成功！')
+            this.search()
+            this.addFormVisible = false
+          }
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误请检查网络')
+        }
+      )
+    },
     handleSizeChange(val) {
       this.fetchPlans(this.form.line_id, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
@@ -573,8 +628,48 @@ export default {
         }
       )
     },
+    coverPlan(id, line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id, index) {
+      putPlans(id, line_id, plan_date, plan_time_id, product_id, cnt, addon, plan_user_id).then(
+        response => {
+          if (index !== null && index !== undefined && this.planIds.length !== 0) {
+            if (index === this.planIds.length - 1) {
+              this.addsub = false
+              alert('修改成功！')
+              this.search()
+              this.addFormVisible = false
+            }
+          } else {
+            this.editsub = false
+            console.log(response)
+            alert('修改成功！')
+            this.search()
+            this.editFormVisible = false
+          }
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
     handleClick() {},
-    handleDownload() {}
+    handleDownload() {},
+    changes() {
+      if (this.addForm.statue) {
+        this.thisdisable = true
+      } else {
+        this.thisdisable = false
+      }
+    },
+    thisconfirm() {
+      this.planIds.forEach((item, index) => {
+        this.coverPlan(item, this.addForm.line2, this.addForm.plan_date, this.planTimeIds[index], this.addForm.pro2, this.addForm.cnt, this.addForm.addon, this.addForm.plan_user_id, index)
+      })
+      this.planIds = []
+      this.planTimeIds = []
+      this.iscover = false
+    }
   }
 }
 </script>

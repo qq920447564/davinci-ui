@@ -43,7 +43,7 @@
                 @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="form.is_clear">是否消除</el-checkbox>
+              <el-checkbox v-model="form.is_clear">仅显示为消除报警</el-checkbox>
             </div>
             <el-button @click="search">搜索</el-button>
             <el-button @click="handle">导出</el-button>
