@@ -35,7 +35,12 @@ export const constantRouterMap = [
       path: 'dashboard',
       component: () => import('@/views/dashboard/listBoard'),
       name: 'Dashboard',
-      meta: { title: '首页', icon: 'dashboard', noCache: true }
+      meta: { title: '首页', icon: 'yuan', noCache: true }
+    }, {
+      path: 'index',
+      component: () => import('@/views/dashboard/index'),
+      name: 'index',
+      meta: { title: '设备参数看板', icon: 'yuan', noCache: true }
     }]
   },
   {
