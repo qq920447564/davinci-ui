@@ -14,7 +14,7 @@ export function getUsers(mobile, realname, username, limit, offset) {
   })
 }
 
-export function postUser(email, employee_id, mobile, realname, username, role_id) {
+export function postUser(email, employee_id, mobile, password, realname, username, role_id, status) {
   return request({
     url: '/users',
     method: 'post',
@@ -22,9 +22,11 @@ export function postUser(email, employee_id, mobile, realname, username, role_id
       email,
       employee_id,
       mobile,
+      password,
       realname,
       username,
-      role_id
+      role_id,
+      status
     },
     headers: {
       'Content-type': 'application/json'
@@ -32,7 +34,7 @@ export function postUser(email, employee_id, mobile, realname, username, role_id
   })
 }
 
-export function putUser(id, email, employee_id, mobile, realname, username, role_id) {
+export function putUser(id, email, employee_id, mobile, realname, username, role_id, status) {
   return request({
     url: '/users/' + id,
     method: 'put',
@@ -42,7 +44,21 @@ export function putUser(id, email, employee_id, mobile, realname, username, role
       mobile,
       realname,
       username,
-      role_id
+      role_id,
+      status
+    },
+    headers: {
+      'Content-type': 'application/json'
+    }
+  })
+}
+
+export function putPassword(id, password) {
+  return request({
+    url: '/users/' + id + '/password',
+    method: 'put',
+    data: {
+      password
     },
     headers: {
       'Content-type': 'application/json'
