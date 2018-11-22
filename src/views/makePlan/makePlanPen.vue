@@ -429,6 +429,21 @@ export default {
     this.chooseTimeRange()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['产线','日期', '时间段', '产品名称', '计划产量','备注','计划人员']
+        const filterVal = ['line_id', 'plan_date', 'plan_time.name','product_id','cnt','addon','plan_user_id']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '生产计划列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     checkemail: function() {
       var regEmail = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/
       if (this.email === '') {
