@@ -72,7 +72,7 @@
           label="设备编号"
         />
         <el-table-column
-          prop=""
+          prop="prog_main"
           label="程序名称"
         />
         <el-table-column
