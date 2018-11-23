@@ -59,7 +59,7 @@
           label="生产日期"
         />
         <el-table-column
-          prop="product_id"
+          prop="product.name"
           label="产品名称"
         />
         <el-table-column
@@ -323,6 +323,7 @@ export default {
   methods: {
     handleDownload() {
       this.downloadLoading = true
+      alert(1)
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
         const tHeader = ['产品','生产日期', '不良数量', '备注', '创建人','创建时间']
