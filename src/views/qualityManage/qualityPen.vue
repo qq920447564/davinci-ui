@@ -323,7 +323,6 @@ export default {
   methods: {
     handleDownload() {
       this.downloadLoading = true
-      alert(1)
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
         const tHeader = ['产品','生产日期', '不良数量', '备注', '创建人','创建时间']
@@ -333,6 +332,9 @@ export default {
         export_json_to_excel(tHeader, data, '质量填报列表excel')
         this.downloadLoading = false
       })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
     },
     handleSizeChange(val) {
       this.fetchDatas(this.form.line_id, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
