@@ -171,7 +171,6 @@ export default {
   },
   methods: {
     handleDownload() {
-      console.log(1)
       this.downloadLoading = true
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
