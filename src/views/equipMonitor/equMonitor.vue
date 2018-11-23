@@ -58,7 +58,7 @@
                   </div>
                   <div style="font-size: 14px">
                     <span>设备S/N：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <el-input v-model="input2" placeholder="请输入内容" style="width: 80%"/>
+                    <el-input v-model="input3" placeholder="请输入内容" style="width: 80%"/>
                   </div>
                   <div style="font-size: 14px">
                     <span>出厂日期：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -328,6 +328,7 @@ export default {
       process: null,
       input1: null,
       input2: null,
+      input3: null,
       equId: null,
       listLoading: false,
       tableData: null,
