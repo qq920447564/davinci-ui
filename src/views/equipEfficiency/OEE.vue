@@ -29,7 +29,7 @@
           </div>
           <div class="grid-content bg-purple mydiv">
             <el-button @click="search">搜索</el-button>
-            <el-button>导出</el-button>
+            <el-button @click="handleDownload">导出</el-button>
           </div>
         </el-col>
       </el-row>
@@ -170,6 +170,21 @@ export default {
     this.chooseTimeRange()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['日期','实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
+        const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '产线OEE列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
