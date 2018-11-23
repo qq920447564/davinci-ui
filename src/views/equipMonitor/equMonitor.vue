@@ -143,10 +143,12 @@
                 </template>
               </el-table-column>
               <el-table-column
+                align="center"
                 prop="latest.value"
                 label="当前值"
               />
               <el-table-column
+                align="center"
                 prop="latest.ts"
                 label="更新时间"
               />
@@ -162,7 +164,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-dialog :visible.sync="dialogTableVisible" title="历史值">
+            <el-dialog :visible.sync="dialogTableVisible" title="历史值" style="width: 110%">
               <div style="float: left;margin-bottom: 10px">
                 <span>日期：</span>
                 <el-date-picker
@@ -313,6 +315,7 @@ export default {
         }]
       },
       rowId: null,
+      rowName: null,
       rowValue: [new Date(), new Date()],
       switch1: false,
       value1: null,
@@ -428,6 +431,11 @@ export default {
         this.tableData2 = response.data
         this.total = this.tableData2.length
         this.tableData2.forEach((item, index) => {
+          if (item.dpkey === 'status') {
+            if (item.latest && item.latest.value) {
+              item['latest']['value'] = this.selStatus(item.latest.value)
+            }
+          }
           if (item.latest && item.latest.ts) {
             item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
           }
@@ -471,6 +479,9 @@ export default {
         this.gridData.forEach((item, index) => {
           item['ts1'] = moment(new Date(item.ts)).format('YYYY-MM-DD')
           item['ts2'] = moment(new Date(item.ts)).format('hh:mm:ss')
+          if (this.rowName === 'status') {
+            item['value'] = this.selStatus(item.value)
+          }
         })
         this.listLoading1 = false
       }).catch(
@@ -492,6 +503,7 @@ export default {
     },
     history(row) {
       this.rowId = row.id
+      this.rowName = row.dpkey
       this.getTotal1()
       this.fetchPointDatas(row.id, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
       this.dialogTableVisible = true
@@ -527,6 +539,34 @@ export default {
     handleCurrentChange1(val) {
       this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, val)
       console.log(`当前页: ${val}`)
+    },
+    isNull(val) {
+      if (val) {
+        return val
+      } else {
+        return { 'value': '' }
+      }
+    },
+    isLatest(val) {
+      if (val) {
+        return val
+      } else {
+        return { 'latest': '' }
+      }
+    },
+    selStatus(val) {
+      switch (val) {
+        case 0:
+          return '关机';
+        case 1:
+          return '运行'
+        case 2:
+          return '空闲'
+        case 3:
+          return '报警'
+        case 4:
+          return '其它'
+      }
     }
   }
 }
