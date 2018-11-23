@@ -46,8 +46,7 @@
           label="角色"
         />
         <el-table-column
-          :formatter="dateFormat"
-          prop="stopped_time"
+          prop="status"
           width="170"
           label="状态"
         />
@@ -305,6 +304,16 @@ export default {
           console.log(response)
           this.tableData = response.data.rows
           this.addLoading = false
+          this.tableData.forEach((item, index) => {
+            switch (item.status) {
+              case 0:
+                item['status'] = '否'
+                break
+              case 1:
+                item['status'] = '是'
+                break
+            }
+          })
           console.log(this.tableData)
         }
       ).catch(
