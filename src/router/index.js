@@ -206,10 +206,16 @@ export const constantRouterMap = [
       //   component: () => import('@/views/systemManage/dataDictionary')
       // },
       {
-        path: '/userManange',
+        path: '/userManage',
         meta: { title: '用户管理', icon: 'yuan' },
         name: 'userManage',
         component: () => import('@/views/systemManage/userManage')
+      },
+      {
+        path: '/productManage',
+        meta: { title: '产品管理', icon: 'yuan' },
+        name: 'productManage',
+        component: () => import('@/views/systemManage/productManage')
       }
       // {
       //   path: '/gatewayPage',
