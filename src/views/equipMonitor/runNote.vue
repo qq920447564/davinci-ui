@@ -66,6 +66,7 @@
         v-loading="listLoading"
         :data="tableData"
         border
+        @cell-click="edit"
         style="width: 100%">
         <el-table-column
           fixed
@@ -111,8 +112,14 @@
         />
         <el-table-column
           prop="addon"
-          label="异常原因"
-        />
+          label="异常原因">
+        <template slot-scope="scope">
+          <div class="grid-content bg-purple mydiv">
+            <div><el-input style="float:left;" v-model="scope.row.addon" :style="{ width: '90%' }"></el-input></div>
+            <span style="margin-left:10px;float:right"  class="cell-icon"  @click="handleSave(scope.row)">  <i class="el-icon-document"></i> </span>
+          </div>
+        </template>
+        </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
@@ -132,8 +139,9 @@
 import ElHeader from 'element-ui/packages/header/src/main'
 import { getLines } from '@/api/line'
 import { getDevices } from '@/api/device'
-import { getDeviceStatus } from '@/api/device'
+import { getDeviceStatus, addonPut} from '@/api/device'
 import moment from 'moment'
+import axios from "axios"
 
 // 在月份、日期、小时等小于10前面补0
 var padDate = function(value) {
@@ -223,6 +231,8 @@ export default {
       Line2: '',
       Line3: '',
       tableData: [],
+      inputColumn1:"",
+      addon:null,
       total: null
     }
   },
@@ -253,6 +263,48 @@ export default {
     this.fetchLines()
   },
   methods: {
+    // cellPut(id,addon){
+    // addonPut(id,addon).then(
+    //   response=>{
+    //     console.log(response)
+    //   }
+    //   ).catch(
+    //   error => {
+    //     console.log(error)
+    //     alert('网络错误，不能访问')
+    //   }
+    // )
+    //
+    // },
+    edit (val) {
+      this.initUpdateVal = val.name
+      val.isEdit = true
+    },
+    handleSave(row){
+      console.log(row)
+    //   this.addon=row.addon
+    //   this.id=row.id
+    // this.cellPut(this.addon)
+      axios({
+        baseURL:'api',
+        method:'put',
+        url:'devices/status_stat/'+row.id+'/addon?addon='+row.addon,
+        data:{
+          addon:row.addon
+        }
+      }).then(
+        response=>{
+        alert("备注成功")
+          this.search()
+
+        }
+      ).catch(
+        error=>{
+          console.log(error)
+          alert(网络错误)
+        }
+      )
+    },
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
