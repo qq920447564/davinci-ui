@@ -57,7 +57,7 @@
           width="">
           <template slot-scope="scope">
             <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <!--<el-button type="text" size="small" @click="handleClick">重置密码</el-button>-->
+            <el-button type="text" size="small" @click="changPass(scope.$index, scope.row)">重置密码</el-button>
           </template>
         </el-table-column>
 
@@ -65,7 +65,7 @@
       <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑" @close="closeDialog" >
         <el-form ref="addForm" :model="addForm" label-width="80px">
           <el-form-item label="角色">
-            <el-select v-model="Role1" filterable clearable placeholder="请选择" style="width: 90%">
+            <el-select v-model="addForm.role_id" filterable clearable placeholder="请选择" style="width: 90%">
               <el-option
                 v-for="item in options1"
                 :key="item.value"
@@ -82,6 +82,9 @@
           <el-form-item label="电话">
             <el-input v-model="addForm.mobile" style="width: 90%"/>
           </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="addForm.password" style="width: 90%"/>
+          </el-form-item>
           <el-form-item label="姓名">
             <el-input v-model="addForm.realname" style="width: 90%"/>
           </el-form-item>
@@ -89,7 +92,7 @@
             <el-input v-model="addForm.employee_id" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="状态">
-            <el-checkbox v-model="addForm.statue">启用</el-checkbox>
+            <el-checkbox v-model="addForm.status">启用</el-checkbox>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -132,6 +135,17 @@
           <el-button :loading="editLoading" type="primary" @click.native="editSubmit(editForm)">提交</el-button>
         </div>
       </el-dialog>
+      <el-dialog v-model="editPassVisible" :visible.sync="editPassVisible" :close-on-click-modal="false" :append-to-body="true" title="重置密码" style="width: 30%;margin: 0 auto;">
+        <el-form ref="passForm" :model="editForm" label-width="40px">
+          <el-form-item label="密码" prop="name">
+            <el-input v-model="passForm.password" style="width: 90%" auto-complete="off"/>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer" style="text-align: center">
+          <el-button @click.native="editPassVisible = false">取消</el-button>
+          <el-button :loading="passLoading" type="primary" @click.native="passSubmit(passForm)">提交</el-button>
+        </div>
+      </el-dialog>
     </el-main>
     <el-footer>
       <el-pagination
@@ -152,6 +166,7 @@ import { getRoles } from '@/api/role'
 import { getUsers } from '@/api/user'
 import { postUser } from '@/api/user'
 import { putUser } from '@/api/user'
+import { putPassword } from '@/api/user'
 import moment from 'moment'
 
 // 在月份、日期、小时等小于10前面补0
@@ -174,14 +189,16 @@ export default {
   components: { ElHeader },
   data() {
     return {
-      addLoading: true,
-      editLoading: true,
+      passLoading: false,
+      addLoading: false,
+      editLoading: false,
       Role1: null,
       Role2: null,
       options1: null,
       form: {
         realname: null
       },
+      editPassVisible: false,
       editFormVisible: false,
       addFormVisible: false,
       addForm: {
@@ -189,14 +206,19 @@ export default {
         name: '',
         price: 0,
         desc: '',
-        reserve: ''
+        reserve: '',
+        status: true
       },
       editForm: {
         id: 0,
         name: '',
         price: 0,
         desc: '',
-        reserve: ''
+        reserve: '',
+        status: true
+      },
+      passForm: {
+        password: null
       },
       listQuery: {
         currentPage: 1,
@@ -292,11 +314,12 @@ export default {
         }
       )
     },
-    addUser(email, employee_id, mobile, realname, username, role_id) {
-      postUser(email, employee_id, mobile, realname, username, role_id).then(
+    addUser(email, employee_id, mobile, password, realname, username, role_id, status) {
+      postUser(email, employee_id, mobile, password, realname, username, role_id, status).then(
         response => {
           console.log(response)
           alert('新建成功！')
+          this.search()
         }
       ).catch(
         error => {
@@ -305,12 +328,13 @@ export default {
         }
       )
     },
-    editUser(email, employee_id, mobile, realname, username, role_id) {
-      putUser(email, employee_id, mobile, realname, username, role_id).then(
+    editUser(email, employee_id, mobile, realname, username, role_id, status) {
+      putUser(email, employee_id, mobile, realname, username, role_id, status).then(
         response => {
           this.editLoading = false
           console.log(response)
           alert('修改成功！')
+          this.search()
         }
       ).catch(
         error => {
@@ -332,20 +356,45 @@ export default {
         }
       )
     },
+    editPass(id, password) {
+      putPassword(id, password).then(
+        response => {
+          this.passLoading = false
+          console.log(response)
+          alert('修改成功！')
+          this.search()
+        }
+      ).catch(
+        error => {
+          console.log(error)
+          alert('网络错误，不能访问')
+        }
+      )
+    },
     addSubmit: function() {
-      this.addUser(this.addForm.email, this.addForm.employee_id, this.addForm.mobile, this.addForm.realname, this.addForm.username, this.addForm.role_id)
-      this.search()
+      this.addLoading = true
+      this.addUser(this.addForm.email, this.addForm.employee_id, this.addForm.mobile, this.addForm.password, this.addForm.realname, this.addForm.username, this.addForm.role_id, this.Judg(this.addForm.status))
     },
     addHandle: function() {
       this.addFormVisible = true
     },
     editSubmit: function(editForm) {
-      this.editUser(this.editForm.id, this.editForm.email, this.editForm.employee_id, this.editForm.mobile, this.editForm.realname, this.editForm.username, this.editForm.role_id)
+      this.editLoading = true
+      this.editUser(this.id, this.editForm.email, this.editForm.employee_id, this.editForm.mobile, this.editForm.realname, this.editForm.username, this.editForm.role_id, this.Judg(this.editForm.status))
+    },
+    passSubmit(passForm) {
+      this.passLoading = true
+      this.editPass(this.id, this.passForm.password)
     },
     handleEdit: function(index, row) {
       console.log(row.id)
       this.editFormVisible = true
       this.editForm = Object.assign({}, row)
+      this.id = row.id
+    },
+    changPass(index, row) {
+      this.editPassVisible = true
+      this.passForm = Object.assign({}, row)
       this.id = row.id
     },
     chooseTimeRange(t) {
@@ -361,6 +410,13 @@ export default {
     search: function() {
       this.getTotal()
       this.fetchUserData(null, this.form.realname, null, this.listQuery.limit, this.listQuery.currentPage)
+    },
+    Judg(val) {
+      if (val) {
+        return 0
+      } else {
+        return 1
+      }
     }
   }
 }

@@ -59,7 +59,7 @@
           label="生产日期"
         />
         <el-table-column
-          prop="product_id"
+          prop="product.name"
           label="产品名称"
         />
         <el-table-column
@@ -321,6 +321,19 @@ export default {
     this.fetchLines()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      alert(1)
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['产品','生产日期', '不良数量', '备注', '创建人','创建时间']
+        const filterVal = ['product.name', 'opt_date', 'cnt','addon','inspector_id']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '质量填报列表excel')
+        this.downloadLoading = false
+      })
+    },
     handleSizeChange(val) {
       this.fetchDatas(this.form.line_id, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
