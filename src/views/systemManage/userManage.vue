@@ -46,8 +46,7 @@
           label="角色"
         />
         <el-table-column
-          :formatter="dateFormat"
-          prop="stopped_time"
+          prop="status"
           width="170"
           label="状态"
         />
@@ -83,7 +82,7 @@
             <el-input v-model="addForm.mobile" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="密码">
-            <el-input v-model="addForm.password" style="width: 90%"/>
+            <el-input type="password" v-model="addForm.password" style="width: 90%"/>
           </el-form-item>
           <el-form-item label="姓名">
             <el-input v-model="addForm.realname" style="width: 90%"/>
@@ -138,7 +137,7 @@
       <el-dialog v-model="editPassVisible" :visible.sync="editPassVisible" :close-on-click-modal="false" :append-to-body="true" title="重置密码" style="width: 30%;margin: 0 auto;">
         <el-form ref="passForm" :model="editForm" label-width="40px">
           <el-form-item label="密码" prop="name">
-            <el-input v-model="passForm.password" style="width: 90%" auto-complete="off"/>
+            <el-input type="password" v-model="passForm.password" style="width: 90%" auto-complete="off"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer" style="text-align: center">
@@ -305,6 +304,16 @@ export default {
           console.log(response)
           this.tableData = response.data.rows
           this.addLoading = false
+          this.tableData.forEach((item, index) => {
+            switch (item.status) {
+              case 0:
+                item['status'] = '否'
+                break
+              case 1:
+                item['status'] = '是'
+                break
+            }
+          })
           console.log(this.tableData)
         }
       ).catch(

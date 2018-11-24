@@ -43,7 +43,7 @@
                 @change="chooseTimeRange" />
             </div>
             <div class="grid-content bg-purple mydiv">
-              <el-checkbox v-model="form.is_clear">仅显示为消除报警</el-checkbox>
+              <el-checkbox v-model="form.is_clear">仅显示未消除报警</el-checkbox>
             </div>
             <el-button @click="search">搜索</el-button>
             <el-button @click="handle">导出</el-button>
@@ -210,11 +210,11 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.is_clear, val, this.listQuery.currentPage)
+      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.judg(this.form.is_clear), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.is_clear, this.listQuery.limit, val)
+      this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.judg(this.form.is_clear), this.listQuery.limit, val)
       console.log(`当前页: ${val}`)
     },
     fetchLines() {
@@ -246,7 +246,7 @@ export default {
       )
     },
     fetchData(lineId, deviceNo, beginDate, endDate, cleared, limit, offset) {
-      getDeviceAlarm(lineId, deviceNo, beginDate, endDate, cleared, limit, ((offset - 1) * limit)).then(
+      getDeviceAlarm(lineId, deviceNo, beginDate, endDate, this.judg(cleared), limit, ((offset - 1) * limit)).then(
         response => {
           this.listLoading = false
           console.log(response)
@@ -285,7 +285,7 @@ export default {
       this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.is_clear, this.listQuery.limit, this.listQuery.currentPage)
     },
     getTotal() {
-      getDeviceAlarm(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.form.is_clear).then(
+      getDeviceAlarm(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), this.judg(this.form.is_clear)).then(
         response => {
           console.log(response)
           this.total = response.data.total
@@ -329,6 +329,14 @@ export default {
     // 时间选择框格式转换
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
+    },
+    judg(val) {
+      switch (val) {
+        case true:
+          return false
+        case false:
+          return null
+      }
     },
     handle() {}
   }

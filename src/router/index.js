@@ -36,11 +36,6 @@ export const constantRouterMap = [
       component: () => import('@/views/dashboard/listBoard'),
       name: 'Dashboard',
       meta: { title: '首页', icon: 'yuan', noCache: true }
-    }, {
-      path: 'index',
-      component: () => import('@/views/dashboard/index'),
-      name: 'index',
-      meta: { title: '设备参数看板', icon: 'yuan', noCache: true }
     }]
   },
   {
@@ -80,6 +75,11 @@ export const constantRouterMap = [
         name: 'Table',
         component: () => import('@/views/dashboard/listBoard'),
         meta: { title: '产线列表看板', icon: 'yuan' }
+      }, {
+        path: 'index',
+        component: () => import('@/views/dashboard/index'),
+        name: 'index',
+        meta: { title: '设备参数看板', icon: 'yuan', noCache: true }
       }
     ]
   },

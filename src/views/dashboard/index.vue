@@ -18,10 +18,13 @@
       <el-row>
         <el-col v-for="(tab, index) in list" :span="6" :key="index">
           <el-card :body-style="{ padding: '0'}">
-            <div style="height: 3rem">
-              <span style="font-size: 18px;position:relative;bottom: 2.5rem ">{{ tab.name }}</span>
+            <div :style="{'background-color': showColor(isNull(isLatest(tab.data_points[0]).latest).value), 'display': showCNC(tab.type)}" style="height: 3rem;">
+              <span style="font-size: 18px;position:relative;bottom: 3.3rem ">{{ tab.name }}</span>
             </div>
-            <div style="width: 96%;margin: 0 auto">
+            <div :style="{'background-color': showColor(isNull(isLatest(tab.data_points[3]).latest).value), 'display': showRobot(tab.type)}" style="height: 3rem;">
+              <span style="font-size: 18px;position:relative;bottom: 3.3rem ">{{ tab.name }}</span>
+            </div>
+            <div :style="{'display': showCNC(tab.type)}" style="width: 96%;margin: 0 auto">
               <div style="width: 50%;float: left">
                 <div style="padding: 6px;">
                   <div class="bottom clearfix">
@@ -83,6 +86,40 @@
                   <div class="bottom clearfix">
                     <span style="float: left">下料信号：</span>
                     <span style="float: right">{{ isNull(isLatest(tab.data_points[15]).latest).value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div :style="{'display': showRobot(tab.type)}" style="width: 96%;margin: 0 auto">
+              <div style="width: 50%;float: left">
+                <div style="padding: 6px;">
+                  <div class="bottom clearfix">
+                    <span style="float: left">位置：</span>
+                    <span style="float: right">{{ isNull(isLatest(tab.data_points[1]).latest).value }}</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
+                  </div>
+                  <div class="bottom clearfix">
+                    <span style="float: left">&nbsp;</span>
+                    <span style="float: right">&nbsp;</span>
                   </div>
                 </div>
               </div>
@@ -182,6 +219,38 @@ export default {
         return val
       } else {
         return { 'latest': '' }
+      }
+    },
+    showCNC(val) {
+      switch (val) {
+        case 'CNC':
+          return 'block'
+        case 'ROBOT':
+          return 'none'
+      }
+    },
+    showRobot(val) {
+      switch (val) {
+        case 'CNC':
+          return 'none'
+        case 'ROBOT':
+          return 'block'
+      }
+    },
+    showColor(val) {
+      switch (val) {
+        case 0:
+          return 'grey'
+        case 1:
+          return 'green'
+        case 2:
+          return 'orange'
+        case 3:
+          return 'red'
+        case 4:
+          return 'white'
+        case '':
+          return 'white'
       }
     }
   }
