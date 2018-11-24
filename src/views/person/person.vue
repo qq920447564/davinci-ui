@@ -45,9 +45,9 @@
               :visible.sync="addFormVisible"
               title="上下机签卡"
               width="30%" >
-              <el-form :model="form">
-                <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+              <el-form ref="form3" :model="form3" :rules="rules1">
+                <el-form-item :label-width="formLabelWidth" label="产线：" prop="line3">
+                  <el-select v-model="form3.line3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
@@ -55,8 +55,8 @@
                       :value="item.id"/>
                   </el-select>
                 </el-form-item>
-                <el-form-item :label-width="formLabelWidth" label="姓名：">
-                  <el-select v-model="form.name3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+                <el-form-item :label-width="formLabelWidth" label="姓名：" prop="name3">
+                  <el-select v-model="form3.name3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -64,9 +64,9 @@
                       :value="item.id"/>
                   </el-select>
                 </el-form-item>
-                <el-form-item :label-width="formLabelWidth" label="上机：">
+                <el-form-item :label-width="formLabelWidth" label="上机：" prop="times5">
                   <el-date-picker
-                    v-model="times5"
+                    v-model="form3.times5"
                     :picker-options="pickerOptions2"
                     :style="{ width: '90%' }"
                     type="datetime"
@@ -83,8 +83,8 @@
                     align="right"
                     disabled/>
                 </el-form-item>
-                <el-form-item :label-width="formLabelWidth" label="产品：">
-                  <el-select v-model="form.pro3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+                <el-form-item :label-width="formLabelWidth" label="产品：" prop="pro3">
+                  <el-select v-model="form3.pro3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
                     <el-option
                       v-for="item in options3"
                       :key="item.value"
@@ -93,12 +93,12 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="备注：">
-                  <el-input v-model="form.note3" :style="{ width: '90%' }"/>
+                  <el-input v-model="form3.note3" :style="{ width: '90%' }"/>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="addFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="addDataInfo">确 定</el-button>
+                <el-button type="primary" @click="addDataInfo('form3')">确 定</el-button>
               </div>
             </el-dialog>
           </el-row>
@@ -141,9 +141,9 @@
               :visible.sync="dialogVisible"
               title="上下机签卡"
               width="30%" >
-              <el-form :model="form">
+              <el-form ref="form1" :model="form1" :rules="rules2">
                 <el-form-item :label-width="formLabelWidth" label="产线：">
-                  <el-select v-model="form.line1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
+                  <el-select v-model="form1.line1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options1"
                       :key="item.value"
@@ -153,7 +153,7 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="姓名：" disabled>
-                  <el-select v-model="form.name1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
+                  <el-select v-model="form1.name1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options2"
                       :key="item.value"
@@ -171,9 +171,9 @@
                     align="right"
                     disabled/>
                 </el-form-item>
-                <el-form-item :label-width="formLabelWidth" label="下机：">
+                <el-form-item :label-width="formLabelWidth" label="下机：" prop="times2">
                   <el-date-picker
-                    v-model="times2"
+                    v-model="form1.times2"
                     :picker-options="pickerOptions2"
                     :style="{ width: '90%' }"
                     type="datetime"
@@ -181,7 +181,7 @@
                     align="right"/>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="产品：">
-                  <el-select v-model="form.pro1" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+                  <el-select v-model="form1.pro1" :style="{ width: '90%' }" filterable clearable placeholder="请选择" disabled>
                     <el-option
                       v-for="item in options3"
                       :key="item.value"
@@ -190,12 +190,12 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="备注：">
-                  <el-input v-model="form.note1" :style="{ width: '90%' }"/>
+                  <el-input v-model="form1.note1" :style="{ width: '90%' }"/>
                 </el-form-item>
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="conf1()">确 定</el-button>
+                <el-button type="primary" @click="conf1('form1')">确 定</el-button>
               </div>
             </el-dialog>
             <el-button type="text" size="small" @click="edit(scope.row.id)">修改</el-button>
@@ -355,25 +355,48 @@ export default {
       form: {
         line_id: '',
         name: '',
+        name2: '',
+        line2: '',
+        pro2: '',
+        note2: ''
+      },
+      form1: {
         name1: '',
         line1: '',
         pro1: '',
         note1: '',
-        name2: '',
-        line2: '',
-        pro2: '',
-        note2: '',
+        times2: new Date()
+      },
+      form3: {
         name3: '',
         line3: '',
         pro3: '',
-        note3: ''
+        note3: '',
+        times5: new Date()
+      },
+      rules1: {
+        line3: [
+          { required: true, message: '请选择产线名称', trigger: 'change' }
+        ],
+        name3: [
+          { required: true, message: '请选择姓名', trigger: 'change' }
+        ],
+        times5: [
+          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        ],
+        pro3: [
+          { required: true, message: '请选择产品', trigger: 'change' }
+        ]
+      },
+      rules2: {
+        times2: [
+          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        ]
       },
       twotimes: [new Date(), new Date()],
       times1: new Date(),
-      times2: new Date(),
       times3: new Date(),
       times4: new Date(),
-      times5: new Date(),
       times6: '',
       total: 10,
       punchLogId: null
@@ -398,9 +421,9 @@ export default {
       getLines().then(response => {
         this.options1 = response.data
         this.form.line_id = response.data[0].id
-        this.form.line1 = response.data[0].id
+        this.form1.line1 = response.data[0].id
         this.form.line2 = response.data[0].id
-        this.form.line3 = response.data[0].id
+        this.form3.line3 = response.data[0].id
         this.fetchUsers()
       }).catch(
         error => {
@@ -440,17 +463,24 @@ export default {
         }
       )
     },
-    addDataInfo() {
-      addPunchLog(this.form.note3, this.times5, this.form.line3, this.times5, this.form.pro3, this.form.name3).then(response => {
-        alert('打卡成功！')
-        this.addFormVisible = false
-        this.search()
-      }).catch(
-        error => {
-          console.log(error)
-          alert('网络错误，不能访问')
+    addDataInfo(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          addPunchLog(this.form3.note3, this.form3.times5, this.form3.line3, this.form3.times5, this.form3.pro3, this.form3.name3).then(response => {
+            alert('打卡成功！')
+            this.addFormVisible = false
+            this.search()
+          }).catch(
+            error => {
+              console.log(error)
+              alert('网络错误，不能访问')
+            }
+          )
+        } else {
+          console.log('error submit!!')
+          return false
         }
-      )
+      })
     },
     handleSizeChange(val) {
       this.fetchData(moment(this.twotimes[0]).format('YYYY-MM-DD') + ' 00:00:00', moment(this.twotimes[1]).format('YYYY-MM-DD') + ' 23:59:59', this.form.line_id, this.form.name, val, this.listQuery.currentPage)
@@ -476,11 +506,11 @@ export default {
     },
     down(id) {
       getPunchLog(id).then(response => {
-        this.form.line1 = response.data.line_id
-        this.form.name1 = response.data.user_id
+        this.form1.line1 = response.data.line_id
+        this.form1.name1 = response.data.user_id
         this.times1 = response.data.clockin_time
-        this.form.pro1 = response.data.product_id
-        this.form.note1 = response.data.addon
+        this.form1.pro1 = response.data.product_id
+        this.form1.note1 = response.data.addon
         this.dialogVisible = true
         this.punchLogId = id
       }).catch(
@@ -490,17 +520,24 @@ export default {
         }
       )
     },
-    conf1() {
-      putPunchLog(this.punchLogId, this.form.note1, this.times1, this.times2, this.form.line1, this.times2, this.form.pro1, this.form.name1).then(response => {
-        alert('下机成功！')
-        this.dialogVisible = false
-        this.search()
-      }).catch(
-        error => {
-          console.log(error)
-          alert('网络错误，不能访问')
+    conf1(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          putPunchLog(this.punchLogId, this.form1.note1, this.times1, this.form1.times2, this.form1.line1, this.form1.times2, this.form1.pro1, this.form1.name1).then(response => {
+            alert('下机成功！')
+            this.dialogVisible = false
+            this.search()
+          }).catch(
+            error => {
+              console.log(error)
+              alert('网络错误，不能访问')
+            }
+          )
+        } else {
+          console.log('error submit!!')
+          return false
         }
-      )
+      })
     },
     edit(id) {
       getPunchLog(id).then(response => {
