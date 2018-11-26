@@ -219,11 +219,13 @@ export default {
           this.options1 = response.data
           this.form.line_id = this.options1[0].id
           this.fetchDevices()
+
+
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -237,7 +239,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -268,7 +270,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -289,7 +291,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

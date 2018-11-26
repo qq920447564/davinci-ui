@@ -471,7 +471,7 @@ export default {
           this.ifExist(this.addForm.line2, this.addForm.plan_date, this.addForm.time, this.addForm.pro2, this.addForm.cnt, this.addForm.addon, this.addForm.plan_user_id)
         }
       } else {
-        alert('请填写完整')
+        this.$message.error('请填写完整')
       }
     },
     addHandle() {
@@ -549,7 +549,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -564,7 +564,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -577,7 +577,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -595,7 +595,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -605,13 +605,13 @@ export default {
           if (index !== null && index !== undefined) {
             if (index === this.options.length - 1) {
               this.addsub = false
-              alert('创建成功！')
+              this.$message('创建成功！')
               this.search()
               this.addFormVisible = false
             }
           } else {
             this.addsub = false
-            alert('创建成功！')
+            this.$message('创建成功！')
             this.search()
             this.addFormVisible = false
           }
@@ -619,7 +619,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误请检查网络')
+          this.$message.error('网络错误请检查网络')
         }
       )
     },
@@ -639,7 +639,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -649,14 +649,14 @@ export default {
           if (index !== null && index !== undefined && this.planIds.length !== 0) {
             if (index === this.planIds.length - 1) {
               this.addsub = false
-              alert('修改成功！')
+              this.$message('修改成功！')
               this.search()
               this.addFormVisible = false
             }
           } else {
             this.editsub = false
             console.log(response)
-            alert('修改成功！')
+            this.$message('修改成功！')
             this.search()
             this.editFormVisible = false
           }
@@ -664,7 +664,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

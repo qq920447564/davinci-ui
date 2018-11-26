@@ -384,7 +384,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -399,7 +399,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -413,7 +413,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -432,14 +432,14 @@ export default {
       postProducts(this.addForm.line2, this.addForm.opt_date, this.addForm.pro2, this.addForm.cnt, this.addForm.addon).then(
         response => {
           console.log(response)
-          alert('上报成功！')
+          this.$message('上报成功！')
           this.addFormVisible = false
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误请检查网络')
+          this.$message.error('网络错误请检查网络')
         }
       )
     },
@@ -450,14 +450,14 @@ export default {
       putProducts(this.rep.id, this.editForm.line2, this.editForm.opt_date, this.editFormpro2, this.editForm.cnt, this.editForm.addon).then(
         response => {
           console.log(response)
-          alert('修改成功！')
+          this.$message('修改成功！')
           this.editFormVisible = false
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -499,7 +499,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

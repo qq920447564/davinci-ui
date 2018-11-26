@@ -294,7 +294,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -319,7 +319,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -327,13 +327,13 @@ export default {
       postUser(email, employee_id, mobile, password, realname, username, role_id, status).then(
         response => {
           console.log(response)
-          alert('新建成功！')
+          this.$message('新建成功！')
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -342,13 +342,13 @@ export default {
         response => {
           this.editLoading = false
           console.log(response)
-          alert('修改成功！')
+          this.$message('修改成功！')
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -361,7 +361,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -370,13 +370,13 @@ export default {
         response => {
           this.passLoading = false
           console.log(response)
-          alert('修改成功！')
+          this.$message('修改成功！')
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

@@ -91,7 +91,7 @@
 import { getLines } from '@/api/line'
 import { getOEE } from '@/api/table'
 import moment from 'moment'
-
+var len,result;
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
 }
@@ -170,8 +170,7 @@ export default {
     this.chooseTimeRange()
   },
   methods: {
-    formatDuring: function(row, column) {
-      var msd = row[column.property]
+    MillisecondToDate(msd) {
       var time = parseFloat(msd) / 1000
       if (time != null && time !== '') {
         if (time > 60 && time < 60 * 60) {
@@ -188,17 +187,23 @@ export default {
       }
       return time
     },
-    handleDownload() {
+
+    handleDownload(row) {
       this.downloadLoading = true
       require.ensure([], () => {
-        const { export_json_to_excel } = require('@/vendor/Export2Excel')
-        const tHeader = ['日期','实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
-        const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
-        const list = this.tableData
-        const data = this.formatJson(filterVal, list)
-        console.log(list)
-        export_json_to_excel(tHeader, data, '产线OEE列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
-        this.downloadLoading = false
+          const { export_json_to_excel } = require('@/vendor/Export2Excel')
+          const tHeader = ['日期','实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
+          const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
+          const list=this.tableData
+          for(let i=0;i<list.length;i++){
+          console.log(list[i].normal_duration)
+          list[i].normal_duration= this.MillisecondToDate(list[i].normal_duration)
+        }
+          const data = this.formatJson(filterVal, list)
+          console.log(list)
+
+          export_json_to_excel(tHeader, data, '产线OEE列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
+          this.downloadLoading = false
       })
     },
     formatJson(filterVal, jsonData) {
@@ -216,7 +221,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -232,7 +237,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
