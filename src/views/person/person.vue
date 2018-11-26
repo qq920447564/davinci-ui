@@ -415,7 +415,7 @@ export default {
         const filterVal = ['user.realname', 'clockin_time', 'clockout_time','product.name','addon']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '上班时间列表excel')
+        export_json_to_excel(tHeader, data, '上班时间列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },

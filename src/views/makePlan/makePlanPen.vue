@@ -437,7 +437,7 @@ export default {
         const filterVal = ['line_id', 'plan_date', 'plan_time.name','product_id','cnt','addon','plan_user_id']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '生产计划列表excel')
+        export_json_to_excel(tHeader, data, '生产计划列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },

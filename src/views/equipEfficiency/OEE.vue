@@ -170,6 +170,24 @@ export default {
     this.chooseTimeRange()
   },
   methods: {
+    formatDuring: function(row, column) {
+      var msd = row[column.property]
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+            parseInt(time / 60.0)) * 60))
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+            parseInt(time / 3600.0)) * 60)) + ':' +
+            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+        } else {
+          time = '00:00:' + padDate(parseInt(time))
+        }
+      }
+      return time
+    },
     handleDownload() {
       this.downloadLoading = true
       require.ensure([], () => {
@@ -178,7 +196,8 @@ export default {
         const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '产线OEE列表excel')
+        console.log(list)
+        export_json_to_excel(tHeader, data, '产线OEE列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },
