@@ -206,7 +206,7 @@ export default {
         const filterVal = ['stat_date', 'plan_time_name', 'cnt','diff_cnt','rate','addon']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '计划达成列表excel')
+        export_json_to_excel(tHeader, data, '计划达成列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },
