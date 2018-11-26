@@ -56,7 +56,7 @@
               <el-checkbox v-model="form.abnormal">仅显示异常状态</el-checkbox>
             </div>
             <el-button @click="search">搜索</el-button>
-            <el-button @click="handleDownload">导出</el-button>
+            <el-button @click="handleDownload()">导出</el-button>
           </el-row>
         </el-form>
       </div>
