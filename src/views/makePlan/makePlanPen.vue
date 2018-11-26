@@ -35,7 +35,7 @@
               <div class="grid-content bg-purple mydiv">
                 <el-button @click="addHandle" >创建生产计划</el-button>
                 <el-button @click="search">搜索</el-button>
-                <el-button @click="handleDownload">导出</el-button>
+                <el-button @click.native="handleDownload()">导出</el-button>
               </div>
             </el-col>
           </el-row>
@@ -669,7 +669,6 @@ export default {
       )
     },
     handleClick() {},
-    handleDownload() {},
     changes() {
       if (this.addForm.statue) {
         this.thisdisable = true
