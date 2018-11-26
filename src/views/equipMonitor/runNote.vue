@@ -309,14 +309,14 @@ export default {
         }
       }).then(
         response=>{
-        alert("备注成功")
+          this.$message("备注成功")
           this.search()
 
         }
       ).catch(
         error=>{
           console.log(error)
-          alert(网络错误)
+          this.$message.error(网络错误)
         }
       )
     },
@@ -366,7 +366,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -380,7 +380,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -432,7 +432,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -453,7 +453,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
