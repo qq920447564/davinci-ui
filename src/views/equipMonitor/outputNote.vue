@@ -195,10 +195,10 @@ export default {
         // const tHeader = ['工序', '设备名称','设备编号','程序名称','产量计数','达成时间]
         // const filterVal = [ 'process', 'name','device_no','statusname','started_time','stopped_time']
         const tHeader = [ '工序', '设备名称','设备编号','程序名称','产量计数','达成时间',]
-        const filterVal = ['process', 'name','device_no','statusname','started_time','stopped_time']
+        const filterVal = ['process', 'name','device_no','prog_main','cnt','stop_cnt_time']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '产量记录列表excel')
+        export_json_to_excel(tHeader, data, '产量记录列表')
         this.downloadLoading = false
       })
     },
