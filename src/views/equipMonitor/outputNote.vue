@@ -47,7 +47,7 @@
             <!--<el-checkbox v-model="form.is_clear">是否消除</el-checkbox>-->
             <!--</div>-->
             <el-button @click="search">搜索</el-button>
-            <el-button @click="handle">导出</el-button>
+            <el-button @click="handleDownload">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -188,6 +188,23 @@ export default {
     this.fetchLines()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        // const tHeader = ['工序', '设备名称','设备编号','程序名称','产量计数','达成时间]
+        // const filterVal = [ 'process', 'name','device_no','statusname','started_time','stopped_time']
+        const tHeader = [ '工序', '设备名称','设备编号','程序名称','产量计数','达成时间',]
+        const filterVal = ['process', 'name','device_no','statusname','started_time','stopped_time']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '产量记录列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     handleSizeChange(val) {
       this.fetchData(this.form.line_id, this.form.device_no, moment(this.form.twotimes[0]).format('YYYY-MM-DD'), moment(this.form.twotimes[1]).format('YYYY-MM-DD'), val, this.listQuery.currentPage)
       console.log(`每页 ${val} 条`)
