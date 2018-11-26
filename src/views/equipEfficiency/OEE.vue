@@ -195,12 +195,13 @@ export default {
           const tHeader = ['日期','实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
           const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
           const list=this.tableData
-          const data = this.formatJson(filterVal, list)
-          console.log(list)
-        for(var i=0;i<list.length;i++){
-            console.log(list[i].normal_duration)
+          for(let i=0;i<list.length;i++){
+          console.log(list[i].normal_duration)
           list[i].normal_duration= this.MillisecondToDate(list[i].normal_duration)
         }
+          const data = this.formatJson(filterVal, list)
+          console.log(list)
+
           export_json_to_excel(tHeader, data, '产线OEE列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
           this.downloadLoading = false
       })
