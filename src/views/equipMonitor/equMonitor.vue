@@ -479,7 +479,7 @@ export default {
         this.gridData = response.data
         this.gridData.forEach((item, index) => {
           item['ts1'] = moment(new Date(item.ts)).format('YYYY-MM-DD')
-          item['ts2'] = moment(new Date(item.ts)).format('HH:mm:ss.ms')
+          item['ts2'] = moment(new Date(item.ts)).format('HH:mm:ss.SSS')
           if (this.rowName === 'status') {
             item['value'] = this.selStatus(item.value)
           }
