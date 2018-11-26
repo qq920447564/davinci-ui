@@ -164,7 +164,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -173,13 +173,13 @@ export default {
         response => {
           this.addLoading = false
           console.log(response)
-          alert('新建成功！')
+          this.$message('新建成功！')
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
           this.addLoading = false
         }
       )
@@ -189,13 +189,13 @@ export default {
         response => {
           this.editLoading = false
           console.log(response)
-          alert('修改成功！')
+          this.$message('修改成功！')
           this.search()
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
           this.editLoading = false
         }
       )
@@ -209,7 +209,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -218,7 +218,7 @@ export default {
         this.addLoading = true
         this.addProduct(this.addForm.name, this.addForm.hidden, this.addForm.options)
       } else {
-        alert('产品名称不能为空！')
+        this.$message.error('产品名称不能为空！')
       }
     },
     addHandle() {
@@ -230,7 +230,7 @@ export default {
         this.editLoading = true
         this.editProduct(this.id, this.editForm.name, this.editForm.hidden, this.editForm.options)
       } else {
-        alert('产品名称不能为空！')
+        this.$message.error('产品名称不能为空！')
       }
     },
     handleEdit: function(index, row) {

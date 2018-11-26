@@ -226,7 +226,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -242,7 +242,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

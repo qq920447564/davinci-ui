@@ -125,7 +125,6 @@ import ElHeader from 'element-ui/packages/header/src/main'
 import { getLines } from '@/api/line'
 import { getDevices } from '@/api/device'
 import { getDeviceAlarm } from '@/api/device'
-import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
@@ -241,11 +240,6 @@ export default {
           this.options1 = response.data
           this.form.line_id = this.options1[0].id
           this.fetchDevices()
-          Message({
-            message: res.message,
-            type: 'error',
-            duration: 5 * 1000
-          })
         }
       ).catch(
         error => {
@@ -260,11 +254,12 @@ export default {
           console.log(response)
           this.options2 = response.data
           this.search()
+
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -295,7 +290,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -316,7 +311,7 @@ export default {
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },

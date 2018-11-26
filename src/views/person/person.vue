@@ -428,7 +428,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -443,7 +443,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -454,7 +454,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -474,7 +474,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -482,13 +482,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           addPunchLog(this.form3.note3, this.form3.times5, this.form3.line3, this.form3.times5, this.form3.pro3, this.form3.name3).then(response => {
-            alert('打卡成功！')
+            this.$message('打卡成功！')
             this.addFormVisible = false
             this.search()
           }).catch(
             error => {
               console.log(error)
-              alert('网络错误，不能访问')
+              this.$message.error('网络错误，不能访问')
             }
           )
         } else {
@@ -531,7 +531,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -539,13 +539,13 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           putPunchLog(this.punchLogId, this.form1.note1, this.times1, this.form1.times2, this.form1.line1, this.form1.times2, this.form1.pro1, this.form1.name1).then(response => {
-            alert('下机成功！')
+            this.$message('下机成功！')
             this.dialogVisible = false
             this.search()
           }).catch(
             error => {
               console.log(error)
-              alert('网络错误，不能访问')
+              this.$message.error('网络错误，不能访问')
             }
           )
         } else {
@@ -567,19 +567,19 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
     conf2() {
       putPunchLog(this.punchLogId, this.form.note2, this.times3, this.times4, this.form.line2, this.times4, this.form.pro2, this.form.name2).then(response => {
-        alert('修改成功！')
+        this.$message('修改成功！')
         this.editFormVisible = false
         this.search()
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     },
@@ -589,7 +589,7 @@ export default {
       }).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+          this.$message.error('网络错误，不能访问')
         }
       )
     }
