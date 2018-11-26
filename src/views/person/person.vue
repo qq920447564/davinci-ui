@@ -38,7 +38,7 @@
                 end-placeholder="结束日期" />
             </div>
             <el-button @click="search">搜索</el-button>
-            <el-button @click="out">导出</el-button>
+            <el-button @click="handleDownload">导出</el-button>
             <el-button @click="addFormVisible = true">上机签到</el-button>
             <br>
             <el-dialog
@@ -407,6 +407,21 @@ export default {
     this.fetchProduct()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['姓名','上班时间', '下班时间', '产品', '备注']
+        const filterVal = ['user.realname', 'clockin_time', 'clockout_time','product.name','addon']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '上班时间列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     fetchProduct() {
       getProducts().then(response => {
         this.options3 = response.data
