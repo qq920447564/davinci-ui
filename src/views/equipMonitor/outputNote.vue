@@ -198,7 +198,7 @@ export default {
         const filterVal = ['process', 'name','device_no','prog_main','cnt','stop_cnt_time']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '产量记录列表')
+        export_json_to_excel(tHeader, data, '产量记录列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },

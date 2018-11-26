@@ -125,6 +125,7 @@ import ElHeader from 'element-ui/packages/header/src/main'
 import { getLines } from '@/api/line'
 import { getDevices } from '@/api/device'
 import { getDeviceAlarm } from '@/api/device'
+import { Message, MessageBox } from 'element-ui'
 import moment from 'moment'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
@@ -219,7 +220,7 @@ export default {
         const filterVal = ['line_id','process', 'name','device_no','alarm_type','alarm_no','alarm_msg','started_time','stopped_time','duration','cleared']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '报警记录列表excel')
+        export_json_to_excel(tHeader, data, '报警记录列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },
@@ -240,11 +241,16 @@ export default {
           this.options1 = response.data
           this.form.line_id = this.options1[0].id
           this.fetchDevices()
+          Message({
+            message: res.message,
+            type: 'error',
+            duration: 5 * 1000
+          })
         }
       ).catch(
         error => {
           console.log(error)
-          alert('网络错误，不能访问')
+
         }
       )
     },
