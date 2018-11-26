@@ -326,7 +326,7 @@ export default {
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
         const tHeader = ['产品','生产日期', '不良数量', '备注', '创建人','创建时间']
-        const filterVal = ['product.name', 'opt_date', 'cnt','addon','inspector_id']
+        const filterVal = ['product.name', 'opt_date', 'cnt','addon','inspector_id','opt_date']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
         export_json_to_excel(tHeader, data, '质量填报列表excel')
@@ -507,7 +507,6 @@ export default {
     editFormRules() {},
     addLoading() {},
     addFormRules() {},
-    handleDownload() {},
     downloadLoading() {}
   }
 }
