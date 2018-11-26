@@ -38,7 +38,7 @@
           </div>
           <div class="grid-content bg-purple mydiv">
             <el-button @click="search">搜索</el-button>
-            <el-button>导出</el-button>
+            <el-button @click="handleDownload">导出</el-button>
           </div>
         </el-col>
       </el-row>
@@ -198,6 +198,21 @@ export default {
     this.chooseTimeRange()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['日期','时间区间', '计划生产', '实际生产', '生产差异', '达成率','备注']
+        const filterVal = ['stat_date', 'plan_time_name', 'cnt','diff_cnt','rate','addon']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '计划达成列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
