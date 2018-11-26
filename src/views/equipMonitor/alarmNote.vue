@@ -209,6 +209,23 @@ export default {
     this.fetchLines()
   },
   methods: {
+    MillisecondToDate(msd) {
+      var time = parseFloat(msd) / 1000
+      if (time != null && time !== '') {
+        if (time > 60 && time < 60 * 60) {
+          time = '00:' + padDate(parseInt(time / 60.0)) + ':' + padDate(parseInt((parseFloat(time / 60.0) -
+            parseInt(time / 60.0)) * 60))
+        } else if (time >= 60 * 60 && time < 60 * 60 * 24) {
+          time = padDate(parseInt(time / 3600.0)) + ':' + padDate(parseInt((parseFloat(time / 3600.0) -
+            parseInt(time / 3600.0)) * 60)) + ':' +
+            padDate(parseInt((parseFloat((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60) -
+              parseInt((parseFloat(time / 3600.0) - parseInt(time / 3600.0)) * 60)) * 60))
+        } else {
+          time = '00:00:' + padDate(parseInt(time))
+        }
+      }
+      return time
+    },
     handleDownload() {
       this.downloadLoading = true
       require.ensure([], () => {
@@ -218,6 +235,10 @@ export default {
         const tHeader = [ '产线','工序', '设备名称','设备编号','报警类型','报警编号','报警信息','开始时间','结束时间','持续时间','是否消除']
         const filterVal = ['line_id','process', 'name','device_no','alarm_type','alarm_no','alarm_msg','started_time','stopped_time','duration','cleared']
         const list = this.tableData
+        for(let i=0;i<list.length;i++){
+          console.log(list[i].duration)
+          list[i].duration= this.MillisecondToDate(list[i].duration)
+        }
         const data = this.formatJson(filterVal, list)
         export_json_to_excel(tHeader, data, '报警记录列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
