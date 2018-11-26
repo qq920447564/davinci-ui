@@ -45,7 +45,7 @@
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">报警时长：</span>
-                  <span style="float: right">{{ tab.poweroff_duration | MillisecondToDate }}</span>
+                  <span style="float: right">{{ tab.alarm_duration | MillisecondToDate }}</span>
                 </div>
                 <div class="bottom clearfix">
                   <span style="float: left">关机时长：</span>
