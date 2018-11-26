@@ -187,7 +187,7 @@ export default {
       }
       return time
     },
-    
+
     handleDownload(row) {
       this.downloadLoading = true
       require.ensure([], () => {
