@@ -56,7 +56,7 @@
               <el-checkbox v-model="form.abnormal">仅显示异常状态</el-checkbox>
             </div>
             <el-button @click="search">搜索</el-button>
-            <el-button @click="handle">导出</el-button>
+            <el-button @click="handleDownload()">导出</el-button>
           </el-row>
         </el-form>
       </div>
@@ -263,6 +263,21 @@ export default {
     this.fetchLines()
   },
   methods: {
+    handleDownload() {
+      this.downloadLoading = true
+      require.ensure([], () => {
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['产线', '工序', '设备名称','设备编号','状态','开始时间','结束时间','持续时间','是否异常','异常原因']
+        const filterVal = ['line_id', 'process', 'name','device_no','statusname','started_time','stopped_time','duration','abnormal','addon']
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        export_json_to_excel(tHeader, data, '运行记录列表excel')
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => v[j]))
+    },
     // cellPut(id,addon){
     // addonPut(id,addon).then(
     //   response=>{
