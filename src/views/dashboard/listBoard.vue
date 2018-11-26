@@ -140,7 +140,7 @@ export default {
         this.list = response.data
       }).catch(error => {
         console.log(error)
-        alert('网络错误，不能访问')
+        this.$message.error('网络错误，不能访问')
       })
     },
     color(status) {
