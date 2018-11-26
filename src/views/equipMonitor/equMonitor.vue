@@ -438,7 +438,7 @@ export default {
             }
           }
           if (item.latest && item.latest.ts) {
-            item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD hh:mm:ss')
+            item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD HH:mm:ss')
           }
         })
         this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
@@ -479,7 +479,7 @@ export default {
         this.gridData = response.data
         this.gridData.forEach((item, index) => {
           item['ts1'] = moment(new Date(item.ts)).format('YYYY-MM-DD')
-          item['ts2'] = moment(new Date(item.ts)).format('hh:mm:ss')
+          item['ts2'] = moment(new Date(item.ts)).format('HH:mm:ss.SSS')
           if (this.rowName === 'status') {
             item['value'] = this.selStatus(item.value)
           }
@@ -493,7 +493,7 @@ export default {
       )
     },
     getTotal1() {
-      getPoints(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss')).then(response => {
+      getPoints(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD HH:mm:ss')).then(response => {
         this.total1 = response.data.length
       }).catch(
         error => {
@@ -506,7 +506,7 @@ export default {
       this.rowId = row.id
       this.rowName = row.dpkey
       this.getTotal1()
-      this.fetchPointDatas(row.id, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
+      this.fetchPointDatas(row.id, moment(this.rowValue[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD HH:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
       this.dialogTableVisible = true
     },
     search1() {
@@ -515,7 +515,7 @@ export default {
         this.towtimes = []
       }
       this.getTotal1()
-      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD HH:mm:ss'), this.listQuery1.limit, this.listQuery1.currentPage)
     },
     alarmrule() {},
     handleAvatarSuccess(res, file) {
@@ -534,11 +534,11 @@ export default {
       return isJPG && isLt2M
     },
     handleSizeChange1(val) {
-      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), val, this.listQuery1.currentPage)
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD HH:mm:ss'), val, this.listQuery1.currentPage)
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange1(val) {
-      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD hh:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD hh:mm:ss'), this.listQuery1.limit, val)
+      this.fetchPointDatas(this.rowId, moment(this.rowValue[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.rowValue[1]).format('YYYY-MM-DD HH:mm:ss'), this.listQuery1.limit, val)
       console.log(`当前页: ${val}`)
     },
     isNull(val) {
@@ -558,7 +558,7 @@ export default {
     selStatus(val) {
       switch (val) {
         case 0:
-          return '关机';
+          return '关机'
         case 1:
           return '运行'
         case 2:
