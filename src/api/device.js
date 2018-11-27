@@ -82,3 +82,16 @@ export function getProcesses() {
     method: 'get'
   })
 }
+
+export function addonPut(id,addon,) {
+  return request({
+    url: '/devices/status_stat/' + id+'/addon?addon='+addon,
+    method: 'put',
+    data: {
+      addon,
+    },
+    headers: {
+      'Content-type': 'application/json'
+    }
+  })
+}
