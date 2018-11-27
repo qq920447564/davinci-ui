@@ -113,14 +113,34 @@
         <el-table-column
           prop="addon"
           label="异常原因">
-        <template slot-scope="scope">
-          <div class="grid-content bg-purple mydiv">
-            <div><el-input style="float:left;" v-model="scope.row.addon" :style="{ width: '90%' }"></el-input></div>
-            <span style="margin-left:10px;float:right"  class="cell-icon"  @click="handleSave(scope.row)">  <i class="el-icon-document"></i> </span>
-          </div>
-        </template>
+        <!--<template slot-scope="scope">-->
+          <!--<div class="grid-content bg-purple mydiv">-->
+            <!--<div><el-input style="float:left;" v-model="scope.row.addon" :style="{ width: '90%' }"></el-input></div>-->
+            <!--<span style="margin-left:10px;float:right"  class="cell-icon"  @click="handleSave(scope.row)">  <el-button class="el-icon-document" size="mini" round>保存</el-button> </span>-->
+          <!--</div>-->
+        <!--</template>-->
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="备注异常原因"
+          width="">
+          <template slot-scope="scope">
+            <el-button type="text" size="small" @click="handleEdit(scope.$index, scope.row)">备注</el-button>
+            <!--<el-button type="text" size="small" @click="handleClick">删除</el-button>-->
+          </template>
         </el-table-column>
       </el-table>
+      <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" width="30%" title="原因填写" @close="closeDialog" >
+        <el-form ref="addForm" :model="addForm" label-width="80px">
+          <el-form-item label="备注">
+            <el-input type="textarea" v-model="addForm.addon" :style="{ width: '90%' }"/>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="addFormVisible = false">取消</el-button>
+          <el-button  type="primary" @click.native="addSubmit(addForm)">提交</el-button>
+        </div>
+      </el-dialog>
     </el-main>
     <el-footer>
       <el-pagination
@@ -163,6 +183,10 @@ export default {
   components: { ElHeader },
   data() {
     return {
+      addFormVisible:false,
+      addForm:{
+        addon:''
+      },
       listLoading: true,
       listQuery: {
         currentPage: 1,
@@ -299,48 +323,33 @@ export default {
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => v[j]))
     },
-    // cellPut(id,addon){
-    // addonPut(id,addon).then(
-    //   response=>{
-    //     console.log(response)
-    //   }
-    //   ).catch(
-    //   error => {
-    //     console.log(error)
-    //     alert('网络错误，不能访问')
-    //   }
-    // )
-    //
-    // },
-    edit (val) {
-      this.initUpdateVal = val.name
-      val.isEdit = true
-    },
-    handleSave(row){
-      console.log(row)
-    //   this.addon=row.addon
-    //   this.id=row.id
-    // this.cellPut(this.addon)
-      axios({
-        baseURL:'api',
-        method:'put',
-        url:'devices/status_stat/'+row.id+'/addon?addon='+row.addon,
-        data:{
-          addon:row.addon
-        }
-      }).then(
-        response=>{
-          this.$message("备注成功")
-          this.search()
-
-        }
+    cellPut(id,addon){
+    addonPut(id,addon).then(
+      response=>{
+        console.log(response)
+        this.search()
+        this.addFormVisible = false
+        this.$message('备注成功')
+      }
       ).catch(
-        error=>{
-          console.log(error)
-          this.$message.error(网络错误)
-        }
-      )
+      error => {
+        console.log(error)
+        this.$message.error('网络错误，不能访问')
+      }
+    )
+
     },
+    handleEdit: function(index, row) {
+      console.log(row.id)
+      this.addFormVisible = true
+      this.rep = row.id
+      this.addForm.addon = row.addon
+    },
+    addSubmit(addForm){
+     this.cellPut(this.rep,this.addForm.addon)
+
+    },
+
     chooseTimeRange(t) {
       console.log(t)// 结果为一个数组，如：["2018-08-04", "2018-08-06"]
     },
