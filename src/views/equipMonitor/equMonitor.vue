@@ -380,6 +380,7 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.currentPage = val
       this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
+      console.log(JSON.stringify(this.tableData))
       console.log(`当前页: ${val}`)
     },
     fetchLines() {
@@ -432,6 +433,13 @@ export default {
         this.tableData2 = response.data
         this.total = this.tableData2.length
         this.tableData2.forEach((item, index) => {
+          if (item.latest) {
+            if (item.latest.value === true) {
+              item['latest']['value'] = 'true'
+            } else if (item.latest.value === false) {
+              item['latest']['value'] = 'false'
+            }
+          }
           if (item.dpkey === 'status') {
             if (item.latest && item.latest.value) {
               item['latest']['value'] = this.selStatus(item.latest.value)
