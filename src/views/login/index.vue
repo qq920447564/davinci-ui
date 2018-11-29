@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 70%;">
     <div class="mycreat">
       <div class="login-container">
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
@@ -38,7 +38,7 @@
       </div>
     </div>
     <div/>
-    <div style="height: 100%">
+    <div style="height: 100%;position: relative;top: 20%;">
       <img :src="'static/m2.jpg'" style="width: 75%;height: 100%">
     </div>
   </div>
@@ -154,7 +154,9 @@ export default {
     background-color: $bg;
     width: 25%;
     height: 100%;
-    float: right
+    float: right;
+    position: relative;
+    top: 20%
   }
   .login-container {
     width: 100%;
@@ -163,7 +165,7 @@ export default {
       width: 520px;
       max-width: 100%;
       padding: 35px 35px 15px 35px;
-      margin: 50% auto;
+      margin: 25% auto;
     }
     .tips {
       font-size: 14px;
