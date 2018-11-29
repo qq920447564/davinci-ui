@@ -27,7 +27,15 @@
         />
         <el-table-column
           prop="name"
-          label="产品名称"
+          label="产品图号"
+        />
+        <el-table-column
+          prop="series"
+          label="产品系列"
+        />
+        <el-table-column
+          prop="erp_code"
+          label="ERP编码"
         />
         <el-table-column align="center" label="是否隐藏" >
           <template slot-scope="scope">
