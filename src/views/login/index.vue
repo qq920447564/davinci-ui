@@ -38,8 +38,8 @@
       </div>
     </div>
     <div/>
-    <div style="height: 100%;position: relative;top: 20%;">
-      <img :src="'static/m2.jpg'" style="width: 75%;height: 100%">
+    <div style="height: 100%;width: 75%;position: relative;top: 20%;">
+      <img :src="'static/m2.jpg'" style="width: 100%;height: 100%">
     </div>
   </div>
 </template>
