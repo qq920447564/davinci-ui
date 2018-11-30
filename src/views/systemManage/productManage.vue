@@ -5,7 +5,7 @@
         <el-form ref="form" :model="form" label-width="80px">
           <el-row >
             <div class="grid-content bg-purple mydiv">
-              <span class="mytitle">产品名称:</span>
+              <span class="mytitle">产品图号:</span>
               <el-input v-model="form.name" clearable filterable placeholder="请选择" style="width: 130px"/>
             </div>
             <el-button @click="search">搜索</el-button>
@@ -60,8 +60,14 @@
       </el-table>
       <el-dialog v-model="addFormVisible" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑" >
         <el-form ref="addForm" :model="addForm" label-width="80px">
-          <el-form-item label="产品名称" prop="name">
+          <el-form-item label="产品图号" prop="name">
             <el-input v-model="addForm.name" style="width: 90%" auto-complete="off"/>
+          </el-form-item>
+          <el-form-item label="产品系列" prop="name">
+            <el-input v-model="addForm.series" style="width: 90%" auto-complete="off"/>
+          </el-form-item>
+          <el-form-item label="ERP编码" prop="name">
+            <el-input v-model="addForm.erp_code" style="width: 90%" auto-complete="off"/>
           </el-form-item>
           <el-form-item label="是否隐藏">
             <el-checkbox v-model="addForm.hidden">启用</el-checkbox>
@@ -77,8 +83,14 @@
       </el-dialog>
       <el-dialog v-model="editFormVisible" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true" title="编辑">
         <el-form ref="editForm" :model="editForm" label-width="80px">
-          <el-form-item label="产品名称" prop="name">
+          <el-form-item label="产品图号" prop="name">
             <el-input v-model="editForm.name" style="width: 90%" auto-complete="off"/>
+          </el-form-item>
+          <el-form-item label="产品系列">
+            <el-input v-model="editForm.series" style="width: 90%" auto-complete="off"/>
+          </el-form-item>
+          <el-form-item label="ERP编码">
+            <el-input v-model="editForm.erp_code" style="width: 90%" auto-complete="off"/>
           </el-form-item>
           <el-form-item label="是否隐藏">
             <el-checkbox v-model="editForm.hidden">启用</el-checkbox>
@@ -132,7 +144,10 @@ export default {
       editForm: {
         name: null,
         hidden: null,
-        options: null
+        options: null,
+        series:null,
+        erp_code:null
+
       },
       listQuery: {
         currentPage: 1,
@@ -176,8 +191,8 @@ export default {
         }
       )
     },
-    addProduct(name, hidden, default_option) {
-      postProduct(name, hidden, default_option).then(
+    addProduct(name, hidden, default_option,series,erp_code) {
+      postProduct(name, hidden, default_option,series,erp_code).then(
         response => {
           this.addLoading = false
           console.log(response)
@@ -192,8 +207,8 @@ export default {
         }
       )
     },
-    editProduct(id, name, hidden, default_option) {
-      putProduct(id, name, hidden, default_option).then(
+    editProduct(id, name, hidden, default_option,series,erp_code) {
+      putProduct(id, name, hidden, default_option,series,erp_code).then(
         response => {
           this.editLoading = false
           console.log(response)
@@ -224,7 +239,7 @@ export default {
     addSubmit() {
       if (this.addForm.name) {
         this.addLoading = true
-        this.addProduct(this.addForm.name, this.addForm.hidden, this.addForm.options)
+        this.addProduct(this.addForm.name, this.addForm.hidden, this.addForm.options,this.addForm.series,this.addForm.erp_code)
       } else {
         this.$message.error('产品名称不能为空！')
       }
@@ -236,7 +251,7 @@ export default {
     editSubmit: function(editForm) {
       if (this.editForm.name) {
         this.editLoading = true
-        this.editProduct(this.id, this.editForm.name, this.editForm.hidden, this.editForm.options)
+        this.editProduct(this.id, this.editForm.name, this.editForm.hidden, this.editForm.options,this.editForm.series,this.editForm.erp_code)
       } else {
         this.$message.error('产品名称不能为空！')
       }
