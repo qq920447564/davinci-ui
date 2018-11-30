@@ -329,11 +329,13 @@ export default {
           console.log(response)
           this.$message('新建成功！')
           this.search()
+          this.addFormVisible = false
         }
       ).catch(
         error => {
           console.log(error)
-          this.$message.error('网络错误，不能访问')
+          this.$message.error('新建失败！')
+          this.addLoading = false
         }
       )
     },
@@ -349,6 +351,7 @@ export default {
         error => {
           console.log(error)
           this.$message.error('网络错误，不能访问')
+          this.editLoading = false
         }
       )
     },
