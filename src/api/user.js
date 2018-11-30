@@ -14,6 +14,13 @@ export function getUsers(mobile, realname, username, limit, offset) {
   })
 }
 
+export function getUser() {
+  return request({
+    url: '/users/current',
+    method: 'get'
+  })
+}
+
 export function postUser(email, employee_id, mobile, password, realname, username, role_id, status) {
   return request({
     url: '/users',
