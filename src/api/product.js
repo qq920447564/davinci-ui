@@ -19,14 +19,16 @@ export function getProducts2(name, limit, offset) {
   })
 }
 
-export function postProduct(name, hidden, default_option) {
+export function postProduct(name, hidden, default_option,series,erp_code) {
   return request({
     url: '/products',
     method: 'post',
     data: {
       name,
       hidden,
-      default_option
+      default_option,
+      series,
+      erp_code
     },
     headers: {
       'Content-type': 'application/json'
@@ -34,14 +36,16 @@ export function postProduct(name, hidden, default_option) {
   })
 }
 
-export function putProduct(id, name, hidden, default_option) {
+export function putProduct(id, name, hidden, default_option,series,erp_code) {
   return request({
     url: '/products/' + id,
     method: 'put',
     data: {
       name,
       hidden,
-      default_option
+      default_option,
+      series,
+      erp_code
     },
     headers: {
       'Content-type': 'application/json'
