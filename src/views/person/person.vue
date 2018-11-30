@@ -294,6 +294,7 @@ import { getLines } from '@/api/line'
 import { getProducts } from '@/api/product'
 import { getWorkTime } from '@/api/table'
 import { getUsers } from '@/api/user'
+import { getUser } from '@/api/user'
 import { addPunchLog } from '@/api/punchLog'
 import { getPunchLog } from '@/api/punchLog'
 import { putPunchLog } from '@/api/punchLog'
@@ -405,6 +406,7 @@ export default {
   created() {
     this.fetchLine()
     this.fetchProduct()
+    this.fetchUser()
   },
   methods: {
     handleDownload() {
@@ -451,6 +453,16 @@ export default {
       getUsers().then(response => {
         this.options2 = response.data.rows
         this.search()
+      }).catch(
+        error => {
+          console.log(error)
+          this.$message.error('网络错误，不能访问')
+        }
+      )
+    },
+    fetchUser() {
+      getUser().then(response => {
+        this.form3.name3 = response.data.id
       }).catch(
         error => {
           console.log(error)
