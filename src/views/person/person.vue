@@ -38,8 +38,8 @@
                 end-placeholder="结束日期" />
             </div>
             <el-button @click="search">搜索</el-button>
-            <el-button @click="handleDownload">导出</el-button>
             <el-button @click="addFormVisible = true">上机签到</el-button>
+            <el-button @click="handleDownload">导出</el-button>
             <br>
             <el-dialog
               :visible.sync="addFormVisible"
