@@ -33,8 +33,8 @@
                   @change="chooseTimeRange" />
               </div>
               <div class="grid-content bg-purple mydiv">
-                <el-button @click="addHandle" >创建生产计划</el-button>
                 <el-button @click="search">搜索</el-button>
+                <el-button @click="addHandle" >创建生产计划</el-button>
                 <el-button @click.native="handleDownload()">导出</el-button>
               </div>
             </el-col>
