@@ -64,7 +64,7 @@
         />
         <el-table-column
           prop="product.name"
-          label="产品名称"
+          label="产品图号"
         />
         <el-table-column
           prop="cnt"
@@ -124,7 +124,7 @@
           <el-form-item label="">
             <el-checkbox v-model="addForm.statue" @change="changes">快速创建小时计划</el-checkbox>
           </el-form-item>
-          <el-form-item label="产品名称">
+          <el-form-item label="产品图号">
             <el-select v-model="addForm.pro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options3"
@@ -175,7 +175,7 @@
                 :value="item.value"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="产品名称">
+          <el-form-item label="产品图号">
             <el-select v-model="editForm.pro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options3"
@@ -433,7 +433,7 @@ export default {
       this.downloadLoading = true
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
-        const tHeader = ['产线','日期', '时间段', '产品名称', '计划产量','备注','计划人员']
+        const tHeader = ['产线','日期', '时间段', '产品图号', '计划产量','备注','计划人员']
         const filterVal = ['line_id', 'plan_date', 'plan_time.name','product_id','cnt','addon','plan_user_id']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)

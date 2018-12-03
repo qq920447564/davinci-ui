@@ -60,7 +60,7 @@
         />
         <el-table-column
           prop="product.name"
-          label="产品名称"
+          label="产品图号"
         />
         <el-table-column
           prop="cnt"
@@ -98,7 +98,7 @@
                 :value="item.id"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="产品名称">
+          <el-form-item label="产品图号">
             <el-select v-model="addForm.pro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options3"
@@ -141,7 +141,7 @@
                 :value="item.id"/>
             </el-select>
           </el-form-item>
-          <el-form-item label="产品名称">
+          <el-form-item label="产品图号">
             <el-select v-model="editFormpro2" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
               <el-option
                 v-for="item in options3"
