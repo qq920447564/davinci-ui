@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function addPunchLog(addon, clockin_time, line_id, opt_date, product_id, user_id) {
+export function addPunchLog(addon, clockin_time, line_id, opt_date, product_id, user_ids) {
   return request({
-    url: '/punch_logs',
+    url: '/punch_logs/batch',
     method: 'post',
     data: {
       addon,
@@ -10,7 +10,7 @@ export function addPunchLog(addon, clockin_time, line_id, opt_date, product_id, 
       line_id,
       opt_date,
       product_id,
-      user_id
+      user_ids
     },
     headers: {
       'Content-type': 'application/json'
@@ -18,7 +18,7 @@ export function addPunchLog(addon, clockin_time, line_id, opt_date, product_id, 
   })
 }
 
-export function putPunchLog(id, addon, clockin_time, clockout_time, line_id, opt_date, product_id, user_id) {
+export function putPunchLog(id, addon, clockin_time, clockout_time, line_id, opt_date, product_id, user_ids) {
   return request({
     url: '/punch_logs/' + id,
     method: 'put',
@@ -29,7 +29,7 @@ export function putPunchLog(id, addon, clockin_time, clockout_time, line_id, opt
       line_id,
       opt_date,
       product_id,
-      user_id
+      user_ids
     },
     headers: {
       'Content-type': 'application/json'
