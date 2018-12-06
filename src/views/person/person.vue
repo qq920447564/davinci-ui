@@ -56,10 +56,10 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item :label-width="formLabelWidth" label="姓名：" prop="name3">
-                  <el-select v-model="form3.name3" :style="{ width: '90%' }" filterable clearable placeholder="请选择">
+                  <el-select v-model="form3.name3" :style="{ width: '90%' }" filterable clearable multiple placeholder="请选择">
                     <el-option
                       v-for="item in options2"
-                      :key="item.value"
+                      :key="item.id"
                       :label="item.realname"
                       :value="item.id"/>
                   </el-select>
@@ -369,7 +369,7 @@ export default {
         times2: new Date()
       },
       form3: {
-        name3: '',
+        name3: [],
         line3: '',
         pro3: '',
         note3: '',
@@ -413,11 +413,11 @@ export default {
       this.downloadLoading = true
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
-        const tHeader = ['姓名','上班时间', '下班时间', '产品', '备注']
-        const filterVal = ['user.realname', 'clockin_time', 'clockout_time','product.name','addon']
+        const tHeader = ['姓名', '上班时间', '下班时间', '产品', '备注']
+        const filterVal = ['user.realname', 'clockin_time', 'clockout_time', 'product.name', 'addon']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '上班时间列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
+        export_json_to_excel(tHeader, data, '上班时间列表' + moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },
@@ -462,7 +462,7 @@ export default {
     },
     fetchUser() {
       getUser().then(response => {
-        this.form3.name3 = response.data.id
+        this.form3.name3 = [response.data.id]
       }).catch(
         error => {
           console.log(error)
@@ -476,10 +476,10 @@ export default {
         this.tableData = response.data.rows
         this.tableData.forEach((item, index) => {
           if (item.clockin_time) {
-            item['clockin_time'] = moment(item.clockin_time).format('YYYY-MM-DD hh:mm:ss')
+            item['clockin_time'] = moment(item.clockin_time).format('YYYY-MM-DD HH:mm:ss')
           }
           if (item.clockout_time) {
-            item['clockout_time'] = moment(item.clockout_time).format('YYYY-MM-DD hh:mm:ss')
+            item['clockout_time'] = moment(item.clockout_time).format('YYYY-MM-DD HH:mm:ss')
           }
         })
         this.listLoading = false
