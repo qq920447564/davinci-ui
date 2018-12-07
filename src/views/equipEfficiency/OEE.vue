@@ -13,16 +13,17 @@
                 :value="item.id"/>
             </el-select>
           </div>
+
           <div class="grid-content bg-purple mydiv">
             <span class="mytitle">日期</span>
             <el-date-picker
               v-model="towtimes"
               :picker-options="pickerOptions2"
-              style="width: 390px"
+              style="width: 16rem"
               type="daterange"
               align="right"
               unlink-panels
-              range-separator="至"
+              range-separator="-"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             />

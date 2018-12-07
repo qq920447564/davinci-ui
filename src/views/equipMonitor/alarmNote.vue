@@ -7,7 +7,7 @@
           <el-row >
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">产线:</span>
-              <el-select v-model="form.line_id" clearable filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.line_id" clearable filterable placeholder="请选择" style="width: 6rem">
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
@@ -17,7 +17,7 @@
             </div>
             <div class="grid-content bg-purple mydiv">
               <span class="mytitle">设备编号:</span>
-              <el-select v-model="form.device_no" clearable filterable placeholder="请选择" style="width: 130px">
+              <el-select v-model="form.device_no" clearable filterable placeholder="请选择" style="width: 6rem">
                 <el-option
                   v-for="item in options2"
                   :key="item.value"
@@ -34,10 +34,10 @@
                 clearable
                 value-format="yyyy-MM-dd"
                 format="yyyy-MM-dd"
-                style="width: 390px"
+                style="width: 16rem"
                 type="daterange"
                 align="center"
-                range-separator="至"
+                range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 @change="chooseTimeRange" />
@@ -395,6 +395,6 @@ export default {
   }
   .mydiv{
     display: inline;
-    margin-right: 15px;
+    margin-right: 0.5rem;
   }
 </style>
