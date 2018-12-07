@@ -29,11 +29,11 @@
               <el-date-picker
                 v-model="twotimes"
                 :picker-options="pickerOptions2"
-                style="width: 390px"
+                style="width: 16rem"
                 type="daterange"
                 align="center"
                 unlink-panels
-                range-separator="至"
+                range-separator="-"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期" />
             </div>
