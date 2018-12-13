@@ -88,7 +88,7 @@ export function addonPut(id,addon,) {
     url: '/devices/status_stat/' + id+'/addon?addon='+addon,
     method: 'put',
     data: {
-      addon,
+      addon
     },
     headers: {
       'Content-type': 'application/json'
