@@ -243,11 +243,11 @@
                     end-placeholder="结束日期"
                   />
                   &nbsp;&nbsp;&nbsp;
-                  <span>自动刷新：</span>
-                  <el-switch
-                    v-model="switch1"
-                    active-color="#13ce66"
-                    inactive-color="grey"/>
+                  <!--<span>自动刷新：</span>-->
+                  <!--<el-switch-->
+                    <!--v-model="switch1"-->
+                    <!--active-color="#13ce66"-->
+                    <!--inactive-color="grey"/>-->
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                   <el-button @click="SelectLine">搜索</el-button>
                   <el-button>导出</el-button>
