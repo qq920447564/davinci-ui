@@ -105,22 +105,22 @@
                 <!--<br>-->
                 <!--<el-button type="primary" style="margin-left: 45%">保存</el-button>-->
               </el-aside>
-              <!--<el-main>-->
-              <!--<div style="height: 50%">-->
-              <!--<el-upload-->
-              <!--:show-file-list="false"-->
-              <!--:on-success="handleAvatarSuccess"-->
-              <!--:before-upload="beforeAvatarUpload"-->
-              <!--class="avatar-uploader"-->
-              <!--action="https://jsonplaceholder.typicode.com/posts/">-->
-              <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
-              <!--<i v-else class="el-icon-plus avatar-uploader-icon"/>-->
-              <!--</el-upload>-->
-              <!--</div>-->
-              <!--<div>-->
-              <!--<div style="background-color: #1f2d3d;width: 100%;height: 15rem" />-->
-              <!--</div>-->
-              <!--</el-main>-->
+              <el-main>
+                <!--<div style="height: 50%">-->
+                <!--<el-upload-->
+                <!--:show-file-list="false"-->
+                <!--:on-success="handleAvatarSuccess"-->
+                <!--:before-upload="beforeAvatarUpload"-->
+                <!--class="avatar-uploader"-->
+                <!--action="https://jsonplaceholder.typicode.com/posts/">-->
+                <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
+                <!--<i v-else class="el-icon-plus avatar-uploader-icon"/>-->
+                <!--</el-upload>-->
+                <!--</div>-->
+                <!--<div>-->
+                <!--<baidu-map :zoom="13" ak="odjLhqLuNFgqw6EYUm8eZ0NGWOUOlwhL" style="background-color: #1f2d3d;width: 100%;height: 15rem" center="北京" scroll-wheel-zoom />-->
+                <!--</div>-->
+              </el-main>
             </el-container>
           </el-tab-pane>
           <!-- 实时数据 -->
@@ -213,51 +213,53 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange" />
           </el-tab-pane>
-        <!-- 动态曲线 -->
-        <!--<el-tab-pane label="动态曲线" name="third">-->
-        <!--<el-container>-->
-        <!--<el-header>-->
-        <!--<div>-->
-        <!--<span>数据项目：</span>-->
-        <!--<el-select-->
-        <!--v-model="value5"-->
-        <!--multiple-->
-        <!--collapse-tags-->
-        <!--style="margin-left: 20px;"-->
-        <!--placeholder="请选择">-->
-        <!--<el-option-->
-        <!--v-for="item in tableData2"-->
-        <!--:key="item.value"-->
-        <!--:label="item.name"-->
-        <!--:value="item.id"/>-->
-        <!--</el-select>-->
-        <!--&nbsp;&nbsp;-->
-        <!--<span>日期：</span>-->
-        <!--<el-date-picker-->
-        <!--v-model="twotimes"-->
-        <!--:picker-options="pickerOptions2"-->
-        <!--style="width: 390px"-->
-        <!--type="daterange"-->
-        <!--align="right"-->
-        <!--unlink-panels-->
-        <!--range-separator="至"-->
-        <!--start-placeholder="开始日期"-->
-        <!--end-placeholder="结束日期"-->
-        <!--/>-->
-        <!--&nbsp;&nbsp;&nbsp;-->
-        <!--<span>自动刷新：</span>-->
-        <!--<el-switch-->
-        <!--v-model="switch1"-->
-        <!--active-color="#13ce66"-->
-        <!--inactive-color="grey"/>-->
-        <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-        <!--<el-button>搜索</el-button>-->
-        <!--<el-button>导出</el-button>-->
-        <!--</div>-->
-        <!--</el-header>-->
-        <!--<el-main>Main</el-main>-->
-        <!--</el-container>-->
-        <!--</el-tab-pane>-->
+          <!-- 动态曲线 -->
+          <el-tab-pane label="动态曲线" name="third">
+            <el-container>
+              <el-header>
+                <div>
+                  <span>数据项目：</span>
+                  <el-select
+                    v-model="value5"
+                    style="margin-left: 20px;"
+                    placeholder="请选择">
+                    <el-option
+                      v-for="item in tableData2"
+                      :key="item.value"
+                      :label="item.name"
+                      :value="item.id"/>
+                  </el-select>
+                  &nbsp;&nbsp;
+                  <span>日期：</span>
+                  <el-date-picker
+                    v-model="twotimes"
+                    :picker-options="pickerOptions2"
+                    style="width: 390px"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                  />
+                  &nbsp;&nbsp;&nbsp;
+                  <span>自动刷新：</span>
+                  <el-switch
+                    v-model="switch1"
+                    active-color="#13ce66"
+                    inactive-color="grey"/>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <el-button @click="SelectLine">搜索</el-button>
+                  <el-button>导出</el-button>
+                </div>
+              </el-header>
+              <el-main>
+                <div class="chart-container">
+                  <chart ref="line" height="40rem" width="80rem" style="margin: 0 auto"/>
+                </div>
+              </el-main>
+            </el-container>
+          </el-tab-pane>
         <!-- 报警记录 -->
         <!--<el-tab-pane label="报警记录" name="fourth">报警记录</el-tab-pane>-->
         <!-- 视频监控 -->
@@ -276,10 +278,15 @@ import { getDevice } from '@/api/device'
 import { getProcesses } from '@/api/device'
 import { getPoints } from '@/api/point'
 import moment from 'moment'
+import BaiduMap from 'vue-baidu-map/components/map/Map.vue'
+import Chart from '@/components/Charts/lineMarker'
 
 export default {
   name: 'EquMonitor',
-
+  components: {
+    BaiduMap,
+    Chart
+  },
   data() {
     return {
       listLoading1: true,
@@ -360,7 +367,8 @@ export default {
         type: undefined,
         sort: '+id'
       },
-      total1: null
+      total1: null,
+      lineData: ''
     }
   },
   watch: {
@@ -449,6 +457,8 @@ export default {
             item['latest']['ts'] = moment(new Date(item.latest.ts)).format('YYYY-MM-DD HH:mm:ss')
           }
         })
+        this.value5 = this.tableData2[0].id
+        this.fetchPointDatas(this.value5, moment(new Date()).format('YYYY-MM-DD HH:mm:ss'), moment(new Date()).format('YYYY-MM-DD HH:mm:ss'), 5000000, 1)
         this.tableData = this.tableData2.slice((this.listQuery.currentPage - 1) * this.listQuery.limit, this.listQuery.currentPage * this.listQuery.limit)
       }).catch(
         error => {
@@ -488,10 +498,13 @@ export default {
         this.gridData.forEach((item, index) => {
           item['ts1'] = moment(new Date(item.ts)).format('YYYY-MM-DD')
           item['ts2'] = moment(new Date(item.ts)).format('HH:mm:ss.SSS')
+          item['ts3'] = moment(new Date(item.ts)).format('YYYY-MM-DD HH:mm:ss')
           if (this.rowName === 'status') {
             item['value'] = this.selStatus(item.value)
           }
         })
+        this.lineData = this.gridData
+        this.$refs.line.initChart(this.lineData)
         this.listLoading1 = false
       }).catch(
         error => {
@@ -576,12 +589,19 @@ export default {
         case 4:
           return '其它'
       }
+    },
+    SelectLine() {
+      this.fetchPointDatas(this.value5, moment(this.twotimes[0]).format('YYYY-MM-DD HH:mm:ss'), moment(this.twotimes[1]).format('YYYY-MM-DD HH:mm:ss'), 5000000, 1)
     }
   }
 }
 </script>
 
 <style scoped>
+  .chart-container{
+    width: 100%;
+    height: 100%;
+  }
   .el-header, .el-footer {
     text-align: left;
     line-height: 10px;
@@ -599,6 +619,7 @@ export default {
   .el-main {
     text-align: center;
     line-height: 20px;
+    padding-bottom: 10px;
   }
 
   body > .el-container {
