@@ -51,7 +51,6 @@ export default {
     initChart(val) {
       this.ts = []
       this.lineVal = []
-      console.log(JSON.stringify(val))
       if (val) {
         val.forEach((item, index) => {
           this.ts.push(item.ts3)
@@ -61,6 +60,18 @@ export default {
       this.chart = echarts.init(document.getElementById(this.id))
 
       this.chart.setOption({
+        toolbox: {
+          show: true,
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
+            },
+            dataView: { readOnly: false },
+            magicType: { type: ['line', 'bar'] },
+            restore: {},
+            saveAsImage: {}
+          }
+        },
         xAxis: {
           type: 'category',
           data: this.ts
