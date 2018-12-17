@@ -64,7 +64,7 @@
         />
         <el-table-column
           prop="cnt"
-          label="计划产量"
+          label="不合格数量"
         />
         <el-table-column
           prop="addon"
@@ -74,7 +74,7 @@
         <el-table-column
           prop="plan_user_id"
           width="170"
-          label="计划人员"
+          label="检测人员"
         />
         <el-table-column
           fixed="right"
