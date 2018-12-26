@@ -36,6 +36,9 @@
       </el-row>
     </el-header>
     <el-main>
+      <div class="chart-container">
+        <chart ref="needBar" height="40rem" width="80" style="margin: 0 auto"/>
+      </div>
       <el-table
         v-loading="listLoading"
         :data="tableData"
@@ -92,7 +95,7 @@
 import { getLines } from '@/api/line'
 import { getOEE } from '@/api/table'
 import moment from 'moment'
-var len, result
+import Chart from '@/components/Charts/needBar'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
 }
@@ -117,6 +120,9 @@ export default {
       }
       return time
     }
+  },
+  components: {
+    Chart
   },
   data() {
     return {
@@ -161,7 +167,8 @@ export default {
       towtimes: [new Date(), new Date()],
       Line: '',
       production: '',
-      total: null
+      total: null,
+      needBar: null
     }
   },
   created() {
@@ -230,6 +237,8 @@ export default {
       getOEE(lineId, beginTime, EndTime, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
         this.tableData = response.data.rows
+        this.needBar = this.tableData
+        this.$refs.needBar.initChart(this.needBar)
         this.tableData.forEach((item, index) => {
           if (item.oee || item.oee === 0) {
             item['oee'] = (Number(item.oee) * 100).toFixed(2) + '%'
