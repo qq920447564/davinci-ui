@@ -44,6 +44,9 @@
       </el-row>
     </el-header>
     <el-main>
+      <div class="chart-container">
+        <chart ref="needBar" height="40rem" width="80" style="margin: 0 auto"/>
+      </div>
       <el-table
         v-loading="listLoading"
         :data="tableData"
@@ -118,6 +121,7 @@ import { getLines } from '@/api/line'
 import { getPlanResult } from '@/api/table'
 import { getWorkTime } from '@/api/table'
 import moment from 'moment'
+import Chart from '@/components/Charts/needBar2'
 
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
@@ -133,6 +137,9 @@ export default {
       var day = padDate(date.getDate())
       return year + '-' + month + '-' + day
     }
+  },
+  components: {
+    Chart
   },
   data() {
     return {
@@ -188,7 +195,8 @@ export default {
       Line: '',
       production: '',
       str: [],
-      total: null
+      total: null,
+      needBar: null
     }
   },
   created() {
@@ -202,11 +210,11 @@ export default {
       this.downloadLoading = true
       require.ensure([], () => {
         const { export_json_to_excel } = require('@/vendor/Export2Excel')
-        const tHeader = ['日期','时间区间', '计划生产', '实际生产', '生产差异', '达成率','备注']
-        const filterVal = ['stat_date', 'plan_time_name', 'cnt','diff_cnt','rate','addon']
+        const tHeader = ['日期', '时间区间', '计划生产', '实际生产', '生产差异', '达成率', '备注']
+        const filterVal = ['stat_date', 'plan_time_name', 'cnt', 'diff_cnt', 'rate', 'addon']
         const list = this.tableData
         const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, '计划达成列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
+        export_json_to_excel(tHeader, data, '计划达成列表' + moment(new Date()).format('YYYYMMDDHHmmss'))
         this.downloadLoading = false
       })
     },
@@ -234,6 +242,8 @@ export default {
       getPlanResult(lineId, beginTime, EndTime, statType, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
         this.tableData = response.data.pagination.rows
+        this.needBar = this.tableData
+        this.$refs.needBar.initChart(this.needBar)
         this.tableData.forEach((item, index) => {
           if (item.rate) {
             item['rate'] = (Number(item.rate) * 100).toFixed(2) + '%'

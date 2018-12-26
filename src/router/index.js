@@ -80,6 +80,11 @@ export const constantRouterMap = [
         component: () => import('@/views/dashboard/index'),
         name: 'index',
         meta: { title: '设备参数看板', icon: 'yuan', noCache: true }
+      }, {
+        path: 'integrate',
+        component: () => import('@/views/dashboard/integrate'),
+        name: 'integrate',
+        meta: { title: '产线综合看板', icon: 'yuan', noCache: true }
       }
     ]
   },

@@ -36,6 +36,9 @@
       </el-row>
     </el-header>
     <el-main>
+      <div class="chart-container">
+        <chart ref="needBar" height="40rem" width="80" style="margin: 0 auto"/>
+      </div>
       <el-table
         v-loading="listLoading"
         :data="tableData"
@@ -92,7 +95,7 @@
 import { getLines } from '@/api/line'
 import { getOEE } from '@/api/table'
 import moment from 'moment'
-var len,result;
+import Chart from '@/components/Charts/needBar'
 var padDate = function(value) {
   return value < 10 ? '0' + value : value
 }
@@ -117,6 +120,9 @@ export default {
       }
       return time
     }
+  },
+  components: {
+    Chart
   },
   data() {
     return {
@@ -161,7 +167,8 @@ export default {
       towtimes: [new Date(), new Date()],
       Line: '',
       production: '',
-      total: null
+      total: null,
+      needBar: null
     }
   },
   created() {
@@ -192,19 +199,19 @@ export default {
     handleDownload(row) {
       this.downloadLoading = true
       require.ensure([], () => {
-          const { export_json_to_excel } = require('@/vendor/Export2Excel')
-          const tHeader = ['日期','实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
-          const filterVal = ['stat_date', 'cnt', 'unqualified_cnt','qualified_cnt','normal_duration','oee']
-          const list=this.tableData
-          for(let i=0;i<list.length;i++){
+        const { export_json_to_excel } = require('@/vendor/Export2Excel')
+        const tHeader = ['日期', '实际生产', '不合格产品数', '合格产品数', '正常运行时间', 'OEE']
+        const filterVal = ['stat_date', 'cnt', 'unqualified_cnt', 'qualified_cnt', 'normal_duration', 'oee']
+        const list = this.tableData
+        for (let i = 0; i < list.length; i++) {
           console.log(list[i].normal_duration)
-          list[i].normal_duration= this.MillisecondToDate(list[i].normal_duration)
+          list[i].normal_duration = this.MillisecondToDate(list[i].normal_duration)
         }
-          const data = this.formatJson(filterVal, list)
-          console.log(list)
+        const data = this.formatJson(filterVal, list)
+        console.log(list)
 
-          export_json_to_excel(tHeader, data, '产线OEE列表'+moment(new Date()).format('YYYYMMDDHHmmss'))
-          this.downloadLoading = false
+        export_json_to_excel(tHeader, data, '产线OEE列表' + moment(new Date()).format('YYYYMMDDHHmmss'))
+        this.downloadLoading = false
       })
     },
     formatJson(filterVal, jsonData) {
@@ -230,6 +237,8 @@ export default {
       getOEE(lineId, beginTime, EndTime, limit, ((offset - 1) * limit)).then(response => {
         this.listLoading = false
         this.tableData = response.data.rows
+        this.needBar = this.tableData
+        this.$refs.needBar.initChart(this.needBar)
         this.tableData.forEach((item, index) => {
           if (item.oee || item.oee === 0) {
             item['oee'] = (Number(item.oee) * 100).toFixed(2) + '%'
